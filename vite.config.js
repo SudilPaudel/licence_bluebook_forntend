@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    port: 3000,
+    host: true,
     historyApiFallback: {
       index: '/index.html',
       rewrites: [
@@ -18,13 +20,13 @@ export default defineConfig({
       ]
     },
     proxy: {
-      '/auth': 'http://localhost:9005',
-      '/bluebook': 'http://localhost:9005',
-      '/electric-bluebook': 'http://localhost:9005',
-      '/news': 'http://localhost:9005',
-      '/marquee': 'http://localhost:9005',
-      '/admin': 'http://localhost:9005',
-      '/payment': 'http://localhost:9005',
+      '/auth': 'http://backend:9005',
+      '/bluebook': 'http://backend:9005',
+      '/electric-bluebook': 'http://backend:9005',
+      '/news': 'http://backend:9005',
+      '/marquee': 'http://backend:9005',
+      '/admin': 'http://backend:9005',
+      '/payment': 'http://backend:9005',
     },
   },
 })
