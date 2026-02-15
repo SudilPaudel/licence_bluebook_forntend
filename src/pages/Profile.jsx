@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaIdCard, FaEdit, FaSave, FaTimes, FaCamera, FaArrowLeft, FaShieldAlt, FaUserTag } from "react-icons/fa";
+import { useLang } from "../context/LanguageContext";
+import { profileLabels } from "../labels/profileLabels";
 
 function Profile() {
   // Main component for displaying and editing user profile
 
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -175,9 +178,9 @@ function Profile() {
                 <FaArrowLeft className="text-2xl" />
               </button>
               <div>
-                <h1 className="text-4xl font-extrabold text-gray-900 mb-1 tracking-tight animate-slide-in-down">My Profile</h1>
+                <h1 className="text-4xl font-extrabold text-gray-900 mb-1 tracking-tight animate-slide-in-down">{getLabel(profileLabels.myProfile)}</h1>
                 <p className="text-gray-500 text-lg font-medium animate-fade-in-slow">
-                  Manage your account information and preferences
+                  {getLabel(profileLabels.manageAccount)}
                 </p>
               </div>
             </div>
@@ -188,7 +191,7 @@ function Profile() {
                   className="inline-flex items-center px-7 py-3 border border-transparent text-base font-semibold rounded-2xl text-white bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-700 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 transition-all duration-200 shadow-xl hover:scale-105 active:scale-95 animate-pop-in"
                 >
                   <FaEdit className="mr-2" />
-                  Edit Profile
+                  {getLabel(profileLabels.editProfile)}
                 </button>
               ) : (
                 <div className="flex space-x-3">
@@ -197,14 +200,14 @@ function Profile() {
                     className="inline-flex items-center px-7 py-3 border border-transparent text-base font-semibold rounded-2xl text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 transition-all duration-200 shadow-xl hover:scale-105 active:scale-95 animate-pop-in"
                   >
                     <FaSave className="mr-2" />
-                    Save Changes
+                    {getLabel(profileLabels.saveChanges)}
                   </button>
                   <button
                     onClick={handleCancel}
                     className="inline-flex items-center px-7 py-3 border border-gray-300 text-base font-semibold rounded-2xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 transition-all duration-200 shadow-xl hover:scale-105 active:scale-95 animate-pop-in"
                   >
                     <FaTimes className="mr-2" />
-                    Cancel
+                    {getLabel(profileLabels.cancel)}
                   </button>
                 </div>
               )}
@@ -284,7 +287,7 @@ function Profile() {
 
           {/* Profile Information */}
           <div className="px-10 py-10 bg-gradient-to-br from-white via-blue-50 to-indigo-50">
-            <h3 className="text-2xl font-extrabold text-gray-900 mb-8 tracking-tight animate-slide-in-up">Personal Information</h3>
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-8 tracking-tight animate-slide-in-up">{getLabel(profileLabels.personalInformation)}</h3>
             
             <div className="space-y-8">
               {/* Full Name */}
@@ -292,7 +295,7 @@ function Profile() {
                 <div className="flex items-center mb-3">
                   <FaUser className="h-5 w-5 text-blue-500 mr-3" />
                   <label className="text-sm font-bold text-gray-700 uppercase tracking-widest">
-                    Full Name
+                    {getLabel(profileLabels.fullName)}
                   </label>
                 </div>
                 {editing ? (
@@ -302,7 +305,7 @@ function Profile() {
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-900 bg-white/90 font-semibold transition-all duration-200"
-                    placeholder="Enter your full name"
+                    placeholder={getLabel(profileLabels.enterFullName)}
                   />
                 ) : (
                   <p className="text-lg text-gray-900 font-semibold">{user?.name || 'N/A'}</p>
@@ -314,7 +317,7 @@ function Profile() {
                 <div className="flex items-center mb-3">
                   <FaEnvelope className="h-5 w-5 text-blue-500 mr-3" />
                   <label className="text-sm font-bold text-gray-700 uppercase tracking-widest">
-                    Email Address
+                    {getLabel(profileLabels.emailAddress)}
                   </label>
                 </div>
                 {editing ? (
@@ -324,7 +327,7 @@ function Profile() {
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-900 bg-white/90 font-semibold transition-all duration-200"
-                    placeholder="Enter your email address"
+                    placeholder={getLabel(profileLabels.enterEmail)}
                   />
                 ) : (
                   <p className="text-lg text-gray-900 font-semibold">{user?.email || 'N/A'}</p>
@@ -336,7 +339,7 @@ function Profile() {
                 <div className="flex items-center mb-3">
                   <FaIdCard className="h-5 w-5 text-blue-500 mr-3" />
                   <label className="text-sm font-bold text-gray-700 uppercase tracking-widest">
-                    Citizenship Number
+                    {getLabel(profileLabels.citizenshipNo)}
                   </label>
                 </div>
                 {editing ? (
@@ -346,7 +349,7 @@ function Profile() {
                     value={formData.citizenshipNo}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-900 bg-white/90 font-semibold transition-all duration-200"
-                    placeholder="Enter your citizenship number"
+                    placeholder={getLabel(profileLabels.enterCitizenshipNo)}
                   />
                 ) : (
                   <p className="text-lg text-gray-900 font-semibold">{user?.citizenshipNo || 'N/A'}</p>
@@ -359,7 +362,7 @@ function Profile() {
                   <div className="flex items-center mb-4">
                     <FaCamera className="h-6 w-6 text-blue-500 mr-3" />
                     <label className="text-lg font-bold text-gray-800">
-                      Passport Size Photo
+                      {getLabel(profileLabels.passportPhoto)}
                     </label>
                   </div>
                   
@@ -382,10 +385,10 @@ function Profile() {
                           className="h-36 w-28 rounded-xl border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center text-gray-500 text-xs"
                           style={{ display: 'none', aspectRatio: '3/4' }}
                         >
-                          Image Failed to Load
+                          {getLabel(profileLabels.imageFailed)}
                         </div>
                         <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full shadow-md font-bold animate-bounce">
-                          ✓ Verified
+                          ✓ {getLabel(profileLabels.verified)}
                         </div>
                       </div>
                     </div>
@@ -394,41 +397,41 @@ function Profile() {
                     <div className="flex-1">
                       <div className="space-y-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Photo Details</h4>
+                          <h4 className="font-semibold text-gray-900 mb-1">{getLabel(profileLabels.photoDetails)}</h4>
                           <p className="text-sm text-gray-600">
-                            This passport-size photo was uploaded during your account registration and meets our requirements.
+                            {getLabel(profileLabels.photoDescription)}
                           </p>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">Format</p>
-                            <p className="text-sm font-semibold text-gray-900">Passport Size (3:4)</p>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{getLabel(profileLabels.format)}</p>
+                            <p className="text-sm font-semibold text-gray-900">{getLabel(profileLabels.passportSize)}</p>
                           </div>
                           
                           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">Upload Date</p>
-                            <p className="text-sm font-semibold text-gray-900">Registration</p>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{getLabel(profileLabels.uploadDate)}</p>
+                            <p className="text-sm font-semibold text-gray-900">{getLabel(profileLabels.registration)}</p>
                           </div>
                           
                           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">Status</p>
-                            <p className="text-sm font-semibold text-green-600">✓ Approved</p>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{getLabel(profileLabels.status)}</p>
+                            <p className="text-sm font-semibold text-green-600">✓ {getLabel(profileLabels.approved)}</p>
                           </div>
                           
                           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">Usage</p>
-                            <p className="text-sm font-semibold text-gray-900">Account Profile</p>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-widest">{getLabel(profileLabels.usage)}</p>
+                            <p className="text-sm font-semibold text-gray-900">{getLabel(profileLabels.accountProfile)}</p>
                           </div>
                         </div>
                         
                         <div className="bg-blue-50 rounded-lg p-3 border border-blue-200 shadow-sm">
-                          <p className="text-xs font-medium text-blue-800 mb-1">Photo Requirements Met:</p>
+                          <p className="text-xs font-medium text-blue-800 mb-1">{getLabel(profileLabels.photoRequirements)}</p>
                           <ul className="text-xs text-blue-700 space-y-1">
-                            <li>• Passport-size dimensions (3:4 aspect ratio)</li>
-                            <li>• Clear, high-quality image</li>
-                            <li>• Proper lighting and background</li>
-                            <li>• File size under 2MB</li>
+                            <li>• {getLabel(profileLabels.passportDimensions)}</li>
+                            <li>• {getLabel(profileLabels.clearImage)}</li>
+                            <li>• {getLabel(profileLabels.properLighting)}</li>
+                            <li>• {getLabel(profileLabels.fileSize)}</li>
                           </ul>
                         </div>
                       </div>
@@ -440,15 +443,15 @@ function Profile() {
                   <div className="flex items-center mb-4">
                     <FaCamera className="h-6 w-6 text-gray-400 mr-3" />
                     <label className="text-lg font-bold text-gray-600">
-                      No Passport Photo Uploaded
+                      {getLabel(profileLabels.noPhotoUploaded)}
                     </label>
                   </div>
                   <div className="text-center py-8">
                     <div className="h-36 w-28 mx-auto rounded-xl border-4 border-gray-300 bg-gray-100 flex items-center justify-center">
                       <FaUser className="h-14 w-14 text-gray-400" />
                     </div>
-                    <p className="text-gray-600 mt-4">No passport-size photo has been uploaded yet.</p>
-                    <p className="text-sm text-gray-500">Photos are uploaded during account registration.</p>
+                    <p className="text-gray-600 mt-4">{getLabel(profileLabels.noPhotoDescription)}</p>
+                    <p className="text-sm text-gray-500">{getLabel(profileLabels.photosUploadedDuring)}</p>
                   </div>
                 </div>
               )}
@@ -458,7 +461,7 @@ function Profile() {
                 <div className="flex items-center mb-3">
                   <FaCamera className="h-5 w-5 text-blue-500 mr-3" />
                   <label className="text-sm font-bold text-gray-700 uppercase tracking-widest">
-                    Profile Picture
+                    {getLabel(profileLabels.profilePicture)}
                   </label>
                 </div>
                 <div className="flex items-center space-x-6">
@@ -481,10 +484,10 @@ function Profile() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-medium">
-                      {user?.image ? 'Uploaded during registration' : 'No profile picture uploaded'}
+                      {user?.image ? getLabel(profileLabels.uploadedDuringReg) : getLabel(profileLabels.noProfilePicture)}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {user?.image ? 'This image was uploaded when you created your account' : 'Profile pictures are uploaded during account registration'}
+                      {user?.image ? getLabel(profileLabels.imageUploadedWhen) : getLabel(profileLabels.profilePicturesDuringReg)}
                     </p>
                   </div>
                 </div>

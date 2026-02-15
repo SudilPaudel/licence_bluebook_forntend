@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCar, FaSave, FaArrowLeft, FaUpload } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useLang } from "../context/LanguageContext";
+import { newBluebookLabels } from "../labels/newBluebookLabels";
 
 function NewBluebook() {
   // Main component for registering a new bluebook
 
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vehicleRegNo: "",
@@ -142,22 +145,22 @@ function NewBluebook() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Bluebook registered successfully!');
+        toast.success(getLabel(newBluebookLabels.bluebookRegisteredSuccess));
         navigate('/dashboard');
       } else {
-        toast.error(data.message || 'Failed to register bluebook');
+        toast.error(data.message || getLabel(newBluebookLabels.failedToRegisterBluebook));
       }
     } catch (error) {
       console.error('Error registering bluebook:', error);
-      toast.error('An error occurred while registering the bluebook');
+      toast.error(getLabel(newBluebookLabels.errorOccurredWhileRegistering));
     } finally {
       setLoading(false);
     }
   };
 
   const vehicleTypes = [
-    "Motorcycle",
-    "Car"
+    { value: "Motorcycle", label: newBluebookLabels.motorcycle },
+    { value: "Car", label: newBluebookLabels.car }
   ];
 
   
@@ -177,10 +180,10 @@ function NewBluebook() {
               </button>
               <div>
                 <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight animate-slide-down">
-                  Register New Bluebook
+                  {getLabel(newBluebookLabels.registerBluebook)}
                 </h1>
                 <p className="mt-1 text-base text-gray-600 animate-fade-in delay-100">
-                  Enter vehicle details for bluebook registration
+                  {getLabel(newBluebookLabels.enterVehicleDetails)}
                 </p>
               </div>
             </div>
@@ -196,12 +199,12 @@ function NewBluebook() {
             {/* Vehicle Information */}
             <div>
               <h3 className="text-xl font-semibold text-nepal-blue mb-6 border-l-4 border-nepal-blue pl-3 animate-slide-right text-left">
-                Vehicle Information
+                {getLabel(newBluebookLabels.vehicleInformation)}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Registration Number <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.vehicleRegNo)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -211,7 +214,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleRegNo ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter registration number"
+                    placeholder={getLabel(newBluebookLabels.enterRegNo)}
                   />
                   {errors.vehicleRegNo && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleRegNo}</p>
@@ -220,7 +223,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Type <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.vehicleType)} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="vehicleType"
@@ -230,9 +233,9 @@ function NewBluebook() {
                       errors.vehicleType ? 'border-red-400' : 'border-gray-200'
                     }`}
                   >
-                    <option value="">Select vehicle type</option>
+                    <option value="">{getLabel(newBluebookLabels.selectVehicleType)}</option>
                     {vehicleTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type.value} value={type.value}>{getLabel(type.label)}</option>
                     ))}
                   </select>
                   {errors.vehicleType && (
@@ -242,7 +245,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Registration Date <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.registrationDate)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -260,7 +263,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Owner Name <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.ownerName)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -270,7 +273,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleOwnerName ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter owner name"
+                    placeholder={getLabel(newBluebookLabels.enterOwnerName)}
                   />
                   {errors.vehicleOwnerName && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleOwnerName}</p>
@@ -279,7 +282,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Model <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.vehicleModel)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -289,7 +292,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleModel ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., Honda City, Toyota Corolla"
+                    placeholder={getLabel(newBluebookLabels.enterModel)}
                   />
                   {errors.vehicleModel && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleModel}</p>
@@ -298,7 +301,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Manufacture Year <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.manufactureYear)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -308,7 +311,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.manufactureYear ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., 2020"
+                    placeholder={getLabel(newBluebookLabels.enterYear)}
                     min="1900"
                     max={new Date().getFullYear() + 1}
                   />
@@ -319,7 +322,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Chassis Number <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.chassisNumber)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -329,7 +332,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.chasisNumber ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter chassis number"
+                    placeholder={getLabel(newBluebookLabels.enterChassisNumber)}
                   />
                   {errors.chasisNumber && (
                     <p className="mt-1 text-xs text-red-500">{errors.chasisNumber}</p>
@@ -338,7 +341,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Color <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.vehicleColor)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -348,7 +351,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleColor ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter vehicle color"
+                    placeholder={getLabel(newBluebookLabels.enterVehicleColor)}
                   />
                   {errors.vehicleColor && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleColor}</p>
@@ -357,7 +360,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Engine CC <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.engineCC)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -367,7 +370,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleEngineCC ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., 1500"
+                    placeholder={getLabel(newBluebookLabels.enterEngineCC)}
                     min="50"
                     max="10000"
                   />
@@ -378,7 +381,7 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Number <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.vehicleNumber)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -388,7 +391,7 @@ function NewBluebook() {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleNumber ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., Ba 1 Pa 1234"
+                    placeholder={getLabel(newBluebookLabels.enterVehicleNumber)}
                   />
                   {errors.vehicleNumber && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleNumber}</p>
@@ -400,12 +403,12 @@ function NewBluebook() {
             {/* Tax Information */}
             <div>
               <h3 className="text-xl font-semibold text-nepal-blue mb-6 border-l-4 border-nepal-blue pl-3 animate-slide-right text-left">
-                Tax Information
+                {getLabel(newBluebookLabels.taxInformation)}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Tax Pay Date <span className="text-red-500">*</span>
+                    {getLabel(newBluebookLabels.taxPayDate)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -423,12 +426,12 @@ function NewBluebook() {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Tax Expire Date (Auto-calculated)
+                    {getLabel(newBluebookLabels.taxExpireDateLabel)}
                   </label>
                   <div className="mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-100 text-gray-600 border-gray-200">
-                    {formData.taxPayDate ? calculateTaxExpireDate(formData.taxPayDate) : 'Will be calculated automatically'}
+                    {formData.taxPayDate ? calculateTaxExpireDate(formData.taxPayDate) : getLabel(newBluebookLabels.willBeCalculatedAutomatically)}
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">Tax expire date will be automatically set to 1 year after the tax pay date</p>
+                  <p className="mt-1 text-xs text-gray-500">{getLabel(newBluebookLabels.taxExpireDateHelperText)}</p>
                 </div>
               </div>
             </div>
@@ -440,7 +443,7 @@ function NewBluebook() {
                 onClick={() => navigate('/dashboard')}
                 className="px-5 py-2 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 shadow-sm"
               >
-                Cancel
+                {getLabel(newBluebookLabels.back)}
               </button>
               <button
                 type="submit"
@@ -450,12 +453,12 @@ function NewBluebook() {
                 {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                    Registering...
+                    {getLabel(newBluebookLabels.registering)}
                   </>
                 ) : (
                   <>
                     <FaSave className="mr-3 text-lg" />
-                    Register Bluebook
+                    {getLabel(newBluebookLabels.register)}
                   </>
                 )}
               </button>

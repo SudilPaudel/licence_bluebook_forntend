@@ -3,10 +3,15 @@ import NepaliDate from "nepali-date-converter";
 import logo from "../assets/logo.png";
 import flag from "../assets/flag.gif";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaGlobe } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useLang } from "../context/LanguageContext";
+import { navbarLabels } from "../labels/navbarLabels";
 
 function Navbar() {
+  // Language toggle
+  const { language, toggleLanguage, getLabel } = useLang();
+
   // Check auth state from localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -16,30 +21,15 @@ function Navbar() {
   // Nepali Date & Time state
   const [dateTimeStr, setDateTimeStr] = useState("");
 
+  // Convert English numbers to Nepali numerals
+  const toNepaliNumerals = (str) => {
+    const nepaliNumerals = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+    return String(str).replace(/[0-9]/g, (digit) => nepaliNumerals[parseInt(digit)]);
+  };
+
   useEffect(() => {
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const months = [
-      "Baishakh",
-      "Jestha",
-      "Asar",
-      "Shrawan",
-      "Bhadra",
-      "Ashwin",
-      "Kartik",
-      "Mangsir",
-      "Poush",
-      "Magh",
-      "Falgun",
-      "Chaitra",
-    ];
+    const days = navbarLabels.days[language];
+    const months = navbarLabels.months[language];
 
     const updateDateTime = () => {
       const now = new Date();
@@ -55,7 +45,13 @@ function Navbar() {
       const minutes = String(now.getMinutes()).padStart(2, "0");
       const seconds = String(now.getSeconds()).padStart(2, "0");
 
-      const formatted = `${year} ${monthName} ${date}, ${dayName} ${hours}:${minutes}:${seconds}`;
+      let formatted = `${year} ${monthName} ${date}, ${dayName} ${hours}:${minutes}:${seconds}`;
+      
+      // Convert to Nepali numerals if language is Nepali
+      if (language === 'ne') {
+        formatted = toNepaliNumerals(formatted);
+      }
+      
       setDateTimeStr(formatted);
     };
 
@@ -63,7 +59,7 @@ function Navbar() {
     const intervalId = setInterval(updateDateTime, 1000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [language]);
 
   // Fetch marquee text from backend
   useEffect(() => {
@@ -146,10 +142,10 @@ function Navbar() {
         </div>
 
         <div className="middle-heading text-nepal-red space-y-1 text-center justify-self-center animate-fade-in">
-          <h6 className="text-base font-semibold tracking-wide">Government of Nepal</h6>
-          <h6 className="text-base font-medium">Ministry of Physical Infrastructure and Transport</h6>
-          <h3 className="text-2xl font-extrabold text-nepal-blue drop-shadow-lg">Department of Transport Management</h3>
-          <h6 className="text-base font-medium">Nepal</h6>
+          <h6 className="text-base font-semibold tracking-wide">{getLabel(navbarLabels.governmentOfNepal)}</h6>
+          <h6 className="text-base font-medium">{getLabel(navbarLabels.ministryOfPhysicalInfrastructure)}</h6>
+          <h3 className="text-2xl font-extrabold text-nepal-blue drop-shadow-lg">{getLabel(navbarLabels.departmentOfTransportManagement)}</h3>
+          <h6 className="text-base font-medium">{getLabel(navbarLabels.nepal)}</h6>
         </div>
 
         <div className="right-heading flex flex-col items-end">
@@ -163,6 +159,15 @@ function Navbar() {
           <div className="date text-sm mt-2 text-gray-700 text-center font-mono bg-gray-100 px-3 py-1 rounded-lg shadow-inner animate-fade-in">
             {dateTimeStr}
           </div>
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLanguage}
+            className="mt-2 flex items-center gap-2 bg-nepal-blue text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 text-sm font-medium"
+            aria-label="Toggle language"
+          >
+            <FaGlobe className="text-base" />
+            <span>{language === 'en' ? 'नेपाली' : 'English'}</span>
+          </button>
         </div>
       </div>
 
@@ -187,7 +192,7 @@ function Navbar() {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Services
+              {getLabel(navbarLabels.services)}
               <span className="ml-1 transition-transform duration-200 group-hover:rotate-180">
                 ▼
               </span>
@@ -224,7 +229,7 @@ function Navbar() {
                   to="/login"
                   className="bg-white text-nepal-blue font-bold px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-200 border border-nepal-blue"
                 >
-                  Login
+                  {getLabel(navbarLabels.login)}
                 </Link>
               </li>
               <li>
@@ -232,7 +237,7 @@ function Navbar() {
                   to="/signup"
                   className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold px-6 py-2 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 hover:scale-105 transition-all duration-200"
                 >
-                  Signup
+                  {getLabel(navbarLabels.register)}
                 </Link>
               </li>
             </>
@@ -245,14 +250,14 @@ function Navbar() {
                       to="/admin-dashboard"
                       className="text-white font-semibold hover:text-red-400 transition-colors duration-200"
                     >
-                     Dashboard
+                     {getLabel(navbarLabels.dashboard)}
                     </Link>
                   ) : (
                     <Link
                       to="/dashboard"
                       className="text-white font-semibold hover:text-red-400 transition-colors duration-200"
                     >
-                      Dashboard
+                      {getLabel(navbarLabels.dashboard)}
                     </Link>
                   )
                 }
@@ -262,7 +267,7 @@ function Navbar() {
                   onClick={handleLogout}
                   className="bg-white text-nepal-blue font-bold px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-200 border border-nepal-blue"
                 >
-                  Logout
+                  {getLabel(navbarLabels.logout)}
                 </button>
               </li>
             </>

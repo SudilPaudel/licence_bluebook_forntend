@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaSpinner, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import { useLang } from "../context/LanguageContext";
+import { registerLabels } from "../labels/registerLabels";
 
 function Register() {
   // Main component for user registration and email OTP verification
 
   const navigate = useNavigate();
+  const { getLabel } = useLang();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -222,7 +225,7 @@ function Register() {
     return (
       <div className="max-w-md mx-auto mt-10 p-8 bg-white shadow-xl rounded-lg">
         <h2 className="text-3xl font-bold text-nepal-blue mb-8 text-center">
-          Email Verification
+          {getLabel(registerLabels.emailVerification)}
         </h2>
 
         <Notification
@@ -232,17 +235,17 @@ function Register() {
         />
 
         <p className="text-gray-600 mb-6 text-center">
-          We've sent a 6-digit verification code to <strong>{formData.email}</strong>
+          {getLabel(registerLabels.verificationCodeSent)} <strong>{formData.email}</strong>
         </p>
 
         <form onSubmit={handleOtpSubmit}>
           <div className="mb-6">
-            <label className="block font-medium mb-2 text-left">Enter OTP</label>
+            <label className="block font-medium mb-2 text-left">{getLabel(registerLabels.enterOtp)}</label>
             <input
               type="text"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              placeholder="Enter 6-digit OTP"
+              placeholder={getLabel(registerLabels.enter6DigitOtp)}
               className="w-full border px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue text-center text-xl tracking-widest"
               maxLength={6}
             />
@@ -254,18 +257,18 @@ function Register() {
             className="w-full bg-nepal-blue text-white py-3 font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {isLoading ? <FaSpinner className="animate-spin mr-2" /> : null}
-            Verify Email
+            {getLabel(registerLabels.verifyEmail)}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-600 mb-2">Didn't receive the code?</p>
+          <p className="text-gray-600 mb-2">{getLabel(registerLabels.didntReceiveCode)}</p>
           <button
             onClick={handleResendOtp}
             disabled={resendTimer > 0 || isLoading}
             className="text-nepal-blue hover:text-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
+            {resendTimer > 0 ? `${getLabel(registerLabels.resendIn)} ${resendTimer}s` : getLabel(registerLabels.resendOtp)}
           </button>
         </div>
 
@@ -274,7 +277,7 @@ function Register() {
             onClick={() => setShowOtpForm(false)}
             className="text-gray-600 hover:text-gray-800"
           >
-            ← Back to Registration
+            {getLabel(registerLabels.backToRegistration)}
           </button>
         </div>
       </div>
@@ -284,7 +287,7 @@ function Register() {
   return (
     <div className="max-w-3xl mx-auto mt-14 mb-14 p-10 bg-gradient-to-br from-white via-blue-50 to-blue-100 shadow-2xl rounded-3xl border border-blue-100 animate-fade-in">
       <h2 className="text-4xl font-extrabold text-nepal-blue mb-10 text-center tracking-tight drop-shadow animate-slide-down">
-        User Registration
+        {getLabel(registerLabels.userRegistration)}
       </h2>
 
       <Notification
@@ -297,12 +300,12 @@ function Register() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Name */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Name</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.name)}</label>
             <input
               type="text"
               name="name"
               required
-              placeholder="Enter your full name"
+              placeholder={getLabel(registerLabels.enterName)}
               value={formData.name}
               onChange={handleChange}
               className="w-full border border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 bg-white shadow transition-all duration-200"
@@ -311,12 +314,12 @@ function Register() {
 
           {/* Email */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Email</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.email)}</label>
             <input
               type="email"
               name="email"
               required
-              placeholder="example@email.com"
+              placeholder={getLabel(registerLabels.enterEmail)}
               value={formData.email}
               onChange={handleChange}
               className="w-full border border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 bg-white shadow transition-all duration-200"
@@ -325,12 +328,12 @@ function Register() {
 
           {/* Citizenship No */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Citizenship No</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.citizenshipNo)}</label>
             <input
               type="text"
               name="citizenshipNo"
               required
-              placeholder="Enter your citizenship number"
+              placeholder={getLabel(registerLabels.enterCitizenshipNo)}
               value={formData.citizenshipNo}
               onChange={handleChange}
               className="w-full border border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 bg-white shadow transition-all duration-200"
@@ -339,13 +342,13 @@ function Register() {
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Password</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.password)}</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 required
-                placeholder="Enter a strong password"
+                placeholder={getLabel(registerLabels.enterPassword)}
                 value={formData.password}
                 onChange={handleChange}
                 autoComplete="new-password"
@@ -363,13 +366,13 @@ function Register() {
 
           {/* Confirm Password */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Confirm Password</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.confirmPassword)}</label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 name="confirmPassword"
                 required
-                placeholder="Re-enter your password"
+                placeholder={getLabel(registerLabels.confirmYourPassword)}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 autoComplete="new-password"
@@ -387,7 +390,7 @@ function Register() {
 
           {/* Image Upload */}
           <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">Passport-sized Photo</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.passportPhoto)}</label>
             <input
               type="file"
               name="image"
@@ -420,7 +423,7 @@ function Register() {
               {isLoading ? (
                 <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></span>
               ) : null}
-              Register
+              {isLoading ? getLabel(registerLabels.registering) : getLabel(registerLabels.register)}
             </button>
           </div>
         </div>
@@ -428,12 +431,12 @@ function Register() {
 
       <div className="mt-8 text-center animate-fade-in-slow">
         <p className="text-gray-600 text-base">
-          Already have an account?{" "}
+          {getLabel(registerLabels.alreadyHaveAccount)}{" "}
           <button
             onClick={() => navigate("/login")}
             className="text-nepal-blue hover:text-blue-700 font-semibold underline underline-offset-2 transition-colors duration-150"
           >
-            Login here
+            {getLabel(registerLabels.loginHere)}
           </button>
         </p>
       </div>

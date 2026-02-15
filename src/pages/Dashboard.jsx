@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaCar, FaFileAlt, FaClock, FaCheckCircle, FaTimesCircle, FaPlus, FaSearch, FaDownload, FaEdit, FaTrash, FaMotorcycle, FaUserCircle, FaBatteryFull } from "react-icons/fa";
+import { useLang } from "../context/LanguageContext";
+import { dashboardLabels } from "../labels/dashboardLabels";
 
 function Dashboard() {
   // Main dashboard component for displaying user bluebooks and stats
-
+  const { getLabel } = useLang();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
@@ -200,16 +202,16 @@ const getStatusBadge = (status) => {
     case 'verified':
       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
         <FaCheckCircle className="mr-1" />
-        Verified
+        {getLabel(dashboardLabels.verified)}
       </span>;
     case 'pending':
       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
         <FaClock className="mr-1" />
-        Pending
+        {getLabel(dashboardLabels.pending)}
       </span>;
     default:
       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-        Unknown
+        {getLabel(dashboardLabels.unknown)}
       </span>;
   }
 };
@@ -253,9 +255,9 @@ return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-8 animate-fade-in-down">
           <div>
-            <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight drop-shadow-sm">Dashboard</h1>
+            <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight drop-shadow-sm">{getLabel(dashboardLabels.dashboard)}</h1>
             <p className="mt-2 text-base text-gray-500 font-medium">
-              Welcome back, <span className="text-nepal-blue font-semibold">{user?.name || 'User'}</span>
+              {getLabel(dashboardLabels.welcomeBack)}, <span className="text-nepal-blue font-semibold">{user?.name || 'User'}</span>
             </p>
 
           </div>
@@ -265,14 +267,14 @@ return (
               className="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaPlus className="mr-2 animate-bounce" />
-              New Bluebook
+              {getLabel(dashboardLabels.newBluebook)}
             </button>
             <button
               onClick={() => navigate('/electric-bluebook/new')}
               className="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaPlus className="mr-2 animate-bounce" />
-              New Electric Bluebook
+              {getLabel(dashboardLabels.newElectricBluebook)}
             </button>
             {
               user?.role === 'admin' && (
@@ -281,7 +283,7 @@ return (
                   className="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
                 >
                   <FaUserCircle className="mr-2 animate-bounce" />
-                  Admin Dashboard
+                  {getLabel(dashboardLabels.adminDashboard)}
                 </button>
               )
             }
@@ -298,7 +300,7 @@ return (
           <FaCar className="h-7 w-7 text-nepal-blue" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Total Bluebooks</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.totalBluebooks)}</div>
           <div className="text-2xl font-bold text-nepal-blue">{stats.total}</div>
             </div>
           </div>
@@ -307,7 +309,7 @@ return (
           <FaClock className="h-7 w-7 text-yellow-400" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Pending</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.pending)}</div>
           <div className="text-2xl font-bold text-yellow-500">{stats.pending}</div>
             </div>
           </div>
@@ -316,7 +318,7 @@ return (
           <FaCheckCircle className="h-7 w-7 text-green-500" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Verified</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.verified)}</div>
           <div className="text-2xl font-bold text-green-500">{stats.verified}</div>
             </div>
           </div>
@@ -325,7 +327,7 @@ return (
           <FaTimesCircle className="h-7 w-7 text-red-500" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Expired</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.expired)}</div>
           <div className="text-2xl font-bold text-red-500">{stats.expired}</div>
             </div>
           </div>
@@ -334,7 +336,7 @@ return (
           <FaBatteryFull className="h-7 w-7 text-green-500" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Electric</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.electric)}</div>
           <div className="text-2xl font-bold text-green-500">{stats.electric}</div>
             </div>
           </div>
@@ -343,7 +345,7 @@ return (
           <FaClock className="h-7 w-7 text-orange-500" />
             </div>
             <div>
-          <div className="text-sm font-semibold text-gray-500">Due Soon</div>
+          <div className="text-sm font-semibold text-gray-500">{getLabel(dashboardLabels.dueSoon)}</div>
           <div className="text-2xl font-bold text-orange-500">{stats.dueSoon}</div>
             </div>
           </div>
@@ -352,9 +354,9 @@ return (
             <div className="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
           <div className="flex justify-between items-center">
             <div>
-          <h3 className="text-xl font-bold text-nepal-blue">My Bluebooks</h3>
+          <h3 className="text-xl font-bold text-nepal-blue">{getLabel(dashboardLabels.myBluebooks)}</h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Manage your vehicle bluebook registrations
+            {getLabel(dashboardLabels.manageBluebooks)}
           </p>
             </div>
             <div className="flex space-x-2"></div>
@@ -364,9 +366,9 @@ return (
             {bluebooks.length === 0 ? (
           <div className="text-center py-16 animate-fade-in-up">
             <FaFileAlt className="mx-auto h-14 w-14 text-gray-300 animate-pulse" />
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">No bluebooks</h3>
+            <h3 className="mt-4 text-lg font-semibold text-gray-900">{getLabel(dashboardLabels.noBluebooks)}</h3>
             <p className="mt-2 text-base text-gray-500">
-          Get started by creating a new bluebook registration.
+          {getLabel(dashboardLabels.getStartedBluebook)}
             </p>
             <div className="mt-8">
           <button
@@ -374,7 +376,7 @@ return (
             className="inline-flex items-center px-5 py-2.5 border border-transparent shadow-lg text-base font-semibold rounded-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
           >
             <FaPlus className="mr-2 animate-bounce" />
-            New Bluebook
+            {getLabel(dashboardLabels.newBluebook)}
           </button>
             </div>
           </div>
@@ -405,29 +407,29 @@ return (
             {getStatusBadge(bluebook.status)}
             {isExpired(bluebook.taxExpireDate) && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 animate-pulse">
-            Expired
+            {getLabel(dashboardLabels.expired)}
               </span>
             )}
             {!isExpired(bluebook.taxExpireDate) && shouldShowPayTax(bluebook.taxExpireDate) && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 animate-pulse">
-            Due Soon
+            {getLabel(dashboardLabels.dueSoon)}
               </span>
             )}
               </div>
               <div className="mt-2 text-sm text-gray-500 space-x-2">
-            <span className="font-medium">Reg No:</span> {bluebook.vehicleRegNo}
-            <span className="font-medium">| Model:</span> {bluebook.vehicleModel || bluebook.VehicleModel || 'N/A'}
-            <span className="font-medium">| Number:</span> {bluebook.vehicleNumber}
+            <span className="font-medium">{getLabel(dashboardLabels.regNo)}:</span> {bluebook.vehicleRegNo}
+            <span className="font-medium">| {getLabel(dashboardLabels.model)}:</span> {bluebook.vehicleModel || bluebook.VehicleModel || 'N/A'}
+            <span className="font-medium">| {getLabel(dashboardLabels.vehicleNumber)}:</span> {bluebook.vehicleNumber}
             {bluebook.isElectric && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                 <FaBatteryFull className="mr-1" />
-                Electric
+                {getLabel(dashboardLabels.electric)}
               </span>
             )}
               </div>
               <div className="mt-1 text-sm text-gray-400">
-            <span className="font-medium">Tax Expires:</span> {formatDate(bluebook.taxExpireDate)}
-            <span className="font-medium ml-2">| Created:</span> {formatDate(bluebook.createdAt)}
+            <span className="font-medium">{getLabel(dashboardLabels.taxExpires)}:</span> {formatDate(bluebook.taxExpireDate)}
+            <span className="font-medium ml-2">| {getLabel(dashboardLabels.created)}:</span> {formatDate(bluebook.createdAt)}
               </div>
             </div>
           </div>
@@ -441,14 +443,14 @@ return (
               className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-nepal-blue bg-white hover:bg-nepal-blue hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaEdit className="mr-1" />
-              View
+              {getLabel(dashboardLabels.view)}
             </button>
             <button
               onClick={() => handleDownload(bluebook._id, bluebook.isElectric)}
               className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-nepal-blue bg-white hover:bg-nepal-blue hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaDownload className="mr-1" />
-              Download
+              {getLabel(dashboardLabels.download)}
             </button>
             {shouldShowPayTax(bluebook.taxExpireDate) && (
               <button
@@ -470,7 +472,7 @@ return (
             }`}
               >
             <FaFileAlt className="mr-1" />
-            {isExpired(bluebook.taxExpireDate) ? 'Pay Tax (Expired)' : 'Pay Tax (Due Soon)'}
+            {isExpired(bluebook.taxExpireDate) ? getLabel(dashboardLabels.payTaxExpired) : getLabel(dashboardLabels.payTaxDueSoon)}
               </button>
             )}
           </div>
@@ -485,9 +487,9 @@ return (
 
       <div className="mt-12 bg-white/90 shadow-xl rounded-2xl overflow-hidden animate-fade-in-up">
         <div className="px-6 py-6 bg-gradient-to-r from-blue-50 to-white border-b border-gray-100">
-          <h3 className="text-xl font-bold text-nepal-blue">Quick Actions</h3>
+          <h3 className="text-xl font-bold text-nepal-blue">{getLabel(dashboardLabels.quickActions)}</h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Common tasks and shortcuts
+            {getLabel(dashboardLabels.commonTasks)}
           </p>
         </div>
         <div className="px-6 py-8">
@@ -497,14 +499,14 @@ return (
               className="flex items-center justify-center px-6 py-4 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-nepal-blue to-blue-500 shadow-lg hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaPlus className="mr-2 animate-bounce" />
-              Register New Bluebook
+              {getLabel(dashboardLabels.registerNewBluebook)}
             </button>
             <button
               onClick={() => navigate('/profile')}
               className="flex items-center justify-center px-6 py-4 border border-gray-200 text-base font-semibold rounded-xl text-nepal-blue bg-white shadow-lg hover:bg-nepal-blue hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
             >
               <FaFileAlt className="mr-2" />
-              View Profile
+              {getLabel(dashboardLabels.viewProfile)}
             </button>
           </div>
         </div>

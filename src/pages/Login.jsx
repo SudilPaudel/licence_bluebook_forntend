@@ -4,12 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import API from "../api/api";
 import Notification from "../components/Notification";
 import { toast } from "react-toastify"
+import { useLang } from "../context/LanguageContext";
+import { loginLabels } from "../labels/loginLabels";
 
 /**
  * Login component handles user authentication and login form.
  */
 function Login() {
   const navigate = useNavigate();
+  const { getLabel } = useLang();
 
   // State for login form fields
   const [formData, setFormData] = useState({
@@ -31,7 +34,7 @@ function Login() {
   const isLoggedIn = localStorage.getItem('accessToken');
   useEffect(()=>{
     if(isLoggedIn){
-      toast.info("You are already logged in");
+      toast.info(getLabel(loginLabels.alreadyLoggedIn));
       navigate('/dashboard');
     }
   }, [isLoggedIn, navigate])
@@ -112,7 +115,7 @@ function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       <div className="w-full max-w-md mx-auto p-10 bg-white/90 shadow-2xl rounded-3xl border border-blue-100 backdrop-blur-md animate-fade-in-up">
         <h2 className="text-4xl font-extrabold text-nepal-blue mb-10 text-center tracking-tight drop-shadow animate-fade-in">
-          User Login
+          {getLabel(loginLabels.userLogin)}
         </h2>
 
         <Notification
@@ -126,13 +129,13 @@ function Login() {
             {/* Email */}
             <div className="relative group">
               <label className="block font-semibold mb-2 text-left text-gray-700 group-hover:text-nepal-blue transition">
-                Email
+                {getLabel(loginLabels.email)}
               </label>
               <input
                 type="email"
                 name="email"
                 required
-                placeholder="Enter your email"
+                placeholder={getLabel(loginLabels.enterEmail)}
                 autoComplete="username"
                 value={formData.email}
                 onChange={handleChange}
@@ -144,14 +147,14 @@ function Login() {
             {/* Password */}
             <div className="relative group">
               <label className="block font-semibold mb-2 text-left text-gray-700 group-hover:text-nepal-blue transition">
-                Password
+                {getLabel(loginLabels.password)}
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   required
-                  placeholder="Enter your password"
+                  placeholder={getLabel(loginLabels.enterPassword)}
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
@@ -175,7 +178,7 @@ function Login() {
                 to="/forgot-password"
                 className="text-sm text-nepal-blue hover:underline hover:text-blue-700 transition"
               >
-                Forgot Password?
+                {getLabel(loginLabels.forgotPassword)}
               </Link>
             </div>
 
@@ -189,7 +192,7 @@ function Login() {
                 {loading ? (
                   <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></span>
                 ) : null}
-                Login
+                {getLabel(loginLabels.login)}
               </button>
             </div>
           </div>
@@ -197,12 +200,12 @@ function Login() {
 
         <div className="mt-8 text-center animate-fade-in delay-200">
           <p className="text-gray-600">
-            Don't have an account?{" "}
+            {getLabel(loginLabels.dontHaveAccount)}{" "}
             <Link
               to="/signup"
               className="text-nepal-blue hover:text-blue-700 font-semibold underline underline-offset-2 transition"
             >
-              Register here
+              {getLabel(loginLabels.registerHere)}
             </Link>
           </p>
         </div>

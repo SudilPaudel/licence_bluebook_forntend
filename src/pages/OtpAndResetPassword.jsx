@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "../context/LanguageContext";
+import { otpResetLabels } from "../labels/otpResetLabels";
 
 function OtpAndResetPassword() {
   // Main component for OTP verification and password reset
+  const { getLabel } = useLang();
 
   const [otp, setOtp] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
@@ -75,11 +78,11 @@ function OtpAndResetPassword() {
     setPasswordError(""); // reset error
 
     if (newPassword.length < 6) {
-      setPasswordError("Password must be at least 6 characters.");
+        setPasswordError(getLabel(otpResetLabels.minPasswordLength));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match.");
+        setPasswordError(getLabel(otpResetLabels.passwordMismatch));
       return;
     }
 
@@ -94,18 +97,18 @@ function OtpAndResetPassword() {
       {!otpVerified ? (
         <>
           <h2 className="text-4xl font-extrabold text-nepal-blue mb-10 text-center tracking-tight animate-slide-down">
-            OTP Verification
+            {getLabel(otpResetLabels.otpVerificationTitle)}
           </h2>
           <form onSubmit={handleOtpSubmit} className="space-y-8">
             <div className="relative">
               <label className="block font-semibold mb-2 text-left text-gray-700 tracking-wide">
-                Enter OTP
+                {getLabel(otpResetLabels.enterOtp)}
               </label>
               <input
                 type="text"
                 maxLength={6}
                 required
-                placeholder="6-digit OTP"
+                placeholder={getLabel(otpResetLabels.otpPlaceholder)}
                 value={otp}
                 onChange={handleOtpChange}
                 className="w-full border-2 border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 transition-all duration-300 text-lg tracking-widest bg-blue-50/60 shadow-sm"
@@ -118,12 +121,12 @@ function OtpAndResetPassword() {
               type="submit"
               className="w-full bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-3 font-bold rounded-xl shadow-lg hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-300"
             >
-              Verify OTP
+              {getLabel(otpResetLabels.verifyOtp)}
             </button>
           </form>
 
           <div className="text-center mt-6 text-base text-gray-500 animate-fade-in">
-            Didn&apos;t get code?{" "}
+            {getLabel(otpResetLabels.didntGetCode)}{" "}
             <button
               onClick={handleResend}
               disabled={!canResend}
@@ -133,24 +136,24 @@ function OtpAndResetPassword() {
                   : "text-gray-400 cursor-not-allowed"
               }`}
             >
-              Resend {canResend ? "" : `(${resendTimer}s)`}
+              {getLabel(otpResetLabels.resend)} {canResend ? "" : `(${resendTimer}s)`}
             </button>
           </div>
         </>
       ) : (
         <>
           <h2 className="text-4xl font-extrabold text-nepal-blue mb-10 text-center tracking-tight animate-slide-down">
-            Set New Password
+            {getLabel(otpResetLabels.setNewPassword)}
           </h2>
           <form onSubmit={handlePasswordSubmit} className="space-y-8">
             <div className="relative">
               <label className="block font-semibold mb-2 text-left text-gray-700 tracking-wide">
-                New Password
+                {getLabel(otpResetLabels.newPassword)}
               </label>
               <input
                 type="password"
                 required
-                placeholder="Enter new password"
+                placeholder={getLabel(otpResetLabels.enterNewPasswordPlaceholder)}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 autoComplete="new-password"
@@ -160,12 +163,12 @@ function OtpAndResetPassword() {
 
             <div className="relative">
               <label className="block font-semibold mb-2 text-left text-gray-700 tracking-wide">
-                Confirm Password
+                {getLabel(otpResetLabels.confirmPassword)}
               </label>
               <input
                 type="password"
                 required
-                placeholder="Confirm new password"
+                placeholder={getLabel(otpResetLabels.confirmNewPasswordPlaceholder)}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
@@ -181,7 +184,7 @@ function OtpAndResetPassword() {
               type="submit"
               className="w-full bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-3 font-bold rounded-xl shadow-lg hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-300"
             >
-              Reset Password
+              {getLabel(otpResetLabels.resetPassword)}
             </button>
           </form>
         </>

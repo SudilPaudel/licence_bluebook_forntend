@@ -1,0 +1,20 @@
+// Export all labels from a single entry point
+export { homeLabels } from './homeLabels';
+export { navbarLabels } from './navbarLabels';
+export { loginLabels } from './loginLabels';
+export { registerLabels } from './registerLabels';
+export { dashboardLabels } from './dashboardLabels';
+export { profileLabels } from './profileLabels';
+export { forgotPasswordLabels } from './forgotPasswordLabels';
+export { newBluebookLabels } from './newBluebookLabels';
+export { paymentLabels } from './paymentLabels';
+export { notFoundLabels } from './notFoundLabels';
+export { commonLabels } from './commonLabels';
+export { bluebookDetailLabels } from './bluebookDetailLabels';
+export { adminDashboardLabels } from './adminDashboardLabels';
+export { electricLabels } from './electricLabels';
+export { otpResetLabels } from './otpResetLabels';
+export { paymentVerificationLabels } from './paymentVerificationLabels';
+export { footerLabels } from './footerLabels';
+export { newsSectionLabels } from './newsSectionLabels';
+export { guidanceSectionLabels } from './guidanceSectionLabels';

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import API from "../api/api";
+import { useLang } from "../context/LanguageContext";
+import { forgotPasswordLabels } from "../labels/forgotPasswordLabels";
 
 /**
  * ForgotPassword component allows users to request a password reset link by entering their email address.
  */
 function ForgotPassword() {
+  const { getLabel } = useLang();
   // State for storing the user's email input
   const [email, setEmail] = useState("");
   // State for displaying a message after form submission
@@ -33,22 +36,22 @@ function ForgotPassword() {
   return (
     <div className="max-w-md mx-auto mt-24 p-10 bg-white/80 shadow-2xl rounded-3xl border border-gray-100 backdrop-blur-lg animate-fade-in">
       <h2 className="text-4xl font-extrabold text-nepal-blue mb-8 text-center tracking-tight animate-slide-down">
-        Forgot Password
+        {getLabel(forgotPasswordLabels.forgotPassword)}
       </h2>
 
       <p className="mb-8 text-center text-gray-600 text-lg animate-fade-in delay-100">
-        Enter your registered email address and we will send you instructions to reset your password.
+        {getLabel(forgotPasswordLabels.enterEmailInstruction)}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-7 animate-fade-in delay-200">
         <div>
           <label className="block font-semibold mb-2 text-left text-gray-800 tracking-wide">
-            Email Address
+            {getLabel(forgotPasswordLabels.emailAddress)}
           </label>
           <input
             type="email"
             required
-            placeholder="Enter your email"
+            placeholder={getLabel(forgotPasswordLabels.enterEmail)}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 transition-all duration-200 bg-gray-50 shadow-sm"
@@ -59,7 +62,7 @@ function ForgotPassword() {
           type="submit"
           className="w-full bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-3 font-bold rounded-xl shadow-lg hover:scale-105 hover:from-blue-600 hover:to-nepal-blue transition-all duration-200 active:scale-95"
         >
-          Send Reset Link
+          {getLabel(forgotPasswordLabels.sendResetLink)}
         </button>
       </form>
 

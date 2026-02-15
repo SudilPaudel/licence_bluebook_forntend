@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaArrowLeft, FaExclamationTriangle, FaRocket } from 'react-icons/fa';
+import { useLang } from '../context/LanguageContext';
+import { notFoundLabels } from '../labels/notFoundLabels';
 
 function NotFound() {
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -84,13 +87,12 @@ function NotFound() {
 
           {/* Title */}
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-fade-in-up">
-            Oops! Page Not Found
+            {getLabel(notFoundLabels.pageNotFound)}
           </h1>
 
           {/* Description */}
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-200">
-            The page you're looking for seems to have wandered off into the digital wilderness. 
-            Don't worry, we'll help you find your way back!
+            {getLabel(notFoundLabels.description)}
           </p>
 
           {/* Action Buttons */}
@@ -102,7 +104,7 @@ function NotFound() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative flex items-center space-x-2">
                 <FaHome className="text-lg" />
-                <span>Go to Homepage</span>
+                <span>{getLabel(notFoundLabels.goToHomepage)}</span>
                 <FaRocket className="text-lg transform group-hover:translate-x-1 transition-transform duration-300" />
               </div>
             </button>
@@ -113,7 +115,7 @@ function NotFound() {
             >
               <div className="flex items-center space-x-2">
                 <FaArrowLeft className="text-lg transform group-hover:-translate-x-1 transition-transform duration-300" />
-                <span>Go Back</span>
+                <span>{getLabel(notFoundLabels.goBack)}</span>
               </div>
             </button>
           </div>
@@ -121,7 +123,7 @@ function NotFound() {
           {/* Additional Info */}
           <div className="mt-12 p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 animate-fade-in-up delay-400">
             <p className="text-gray-400 text-sm">
-              If you believe this is an error, please contact our support team.
+              {getLabel(notFoundLabels.errorContact)}
             </p>
           </div>
         </div>

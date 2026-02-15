@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaCheckCircle, FaTimesCircle, FaSpinner, FaArrowLeft } from "react-icons/fa";
 import khaltiLogo from "../assets/khalti.png";
+import { useLang } from "../context/LanguageContext";
+import { paymentVerificationLabels } from "../labels/paymentVerificationLabels";
 
 // Khalti Logo Component using PNG
 /**
@@ -14,6 +16,7 @@ const KhaltiLogo = ({ className = "h-8 w-8" }) => (
 
 function PaymentVerification() {
   // Main component for verifying payment status
+  const { getLabel } = useLang();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ function PaymentVerification() {
       const pidx = searchParams.get('pidx');
       if (!pidx) {
         setVerificationStatus('failed');
-        setError('Payment verification failed: Missing transaction ID');
+        setError(getLabel(paymentVerificationLabels.missingTransactionId));
         return;
       }
 
@@ -77,7 +80,7 @@ function PaymentVerification() {
     } catch (error) {
       console.error('Error verifying payment:', error);
       setVerificationStatus('failed');
-      setError('Network error. Please check your internet connection and try again.');
+      setError(getLabel(paymentVerificationLabels.networkError));
     }
   };
 
@@ -103,8 +106,8 @@ function PaymentVerification() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md mx-auto text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-nepal-blue mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifying Payment</h2>
-          <p className="text-gray-600">Please wait while we verify your payment...</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{getLabel(paymentVerificationLabels.verifyingPaymentTitle)}</h2>
+          <p className="text-gray-600">{getLabel(paymentVerificationLabels.verifyingPaymentWait)}</p>
         </div>
       </div>
     );
@@ -123,8 +126,8 @@ function PaymentVerification() {
               <FaArrowLeft className="h-5 w-5 text-blue-500" />
             </button>
             <div>
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">Payment Verification</h1>
-              <p className="mt-1 text-base text-gray-500">See your payment status below</p>
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">{getLabel(paymentVerificationLabels.paymentVerification)}</h1>
+              <p className="mt-1 text-base text-gray-500">{getLabel(paymentVerificationLabels.paymentStatusSubtitle)}</p>
             </div>
           </div>
         </div>
@@ -142,7 +145,7 @@ function PaymentVerification() {
                 <FaTimesCircle className="h-10 w-10 text-red-500 animate-shake" />
               )}
               <h3 className="text-2xl font-semibold text-gray-900">
-                {verificationStatus === 'success' ? 'Payment Successful' : 'Payment Failed'}
+                {verificationStatus === 'success' ? getLabel(paymentVerificationLabels.paymentSuccessful) : getLabel(paymentVerificationLabels.paymentFailed)}
               </h3>
             </div>
           </div>
@@ -154,9 +157,9 @@ function PaymentVerification() {
                   <div className="flex items-center gap-4">
                     <FaCheckCircle className="h-6 w-6 text-green-400 animate-pulse" />
                     <div className="flex-1">
-                      <h4 className="text-base font-semibold text-green-800">Payment Verified Successfully</h4>
+                      <h4 className="text-base font-semibold text-green-800">{getLabel(paymentVerificationLabels.paymentVerifiedSuccess)}</h4>
                       <p className="text-sm text-green-700 mt-1">
-                        Your vehicle tax has been renewed for another year.
+                        {getLabel(paymentVerificationLabels.vehicleTaxRenewed)}
                       </p>
                     </div>
                     <KhaltiLogo className="h-10 w-10" />
@@ -165,23 +168,23 @@ function PaymentVerification() {
 
                 {verificationData && (
                   <div className="space-y-5">
-                    <h4 className="text-lg font-semibold text-gray-900">Transaction Details</h4>
+                    <h4 className="text-lg font-semibold text-gray-900">{getLabel(paymentVerificationLabels.transactionDetails)}</h4>
                     <dl className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                       <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</dt>
+                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">{getLabel(paymentVerificationLabels.totalAmount)}</dt>
                         <dd className="mt-1 text-lg font-bold text-gray-900">Rs. {verificationData.totalAmount?.toLocaleString()}</dd>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</dt>
+                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">{getLabel(paymentVerificationLabels.transactionId)}</dt>
                         <dd className="mt-1 text-lg font-mono text-gray-900">{verificationData.transactionId}</dd>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</dt>
+                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">{getLabel(paymentVerificationLabels.fee)}</dt>
                         <dd className="mt-1 text-lg font-bold text-gray-900">Rs. {verificationData.fee?.toLocaleString()}</dd>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">Refunded</dt>
-                        <dd className="mt-1 text-lg font-bold text-gray-900">{verificationData.refunded ? 'Yes' : 'No'}</dd>
+                        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider">{getLabel(paymentVerificationLabels.refunded)}</dt>
+                        <dd className="mt-1 text-lg font-bold text-gray-900">{verificationData.refunded ? getLabel(paymentVerificationLabels.yes) : getLabel(paymentVerificationLabels.no)}</dd>
                       </div>
                     </dl>
                   </div>
@@ -192,7 +195,7 @@ function PaymentVerification() {
                     onClick={handleBackToDashboard}
                     className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all duration-200 text-lg tracking-wide"
                   >
-                    Back to Dashboard
+                    {getLabel(paymentVerificationLabels.backToDashboard)}
                   </button>
                 </div>
               </div>
@@ -202,32 +205,32 @@ function PaymentVerification() {
                   <div className="flex items-center gap-4">
                     <FaTimesCircle className="h-6 w-6 text-red-400 animate-shake" />
                     <div>
-                      <h4 className="text-base font-semibold text-red-800">Payment Verification Failed</h4>
+                      <h4 className="text-base font-semibold text-red-800">{getLabel(paymentVerificationLabels.paymentFailed)}</h4>
                       <p className="text-sm text-red-700 mt-1">
-                        {error || 'Unable to verify your payment. Please try again.'}
+                        {error || getLabel(paymentVerificationLabels.unableToVerify)}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900">What to do next?</h4>
+                  <h4 className="text-lg font-semibold text-gray-900">{getLabel(paymentVerificationLabels.whatToDoNext)}</h4>
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-                      Check if the payment was actually completed in your Khalti account
+                      {getLabel(paymentVerificationLabels.checkKhaltiPayment)}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-                      Wait a few minutes and try verifying again
+                      {getLabel(paymentVerificationLabels.waitAndTryAgain)}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                      Contact support if the issue persists
+                      {getLabel(paymentVerificationLabels.contactSupport)}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 bg-pink-400 rounded-full animate-pulse"></span>
-                      Make sure you have sufficient balance in your Khalti account
+                      {getLabel(paymentVerificationLabels.sufficientBalance)}
                     </div>
                   </div>
                 </div>
@@ -238,13 +241,13 @@ function PaymentVerification() {
                     className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all duration-200 text-lg tracking-wide flex items-center justify-center gap-2"
                   >
                     <FaSpinner className="animate-spin" />
-                    Try Again
+                    {getLabel(paymentVerificationLabels.tryAgain)}
                   </button>
                   <button
                     onClick={handleBackToDashboard}
                     className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-xl shadow transition-all duration-200 text-lg tracking-wide"
                   >
-                    Back to Dashboard
+                    {getLabel(paymentVerificationLabels.backToDashboard)}
                   </button>
                 </div>
               </div>

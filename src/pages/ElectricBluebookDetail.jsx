@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaCar, FaArrowLeft, FaDownload, FaCheckCircle, FaClock, FaTimesCircle, FaCreditCard, FaBatteryFull } from "react-icons/fa";
+import { useLang } from "../context/LanguageContext";
+import { electricLabels } from "../labels/electricLabels";
 
 function ElectricBluebookDetail() {
   // Main component for displaying electric bluebook details page
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [bluebook, setBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -76,21 +79,21 @@ function ElectricBluebookDetail() {
       case 'verified':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
           <FaCheckCircle className="mr-2" />
-          Verified
+          {getLabel(electricLabels.verified)}
         </span>;
       case 'pending':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
           <FaClock className="mr-2" />
-          Pending Verification
+          {getLabel(electricLabels.pendingVerification)}
         </span>;
       case 'rejected':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
           <FaTimesCircle className="mr-2" />
-          Rejected
+          {getLabel(electricLabels.rejected)}
         </span>;
       default:
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-          Unknown
+          {getLabel(electricLabels.unknown)}
         </span>;
     }
   };
@@ -177,14 +180,14 @@ const shouldShowPayTax = (expireDate) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">{getLabel(electricLabels.error)}</h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
-            Back to Dashboard
+            {getLabel(electricLabels.backToDashboard)}
           </button>
         </div>
       </div>
@@ -195,13 +198,13 @@ const shouldShowPayTax = (expireDate) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-600 mb-4">Electric Bluebook Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-600 mb-4">{getLabel(electricLabels.electricBluebookNotFound)}</h2>
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
-            Back to Dashboard
+            {getLabel(electricLabels.backToDashboard)}
           </button>
         </div>
       </div>
@@ -222,8 +225,8 @@ const shouldShowPayTax = (expireDate) => {
                 <FaArrowLeft className="h-5 w-5 text-nepal-blue" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-nepal-blue">Electric Bluebook Details</h1>
-                <p className="text-gray-600">Vehicle registration information</p>
+                <h1 className="text-3xl font-bold text-nepal-blue">{getLabel(electricLabels.electricBluebookDetails)}</h1>
+                <p className="text-gray-600">{getLabel(electricLabels.vehicleRegistrationInfo)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -234,7 +237,7 @@ const shouldShowPayTax = (expireDate) => {
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
                 >
                   <FaDownload className="mr-2" />
-                  Download
+                  {getLabel(electricLabels.download)}
                 </button>
               )}
             </div>
@@ -247,52 +250,52 @@ const shouldShowPayTax = (expireDate) => {
           <div className="px-6 py-6 border-b border-gray-200">
             <div className="flex items-center gap-3 mb-4">
               <FaBatteryFull className="h-6 w-6 text-green-500" />
-              <h2 className="text-xl font-semibold text-gray-900">Electric Vehicle Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{getLabel(electricLabels.electricVehicleInfo)}</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Registration Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleRegistrationNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleRegNo}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Type</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleType)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleType}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Owner Name</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleOwnerName)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleOwnerName}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleNumber}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Model</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleModel)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleModel || bluebook.VehicleModel || 'N/A'}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Manufacture Year</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.manufactureYear)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.manufactureYear}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Chassis Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.chassisNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.chasisNumber}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Color</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleColor)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleColor}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Battery Capacity (kWh)</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.batteryCapacityKwh)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleBatteryCapacity}</p>
               </div>
             </div>
@@ -300,28 +303,28 @@ const shouldShowPayTax = (expireDate) => {
 
           {/* Registration and Tax Information */}
           <div className="px-6 py-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Registration & Tax Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{getLabel(electricLabels.registrationAndTaxInfo)}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Registration Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.vehicleRegistrationDate)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{formatDate(bluebook.vehicleRegistrationDate || bluebook.VehicleRegistrationDate)}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Tax Pay Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.taxPayDate)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{formatDate(bluebook.taxPayDate)}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Tax Expire Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.taxExpireDate)}</label>
                 <div className="flex items-center gap-2">
                   <p className={`mt-1 text-lg font-semibold ${isExpired(bluebook.taxExpireDate) ? 'text-red-600' : 'text-gray-900'}`}>
                     {formatDate(bluebook.taxExpireDate)}
                   </p>
                   {isExpired(bluebook.taxExpireDate) && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      Expired
+                      {getLabel(electricLabels.expired)}
                     </span>
                   )}
                 </div>
@@ -329,8 +332,8 @@ const shouldShowPayTax = (expireDate) => {
               
               {!isExpired(bluebook.taxExpireDate) && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">Days Until Expiry</label>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">{getDaysUntilExpiry(bluebook.taxExpireDate)} days</p>
+                  <label className="block text-sm font-medium text-gray-500">{getLabel(electricLabels.daysUntilExpiry)}</label>
+                  <p className="mt-1 text-lg font-semibold text-gray-900">{getDaysUntilExpiry(bluebook.taxExpireDate)} {getLabel(electricLabels.days)}</p>
                 </div>
               )}
             </div>
@@ -340,11 +343,11 @@ const shouldShowPayTax = (expireDate) => {
           <div className="px-6 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Status Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{getLabel(electricLabels.statusInformation)}</h3>
                 <p className="text-sm text-gray-600">
-                  Created on {formatDate(bluebook.createdAt)}
+                  {getLabel(electricLabels.createdOn)} {formatDate(bluebook.createdAt)}
                   {bluebook.updatedAt && bluebook.updatedAt !== bluebook.createdAt && (
-                    <span> • Last updated on {formatDate(bluebook.updatedAt)}</span>
+                    <span> • {getLabel(electricLabels.lastUpdatedOn)} {formatDate(bluebook.updatedAt)}</span>
                   )}
                 </p>
               </div>
@@ -360,7 +363,7 @@ const shouldShowPayTax = (expireDate) => {
                     }`}
                   >
                     <FaCreditCard className="mr-2" />
-                    {isExpired(bluebook.taxExpireDate) ? 'Pay Tax (Expired)' : 'Pay Tax (Due Soon)'}
+                    {isExpired(bluebook.taxExpireDate) ? getLabel(electricLabels.payTaxExpired) : getLabel(electricLabels.payTaxDueSoon)}
                   </button>
                 )}
               </div>
