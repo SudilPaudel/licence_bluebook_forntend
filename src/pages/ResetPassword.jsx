@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import API from "../api/api";
+import { useLang } from "../context/LanguageContext";
+import { otpResetLabels } from "../labels/otpResetLabels";
 
 function ResetPassword() {
+  const { getLabel } = useLang();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
@@ -18,27 +21,27 @@ function ResetPassword() {
     setError(null);
 
     if (!newPassword || newPassword.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(getLabel(otpResetLabels.minPasswordLength));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(getLabel(otpResetLabels.passwordMismatch));
       return;
     }
     if (!token) {
-      setError("Invalid or missing reset token.");
+      setError(getLabel(otpResetLabels.invalidResetToken));
       return;
     }
 
     setLoading(true);
     try {
       const response = await API.post("/auth/reset-password", { token, newPassword });
-      setMessage(response.data.message || "Password reset successful. You can now login.");
+      setMessage(response.data.message || getLabel(otpResetLabels.passwordResetSuccessLogin));
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setError(
         err.response?.data?.message ||
-        "Failed to reset password. Please try again."
+        getLabel(otpResetLabels.passwordResetTryAgain)
       );
     } finally {
       setLoading(false);
@@ -48,17 +51,17 @@ function ResetPassword() {
   return (
     <div className="max-w-md mx-auto mt-24 p-10 bg-white/80 shadow-2xl rounded-3xl border border-gray-100 backdrop-blur-lg animate-fade-in">
       <h2 className="text-4xl font-extrabold text-nepal-blue mb-8 text-center tracking-tight animate-slide-down">
-        Reset Password
+        {getLabel(otpResetLabels.resetPassword)}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-7 animate-fade-in delay-200">
         <div>
           <label className="block font-semibold mb-2 text-left text-gray-800 tracking-wide">
-            New Password
+            {getLabel(otpResetLabels.newPassword)}
           </label>
           <input
             type="password"
             required
-            placeholder="Enter new password"
+            placeholder={getLabel(otpResetLabels.enterNewPasswordPlaceholder)}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 transition-all duration-200 bg-gray-50 shadow-sm"
@@ -67,12 +70,12 @@ function ResetPassword() {
         </div>
         <div>
           <label className="block font-semibold mb-2 text-left text-gray-800 tracking-wide">
-            Confirm Password
+            {getLabel(otpResetLabels.confirmPassword)}
           </label>
           <input
             type="password"
             required
-            placeholder="Confirm new password"
+            placeholder={getLabel(otpResetLabels.confirmNewPasswordPlaceholder)}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 transition-all duration-200 bg-gray-50 shadow-sm"
@@ -84,7 +87,7 @@ function ResetPassword() {
           className="w-full bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-3 font-bold rounded-xl shadow-lg hover:scale-105 hover:from-blue-600 hover:to-nepal-blue transition-all duration-200 active:scale-95"
           disabled={loading}
         >
-          {loading ? "Resetting..." : "Reset Password"}
+          {loading ? getLabel(otpResetLabels.resetting) : getLabel(otpResetLabels.resetPassword)}
         </button>
       </form>
       {error && (

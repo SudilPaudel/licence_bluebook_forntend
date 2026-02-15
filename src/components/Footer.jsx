@@ -2,14 +2,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaGlobe, FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaShieldAlt, FaCar, FaFileAlt, FaUsers, FaClock } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useLang } from "../context/LanguageContext";
+import { footerLabels } from "../labels/footerLabels";
 
 function Footer() {
   const navigate = useNavigate();
+  const { getLabel } = useLang();
 
   const handleProtectedLink = (path) => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      toast.info('Please login to access this feature');
+      toast.info(getLabel(footerLabels.pleaseLoginToAccess));
       navigate('/login');
       return;
     }
@@ -32,13 +35,11 @@ function Footer() {
               <FaShieldAlt className="h-12 w-12 text-yellow-400 mr-5 mt-1 flex-shrink-0 drop-shadow-lg animate-bounce-slow" />
               <div className="flex-1">
                 <h3 className="text-3xl font-extrabold text-white mb-2 tracking-tight drop-shadow">
-                  Department of Transport Management
+                  {getLabel(footerLabels.departmentName)}
                 </h3>
-                <p className="text-blue-100 text-lg font-semibold mb-3">Government of Nepal</p>
+                <p className="text-blue-100 text-lg font-semibold mb-3">{getLabel(footerLabels.governmentOfNepal)}</p>
                 <p className="text-blue-100 leading-relaxed text-base opacity-90">
-                  The Department of Transport Management is responsible for regulating and managing 
-                  all aspects of road transport in Nepal, including vehicle registration, licensing, 
-                  and ensuring road safety standards across the country.
+                  {getLabel(footerLabels.departmentDescription)}
                 </p>
               </div>
             </div>
@@ -62,7 +63,7 @@ function Footer() {
           <div>
             <h4 className="text-xl font-bold mb-5 flex items-center gap-2 animate-fade-in-down">
               <FaFileAlt className="mr-2 text-yellow-400" />
-              Quick Links
+              {getLabel(footerLabels.quickLinks)}
             </h4>
             <ul className="space-y-3">
               <li>
@@ -71,7 +72,7 @@ function Footer() {
                   className="group text-blue-200 hover:text-yellow-400 transition-colors flex items-center w-full text-left px-3 py-2 rounded-lg bg-blue-900/30 hover:bg-blue-900/60 shadow hover:shadow-lg duration-300"
                 >
                   <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></span>
-                  Home
+                  {getLabel(footerLabels.home)}
                 </button>
               </li>
               <li>
@@ -80,7 +81,7 @@ function Footer() {
                   className="group text-blue-200 hover:text-yellow-400 transition-colors flex items-center w-full text-left px-3 py-2 rounded-lg bg-blue-900/30 hover:bg-blue-900/60 shadow hover:shadow-lg duration-300"
                 >
                   <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></span>
-                  Dashboard
+                  {getLabel(footerLabels.dashboard)}
                 </button>
               </li>
               <li>
@@ -89,7 +90,7 @@ function Footer() {
                   className="group text-blue-200 hover:text-yellow-400 transition-colors flex items-center w-full text-left px-3 py-2 rounded-lg bg-blue-900/30 hover:bg-blue-900/60 shadow hover:shadow-lg duration-300"
                 >
                   <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></span>
-                  New Bluebook
+                  {getLabel(footerLabels.newBluebook)}
                 </button>
               </li>
               <li>
@@ -98,7 +99,7 @@ function Footer() {
                   className="group text-blue-200 hover:text-yellow-400 transition-colors flex items-center w-full text-left px-3 py-2 rounded-lg bg-blue-900/30 hover:bg-blue-900/60 shadow hover:shadow-lg duration-300"
                 >
                   <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></span>
-                  My Profile
+                  {getLabel(footerLabels.myProfile)}
                 </button>
               </li>
               <li>
@@ -107,7 +108,7 @@ function Footer() {
                   className="group text-blue-200 hover:text-yellow-400 transition-colors flex items-center w-full text-left px-3 py-2 rounded-lg bg-blue-900/30 hover:bg-blue-900/60 shadow hover:shadow-lg duration-300"
                 >
                   <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover:scale-125 transition-transform"></span>
-                  Login
+                  {getLabel(footerLabels.login)}
                 </button>
               </li>
             </ul>
@@ -117,16 +118,16 @@ function Footer() {
           <div>
             <h4 className="text-xl font-bold mb-5 flex items-center gap-2 animate-fade-in-down">
               <FaPhone className="mr-2 text-yellow-400" />
-              Contact Us
+              {getLabel(footerLabels.contactUs)}
             </h4>
             <div className="space-y-4">
               <div className="flex items-start">
                 <FaMapMarkerAlt className="h-5 w-5 text-yellow-400 mt-1 mr-3 flex-shrink-0 animate-pulse" />
                 <div className="text-left">
                   <p className="text-blue-100 text-sm font-medium">
-                    Transport Management Office<br />
-                    Babar Mahal, Kathmandu<br />
-                    Nepal
+                    {getLabel(footerLabels.transportManagementOffice)}<br />
+                    {getLabel(footerLabels.address)}<br />
+                    {getLabel(footerLabels.nepal)}
                   </p>
                 </div>
               </div>
@@ -156,32 +157,32 @@ function Footer() {
         <div className="mt-16 pt-10 border-t border-blue-700 animate-fade-in-up">
           <h4 className="text-2xl font-bold mb-8 text-center flex items-center justify-center gap-2 tracking-wide">
             <FaCar className="mr-2 text-yellow-400 animate-bounce-slow" />
-            Our Services
+            {getLabel(footerLabels.ourServices)}
           </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaCar className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">Vehicle Registration</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.vehicleRegistration)}</p>
             </div>
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaFileAlt className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">License Renewal</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.licenseRenewal)}</p>
             </div>
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaUsers className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">Driver Training</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.driverTraining)}</p>
             </div>
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaShieldAlt className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">Safety Standards</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.safetyStandards)}</p>
             </div>
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaClock className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">24/7 Support</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.support247)}</p>
             </div>
             <div className="text-center p-5 bg-blue-900/40 rounded-xl hover:bg-blue-900/70 transition-all duration-300 shadow-lg hover:scale-105 animate-zoom-in">
               <FaGlobe className="h-7 w-7 text-yellow-400 mx-auto mb-2 animate-bounce-slow" />
-              <p className="text-base font-semibold">Online Services</p>
+              <p className="text-base font-semibold">{getLabel(footerLabels.onlineServices)}</p>
             </div>
           </div>
         </div>
@@ -192,17 +193,17 @@ function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 py-5">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
             <div className="text-blue-200 text-sm tracking-wide">
-              &copy; {new Date().getFullYear()} <span className="font-semibold text-yellow-400">Department of Transport Management</span>, Government of Nepal. All rights reserved.
+              &copy; {new Date().getFullYear()} <span className="font-semibold text-yellow-400">{getLabel(footerLabels.departmentName)}</span>, {getLabel(footerLabels.governmentOfNepal)}. {getLabel(footerLabels.allRightsReserved)}
             </div>
             <div className="flex space-x-8 text-sm">
               <a href="/privacy" className="text-blue-200 hover:text-yellow-400 transition-colors underline underline-offset-2">
-                Privacy Policy
+                {getLabel(footerLabels.privacyPolicy)}
               </a>
               <a href="/terms" className="text-blue-200 hover:text-yellow-400 transition-colors underline underline-offset-2">
-                Terms of Service
+                {getLabel(footerLabels.termsOfService)}
               </a>
               <a href="/accessibility" className="text-blue-200 hover:text-yellow-400 transition-colors underline underline-offset-2">
-                Accessibility
+                {getLabel(footerLabels.accessibility)}
               </a>
             </div>
           </div>

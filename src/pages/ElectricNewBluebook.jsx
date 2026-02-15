@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { FaCar, FaSave, FaArrowLeft, FaUpload } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useLang } from "../context/LanguageContext";
+import { electricLabels } from "../labels/electricLabels";
 
 const ElectricNewBluebook = () => {
   
    // Main component for registering a new bluebook
 
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vehicleRegNo: "",
@@ -151,23 +154,23 @@ const ElectricNewBluebook = () => {
 
       if (response.ok) {
         console.log('Bluebook created successfully:', data.result);
-        toast.success('Bluebook registered successfully!');
+        toast.success(getLabel(electricLabels.bluebookRegisteredSuccess));
         navigate('/dashboard');
       } else {
         console.error('Backend error:', data);
-        toast.error(data.message || 'Failed to register bluebook');
+        toast.error(data.message || getLabel(electricLabels.failedToRegisterBluebook));
       }
     } catch (error) {
       console.error('Error registering bluebook:', error);
-      toast.error('An error occurred while registering the bluebook');
+      toast.error(getLabel(electricLabels.errorOccurredWhileRegistering));
     } finally {
       setLoading(false);
     }
   };
 
   const vehicleTypes = [
-    "Motorcycle",
-    "Car"
+    { value: "Motorcycle", label: electricLabels.motorcycle },
+    { value: "Car", label: electricLabels.car }
   ];
 
   
@@ -187,10 +190,10 @@ const ElectricNewBluebook = () => {
               </button>
               <div>
                 <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight animate-slide-down">
-                  Register New EV Bluebook
+                  {getLabel(electricLabels.registerNewEvBluebook)}
                 </h1>
                 <p className="mt-1 text-base text-gray-600 animate-fade-in delay-100">
-                  Enter vehicle details for bluebook registration
+                  {getLabel(electricLabels.enterVehicleDetails)}
                 </p>
               </div>
             </div>
@@ -206,12 +209,12 @@ const ElectricNewBluebook = () => {
             {/* Vehicle Information */}
             <div>
               <h3 className="text-xl font-semibold text-nepal-blue mb-6 border-l-4 border-nepal-blue pl-3 animate-slide-right text-left">
-                Vehicle Information
+                {getLabel(electricLabels.vehicleInformation)}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Registration Number <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleRegistrationNumber)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -221,7 +224,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleRegNo ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter registration number"
+                    placeholder={getLabel(electricLabels.enterRegistrationNumber)}
                   />
                   {errors.vehicleRegNo && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleRegNo}</p>
@@ -230,7 +233,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Type <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleType)} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="vehicleType"
@@ -240,9 +243,9 @@ const ElectricNewBluebook = () => {
                       errors.vehicleType ? 'border-red-400' : 'border-gray-200'
                     }`}
                   >
-                    <option value="">Select vehicle type</option>
+                    <option value="">{getLabel(electricLabels.selectVehicleType)}</option>
                     {vehicleTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type.value} value={type.value}>{getLabel(type.label)}</option>
                     ))}
                   </select>
                   {errors.vehicleType && (
@@ -252,7 +255,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Registration Date <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleRegistrationDate)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -270,7 +273,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Owner Name <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleOwnerName)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -280,7 +283,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleOwnerName ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter owner name"
+                    placeholder={getLabel(electricLabels.enterOwnerName)}
                   />
                   {errors.vehicleOwnerName && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleOwnerName}</p>
@@ -289,7 +292,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Model <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleModel)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -299,7 +302,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleModel ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., Honda City, Toyota Corolla"
+                    placeholder={getLabel(electricLabels.vehicleModelPlaceholder)}
                   />
                   {errors.vehicleModel && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleModel}</p>
@@ -308,7 +311,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Manufacture Year <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.manufactureYear)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -318,7 +321,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.manufactureYear ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., 2020"
+                    placeholder={getLabel(electricLabels.enterManufactureYear)}
                     min="1900"
                     max={new Date().getFullYear() + 1}
                   />
@@ -329,7 +332,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Chassis Number <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.chassisNumber)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -339,7 +342,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.chasisNumber ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter chassis number"
+                    placeholder={getLabel(electricLabels.enterChassisNumber)}
                   />
                   {errors.chasisNumber && (
                     <p className="mt-1 text-xs text-red-500">{errors.chasisNumber}</p>
@@ -348,7 +351,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Color <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleColor)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -358,7 +361,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleColor ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="Enter vehicle color"
+                    placeholder={getLabel(electricLabels.enterVehicleColor)}
                   />
                   {errors.vehicleColor && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleColor}</p>
@@ -367,7 +370,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Battery Capacity <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.batteryCapacity)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -388,7 +391,7 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Vehicle Number <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.vehicleNumber)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -398,7 +401,7 @@ const ElectricNewBluebook = () => {
                     className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.vehicleNumber ? 'border-red-400' : 'border-gray-200'
                     }`}
-                    placeholder="e.g., Ba 1 Pa 1234"
+                    placeholder={getLabel(electricLabels.enterVehicleNumber)}
                   />
                   {errors.vehicleNumber && (
                     <p className="mt-1 text-xs text-red-500">{errors.vehicleNumber}</p>
@@ -410,12 +413,12 @@ const ElectricNewBluebook = () => {
             {/* Tax Information */}
             <div>
               <h3 className="text-xl font-semibold text-nepal-blue mb-6 border-l-4 border-nepal-blue pl-3 animate-slide-right text-left">
-                Tax Information
+                {getLabel(electricLabels.taxInformation)}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Tax Pay Date <span className="text-red-500">*</span>
+                    {getLabel(electricLabels.taxPayDate)} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -433,12 +436,12 @@ const ElectricNewBluebook = () => {
 
                 <div className="transition-all duration-200 hover:scale-[1.02]">
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
-                    Tax Expire Date (Auto-calculated)
+                    {getLabel(electricLabels.taxExpireDateAuto)}
                   </label>
                   <div className="mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-100 text-gray-600 border-gray-200">
-                    {formData.taxPayDate ? calculateTaxExpireDate(formData.taxPayDate) : 'Will be calculated automatically'}
+                    {formData.taxPayDate ? calculateTaxExpireDate(formData.taxPayDate) : getLabel(electricLabels.willBeCalculatedAutomatically)}
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">Tax expire date will be automatically set to 1 year after the tax pay date</p>
+                  <p className="mt-1 text-xs text-gray-500">{getLabel(electricLabels.taxExpireDateNote)}</p>
                 </div>
               </div>
             </div>
@@ -450,7 +453,7 @@ const ElectricNewBluebook = () => {
                 onClick={() => navigate('/dashboard')}
                 className="px-5 py-2 border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-200 shadow-sm"
               >
-                Cancel
+                {getLabel(electricLabels.cancel)}
               </button>
               <button
                 type="submit"
@@ -460,12 +463,12 @@ const ElectricNewBluebook = () => {
                 {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                    Registering...
+                    {getLabel(electricLabels.registering)}
                   </>
                 ) : (
                   <>
                     <FaSave className="mr-3 text-lg" />
-                    Register Electric Vehicle Bluebook
+                    {getLabel(electricLabels.registerElectricVehicleBluebook)}
                   </>
                 )}
               </button>

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
+import { LanguageProvider } from "./context/LanguageContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -28,7 +29,7 @@ import NotFound from "./pages/NotFound.jsx";
 
 function App() {
   return (
-    <>
+    <LanguageProvider>
       <ToastContainer
         theme="colored"
         autoClose={1000}
@@ -75,7 +76,7 @@ function App() {
           <Footer />
         </div>
       </Router>
-    </>
+    </LanguageProvider>
   );
 }
 

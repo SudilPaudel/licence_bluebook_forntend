@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useLang } from "../context/LanguageContext";
+import { newsSectionLabels } from "../labels/newsSectionLabels";
 
 function NewsSection() {
+  const { getLabel } = useLang();
   const [news, setNews] = useState([]);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ function NewsSection() {
   if (loading) {
     return (
       <section className="mt-8">
-        <h2 className="text-2xl font-bold text-nepal-blue mb-4">📰 Latest News</h2>
+        <h2 className="text-2xl font-bold text-nepal-blue mb-4">📰 {getLabel(newsSectionLabels.latestNews)}</h2>
         <div className="w-full h-120 rounded-lg bg-gray-200 animate-pulse"></div>
       </section>
     );
@@ -55,9 +58,9 @@ function NewsSection() {
   if (news.length === 0) {
     return (
       <section className="mt-8">
-        <h2 className="text-2xl font-bold text-nepal-blue mb-4">📰 Latest News</h2>
+        <h2 className="text-2xl font-bold text-nepal-blue mb-4">📰 {getLabel(newsSectionLabels.latestNews)}</h2>
         <div className="w-full h-120 rounded-lg bg-gray-100 flex items-center justify-center">
-          <p className="text-gray-500 text-lg">No news available at the moment</p>
+          <p className="text-gray-500 text-lg">{getLabel(newsSectionLabels.noNewsAvailable)}</p>
         </div>
       </section>
     );
@@ -68,7 +71,7 @@ function NewsSection() {
   return (
     <section className="mt-12">
       <h2 className="text-3xl font-extrabold text-nepal-blue mb-6 tracking-tight flex items-center gap-2">
-        <span role="img" aria-label="news">📰</span> Latest News
+        <span role="img" aria-label="news">📰</span> {getLabel(newsSectionLabels.latestNews)}
       </h2>
 
       <div className="relative w-full h-120 rounded-3xl overflow-hidden shadow-2xl border-2 border-nepal-blue bg-gradient-to-br from-blue-50 via-white to-blue-100 transition-all duration-500">
@@ -94,7 +97,7 @@ function NewsSection() {
           <button
             onClick={handlePrev}
             className="absolute top-1/2 left-6 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-nepal-blue hover:text-white shadow-lg p-3 rounded-full text-nepal-blue transition-all duration-300 z-10 animate-fadeIn"
-            aria-label="Previous news"
+            aria-label={getLabel(newsSectionLabels.previousNews)}
           >
             <FaChevronLeft size={22} />
           </button>
@@ -105,7 +108,7 @@ function NewsSection() {
           <button
             onClick={handleNext}
             className="absolute top-1/2 right-6 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-nepal-blue hover:text-white shadow-lg p-3 rounded-full text-nepal-blue transition-all duration-300 z-10 animate-fadeIn"
-            aria-label="Next news"
+            aria-label={getLabel(newsSectionLabels.nextNews)}
           >
             <FaChevronRight size={22} />
           </button>
@@ -123,7 +126,7 @@ function NewsSection() {
                     ? 'bg-nepal-blue scale-125 shadow-lg'
                     : 'bg-white bg-opacity-60 hover:bg-nepal-blue/70'
                 }`}
-                aria-label={`Go to news ${i + 1}`}
+                aria-label={`${getLabel(newsSectionLabels.goToNews)} ${i + 1}`}
               />
             ))}
           </div>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { FaCheckCircle, FaTimesCircle, FaSpinner, FaArrowLeft } from "react-icons/fa";
 import khaltiLogo from "../assets/khalti.png";
+import { useLang } from "../context/LanguageContext";
+import { electricLabels } from "../labels/electricLabels";
 
 // Khalti Logo Component using PNG
 /**
@@ -17,6 +19,7 @@ function ElectricPaymentVerification() {
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [searchParams] = useSearchParams();
   const [verificationStatus, setVerificationStatus] = useState('verifying'); // 'verifying', 'success', 'failed'
   const [error, setError] = useState(null);
@@ -110,8 +113,8 @@ function ElectricPaymentVerification() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md mx-auto text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-nepal-blue mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifying Electric Payment</h2>
-          <p className="text-gray-600">Please wait while we verify your electric vehicle payment...</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{getLabel(electricLabels.verifyingElectricPayment)}</h2>
+          <p className="text-gray-600">{getLabel(electricLabels.pleaseWaitVerifying)}</p>
         </div>
       </div>
     );
@@ -130,8 +133,8 @@ function ElectricPaymentVerification() {
               <FaArrowLeft className="h-5 w-5 text-blue-500" />
             </button>
             <div>
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">Electric Payment Verification</h1>
-              <p className="mt-1 text-base text-gray-500">See your electric vehicle payment status below</p>
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">{getLabel(electricLabels.electricPaymentVerification)}</h1>
+              <p className="mt-1 text-base text-gray-500">{getLabel(electricLabels.seePaymentStatus)}</p>
             </div>
           </div>
         </div>
@@ -145,25 +148,25 @@ function ElectricPaymentVerification() {
                   <FaCheckCircle className="w-10 h-10 text-green-600" />
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Payment Successful!</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{getLabel(electricLabels.paymentSuccessful)}</h2>
               <p className="text-lg text-gray-600 mb-6">
-                Your electric vehicle payment has been verified and processed successfully.
+                {getLabel(electricLabels.paymentVerifiedProcessed)}
               </p>
               
               {verificationData && (
                 <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{getLabel(electricLabels.paymentDetails)}</h3>
                   <div className="space-y-3 text-left">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Amount:</span>
+                      <span className="text-gray-600">{getLabel(electricLabels.totalAmount)}:</span>
                       <span className="font-semibold">Rs. {verificationData.totalAmount?.toLocaleString() || 'N/A'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Transaction ID:</span>
+                      <span className="text-gray-600">{getLabel(electricLabels.transactionId)}:</span>
                       <span className="font-mono text-sm">{verificationData.transactionId || 'N/A'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Fee:</span>
+                      <span className="text-gray-600">{getLabel(electricLabels.fee)}:</span>
                       <span className="font-semibold">Rs. {verificationData.fee || 0}</span>
                     </div>
                   </div>
@@ -175,7 +178,7 @@ function ElectricPaymentVerification() {
                   onClick={handleBackToDashboard}
                   className="flex-1 bg-gradient-to-r from-nepal-blue to-purple-500 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  Back to Dashboard
+                  {getLabel(electricLabels.backToDashboard)}
                 </button>
               </div>
             </div>
@@ -186,9 +189,9 @@ function ElectricPaymentVerification() {
                   <FaTimesCircle className="w-10 h-10 text-red-600" />
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Payment Verification Failed</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{getLabel(electricLabels.paymentVerificationFailed)}</h2>
               <p className="text-lg text-gray-600 mb-6">
-                {error || 'There was an issue verifying your electric vehicle payment.'}
+                {error || getLabel(electricLabels.paymentIssue)}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -196,13 +199,13 @@ function ElectricPaymentVerification() {
                   onClick={handleRetry}
                   className="flex-1 bg-gradient-to-r from-nepal-blue to-purple-500 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
                 >
-                  Try Again
+                  {getLabel(electricLabels.tryAgain)}
                 </button>
                 <button
                   onClick={handleBackToDashboard}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-xl shadow transition-all duration-200"
                 >
-                  Back to Dashboard
+                  {getLabel(electricLabels.backToDashboard)}
                 </button>
               </div>
             </div>
@@ -212,7 +215,7 @@ function ElectricPaymentVerification() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            Powered by <span className="font-semibold">Khalti</span> - Secure Payment Gateway
+            {getLabel(electricLabels.poweredByKhalti)}
           </p>
         </div>
       </div>

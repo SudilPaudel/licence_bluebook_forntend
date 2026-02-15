@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaCreditCard, FaShieldAlt, FaCheckCircle, FaClock, FaExclamationTriangle, FaCalculator, FaReceipt, FaBatteryFull } from "react-icons/fa";
 import khaltiLogo from "../assets/khalti.png";
+import { useLang } from "../context/LanguageContext";
+import { electricLabels } from "../labels/electricLabels";
 
 // Khalti Logo Component using PNG
 /**
@@ -17,6 +19,7 @@ function ElectricPayment() {
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [electricBluebook, setElectricBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -316,13 +319,13 @@ function ElectricPayment() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <FaExclamationTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{getLabel(electricLabels.error)}</h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={() => navigate('/dashboard')}
             className="bg-nepal-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           >
-            Back to Dashboard
+            {getLabel(electricLabels.backToDashboard)}
           </button>
         </div>
       </div>
@@ -343,9 +346,9 @@ function ElectricPayment() {
             </button>
             <div className="space-y-2">
               <h1 className="text-5xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Electric Vehicle Tax Payment
+                {getLabel(electricLabels.electricVehicleTaxPayment)}
               </h1>
-              <p className="text-xl text-gray-600 font-medium">Complete your electric vehicle tax payment securely</p>
+              <p className="text-xl text-gray-600 font-medium">{getLabel(electricLabels.completePaymentSecurely)}</p>
             </div>
           </div>
         </div>
@@ -358,7 +361,7 @@ function ElectricPayment() {
                 <FaBatteryFull className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Electric Bluebook Details
+                {getLabel(electricLabels.electricBluebookDetails)}
               </h2>
             </div>
             
@@ -366,19 +369,19 @@ function ElectricPayment() {
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200">
-                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Vehicle Number</label>
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.vehicleNumber)}</label>
                     <p className="text-xl font-bold text-gray-900 mt-1">{electricBluebook.vehicleNumber}</p>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200">
-                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Vehicle Type</label>
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.vehicleType)}</label>
                     <p className="text-xl font-bold text-gray-900 mt-1">{electricBluebook.vehicleType}</p>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200">
-                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Battery Capacity</label>
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.batteryCapacity)}</label>
                     <p className="text-xl font-bold text-gray-900 mt-1">{electricBluebook.vehicleBatteryCapacity} {electricBluebook.vehicleType === "Motorcycle" ? "W" : "KW"}</p>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200">
-                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Owner Name</label>
+                    <label className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.ownerName)}</label>
                     <p className="text-xl font-bold text-gray-900 mt-1">{electricBluebook.vehicleOwnerName}</p>
                   </div>
                 </div>
@@ -388,7 +391,7 @@ function ElectricPayment() {
                     <div className="p-2 bg-emerald-500 rounded-xl">
                       <FaClock className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">Tax Expiry Date</span>
+                    <span className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.taxExpiryDate)}</span>
                   </div>
                   <p className="text-xl font-bold text-gray-900">
                     {new Date(electricBluebook.taxExpireDate).toLocaleDateString()}
@@ -405,7 +408,7 @@ function ElectricPayment() {
                 <FaCalculator className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Tax Calculation
+                {getLabel(electricLabels.taxCalculation)}
               </h2>
             </div>
 
@@ -414,22 +417,22 @@ function ElectricPayment() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 border border-blue-200">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center py-2">
-                      <span className="text-blue-700 font-semibold">Base Tax:</span>
+                      <span className="text-blue-700 font-semibold">{getLabel(electricLabels.baseTax)}:</span>
                       <span className="text-xl font-bold text-gray-900">Rs. {taxDetails.baseTax.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center py-2">
-                      <span className="text-blue-700 font-semibold">Renewal Charge:</span>
+                      <span className="text-blue-700 font-semibold">{getLabel(electricLabels.renewalCharge)}:</span>
                       <span className="text-xl font-bold text-gray-900">Rs. {taxDetails.renewalCharge.toLocaleString()}</span>
                     </div>
                     {taxDetails.fineAmount > 0 && (
                       <div className="flex justify-between items-center py-2 text-red-600">
-                        <span className="font-semibold">Fine Amount:</span>
+                        <span className="font-semibold">{getLabel(electricLabels.fineAmount)}:</span>
                         <span className="text-xl font-bold">Rs. {taxDetails.fineAmount.toLocaleString()}</span>
                       </div>
                     )}
                     <div className="border-t-2 border-blue-200 pt-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold text-blue-800">Total Amount:</span>
+                        <span className="text-2xl font-bold text-blue-800">{getLabel(electricLabels.totalAmount)}:</span>
                         <span className="text-3xl font-black text-gray-900">Rs. {taxDetails.totalTax.toLocaleString()}</span>
                       </div>
                     </div>
@@ -441,10 +444,10 @@ function ElectricPayment() {
                   <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                     <div className="flex items-center gap-2">
                       <FaExclamationTriangle className="w-5 h-5 text-red-500" />
-                      <span className="text-red-700 font-semibold">Tax Expired</span>
+                      <span className="text-red-700 font-semibold">{getLabel(electricLabels.taxExpired)}</span>
                     </div>
                     <p className="text-red-600 text-sm mt-1">
-                      Your tax expired {Math.abs(taxDetails.daysLeft)} days ago. Fine has been applied.
+                      {getLabel(electricLabels.taxExpiredDaysAgo).replace('{days}', Math.abs(taxDetails.daysLeft))}
                     </p>
                   </div>
                 )}
@@ -453,17 +456,17 @@ function ElectricPayment() {
                   <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
                     <div className="flex items-center gap-2">
                       <FaClock className="w-5 h-5 text-yellow-500" />
-                      <span className="text-yellow-700 font-semibold">Due Soon</span>
+                      <span className="text-yellow-700 font-semibold">{getLabel(electricLabels.dueSoon)}</span>
                     </div>
                     <p className="text-yellow-600 text-sm mt-1">
-                      Tax expires in {taxDetails.daysLeft} days. Pay now to avoid fines.
+                      {getLabel(electricLabels.taxExpiresInDays).replace('{days}', taxDetails.daysLeft)}
                     </p>
                   </div>
                 )}
 
                 {/* Payment Method Selection */}
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">Payment Method</label>
+                  <label className="text-sm font-medium text-gray-700">{getLabel(electricLabels.paymentMethod)}</label>
                   <div className="space-y-2">
                     <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
                       <input
@@ -489,12 +492,12 @@ function ElectricPayment() {
                   {paymentLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Processing...
+                      {getLabel(electricLabels.processing)}
                     </div>
                   ) : (
                     <div className="flex items-center justify-center gap-2">
                       <FaCreditCard className="w-5 h-5" />
-                      Pay Rs. {taxDetails.totalTax.toLocaleString()}
+                      {getLabel(electricLabels.pay)} Rs. {taxDetails.totalTax.toLocaleString()}
                     </div>
                   )}
                 </button>
@@ -503,7 +506,7 @@ function ElectricPayment() {
                   <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                     <div className="flex items-center gap-2">
                       <FaExclamationTriangle className="w-5 h-5 text-red-500" />
-                      <span className="text-red-700 font-semibold">Error</span>
+                      <span className="text-red-700 font-semibold">{getLabel(electricLabels.error)}</span>
                     </div>
                     <p className="text-red-600 text-sm mt-1">{error}</p>
                   </div>
@@ -521,9 +524,9 @@ function ElectricPayment() {
                 <div className="flex justify-center mb-4">
                   <KhaltiLogo className="h-14 w-14 animate-bounce" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Complete Electric Payment</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{getLabel(electricLabels.completeElectricPayment)}</h3>
                 <p className="text-base text-gray-500 mb-5">
-                  Your electric vehicle payment has been confirmed. You will be redirected to Khalti to complete your payment securely.
+                  {getLabel(electricLabels.paymentConfirmedRedirect)}
                 </p>
                 <div className="flex space-x-3">
                   <button
@@ -531,17 +534,17 @@ function ElectricPayment() {
                     className="flex-1 bg-gradient-to-r from-nepal-blue to-purple-500 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl shadow transition-all duration-200 flex items-center justify-center"
                   >
                     <KhaltiLogo className="h-5 w-5 mr-2" />
-                    Proceed to Payment
+                    {getLabel(electricLabels.proceedToPayment)}
                   </button>
                   <button
                     onClick={() => setShowPaymentModal(false)}
                     className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-xl shadow"
                   >
-                    Cancel
+                    {getLabel(electricLabels.cancel)}
                   </button>
                 </div>
                 <div className="mt-5 text-xs text-gray-400">
-                  After payment, you can verify your transaction using the transaction ID.
+                  {getLabel(electricLabels.paymentVerifyNote)}
                 </div>
               </div>
             </div>
@@ -552,15 +555,15 @@ function ElectricPayment() {
         {showOtpModal && (
           <div className="fixed inset-0 bg-gray-700 bg-opacity-60 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Enter OTP</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{getLabel(electricLabels.enterOtp)}</h3>
               <p className="text-gray-600 mb-6">
-                Please enter the OTP sent to your email to confirm the payment.
+                {getLabel(electricLabels.enterOtpDescription)}
               </p>
               <input
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter 6-digit OTP"
+                placeholder={getLabel(electricLabels.enter6DigitOtp)}
                 className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-center text-lg font-mono"
                 maxLength={6}
               />
@@ -570,13 +573,13 @@ function ElectricPayment() {
                   disabled={otpLoading || otp.length !== 6}
                   className="flex-1 bg-nepal-blue text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {otpLoading ? 'Verifying...' : 'Verify OTP'}
+                  {otpLoading ? getLabel(electricLabels.verifying) : getLabel(electricLabels.verifyOtp)}
                 </button>
                 <button
                   onClick={() => setShowOtpModal(false)}
                   className="flex-1 bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300"
                 >
-                  Cancel
+                  {getLabel(electricLabels.cancel)}
                 </button>
               </div>
             </div>

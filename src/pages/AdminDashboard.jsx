@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "../context/LanguageContext";
+import { adminDashboardLabels } from "../labels/adminDashboardLabels";
 import {
   FaUsers,
   FaCar,
@@ -43,6 +45,7 @@ const getApiUrl = (endpoint) => {
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -368,15 +371,15 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success('Bluebook verified successfully!');
+        toast.success(getLabel(adminDashboardLabels.bluebookVerifiedSuccess));
         fetchDashboardData(); // Refresh data
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to verify bluebook');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToVerifyBluebook));
       }
     } catch (error) {
       console.error('Error verifying bluebook:', error);
-      toast.error('An error occurred while verifying bluebook');
+      toast.error(getLabel(adminDashboardLabels.errorVerifyingBluebook));
     }
   };
 
@@ -394,15 +397,15 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success(`User status updated to ${newStatus} successfully!`);
+        toast.success(`${getLabel(adminDashboardLabels.userStatusUpdatedTo)} ${newStatus} ${getLabel(adminDashboardLabels.successfully)}`);
         fetchDashboardData(); // Refresh data
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to update user status');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToUpdateUserStatus));
       }
     } catch (error) {
       console.error('Error updating user status:', error);
-      toast.error('An error occurred while updating user status');
+      toast.error(getLabel(adminDashboardLabels.errorUpdatingUserStatus));
     }
   };
 
@@ -527,17 +530,17 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success('User updated successfully!');
+        toast.success(getLabel(adminDashboardLabels.userUpdatedSuccess));
         fetchDashboardData(); // Refresh data
         setShowEditModal(false);
         setEditingUser(null);
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to update user');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToUpdateUser));
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      toast.error('An error occurred while updating user');
+      toast.error(getLabel(adminDashboardLabels.errorUpdatingUser));
     }
   };
 
@@ -587,17 +590,17 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success('Bluebook updated successfully!');
+        toast.success(getLabel(adminDashboardLabels.bluebookUpdatedSuccess));
         fetchDashboardData(); // Refresh data
         setShowEditBluebookModal(false);
         setEditingBluebook(null);
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to update bluebook');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToUpdateBluebook));
       }
     } catch (error) {
       console.error('Error updating bluebook:', error);
-      toast.error('An error occurred while updating bluebook');
+      toast.error(getLabel(adminDashboardLabels.errorUpdatingBluebook));
     }
   };
 
@@ -614,15 +617,15 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success('User deleted successfully!');
+        toast.success(getLabel(adminDashboardLabels.userDeletedSuccess));
         fetchDashboardData(); // Refresh data
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to delete user');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToDeleteUser));
       }
     } catch (error) {
       console.error('Error deleting user:', error);
-      toast.error('An error occurred while deleting user');
+      toast.error(getLabel(adminDashboardLabels.errorDeletingUser));
     } finally {
       setShowDeleteModal(false);
       setUserToDelete(null);
@@ -643,15 +646,15 @@ function AdminDashboard() {
       });
 
       if (response.ok) {
-        toast.success(`${isElectric ? 'Electric ' : ''}Bluebook rejected successfully!`);
+        toast.success(isElectric ? getLabel(adminDashboardLabels.electricBluebookRejectedSuccess) : getLabel(adminDashboardLabels.bluebookRejectedSuccess));
         fetchDashboardData(); // Refresh data
       } else {
         const error = await response.json();
-        toast.error(error.message || 'Failed to reject bluebook');
+        toast.error(error.message || getLabel(adminDashboardLabels.failedToRejectBluebook));
       }
     } catch (error) {
       console.error('Error rejecting bluebook:', error);
-      toast.error('An error occurred while rejecting bluebook');
+      toast.error(getLabel(adminDashboardLabels.errorRejectingBluebook));
     }
   };
 
@@ -660,7 +663,7 @@ function AdminDashboard() {
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        toast.error('No authentication token found. Please login again.');
+        toast.error(getLabel(adminDashboardLabels.noAuthToken));
         return;
       }
 
@@ -679,12 +682,12 @@ function AdminDashboard() {
           const arrayBuffer = await response.arrayBuffer();
           blob = new Blob([arrayBuffer], { type: 'application/pdf' });
         } catch (blobError) {
-          toast.error('Error processing PDF response');
+          toast.error(getLabel(adminDashboardLabels.errorProcessingPdf));
           return;
         }
         
         if (blob.size === 0) {
-          toast.error('Generated PDF is empty. Please try again.');
+          toast.error(getLabel(adminDashboardLabels.emptyPdf));
           return;
         }
 
@@ -701,18 +704,18 @@ function AdminDashboard() {
           document.body.removeChild(a);
         }, 100);
         
-        toast.success(`${reportType} report generated successfully!`);
+        toast.success(`${reportType} ${getLabel(adminDashboardLabels.reportGeneratedSuccess)}`);
               } else {
           const contentType = response.headers.get('content-type');
           if (contentType && contentType.includes('application/json')) {
             const errorData = await response.json();
-            toast.error(errorData.message || 'Failed to generate report');
+            toast.error(errorData.message || getLabel(adminDashboardLabels.failedToGenerateReport));
           } else {
-            toast.error(`Server error: ${response.status} ${response.statusText}`);
+            toast.error(`${getLabel(adminDashboardLabels.serverError)}: ${response.status} ${response.statusText}`);
           }
         }
       } catch (error) {
-        toast.error('Network error occurred while generating report');
+        toast.error(getLabel(adminDashboardLabels.networkErrorReport));
       }
   };
 
@@ -782,13 +785,13 @@ function AdminDashboard() {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        toast.success('Payment receipt downloaded successfully!');
+        toast.success(getLabel(adminDashboardLabels.paymentReceiptDownloadSuccess));
       } else {
-        toast.error('Failed to download payment receipt');
+        toast.error(getLabel(adminDashboardLabels.failedToDownloadPaymentReceipt));
       }
     } catch (error) {
       console.error('Error downloading payment receipt:', error);
-      toast.error('Network error. Please try again.');
+      toast.error(getLabel(adminDashboardLabels.networkError));
     }
   };
 
@@ -978,17 +981,17 @@ function AdminDashboard() {
       }
 
       if (response.ok) {
-        toast.success('News article deleted successfully!');
+        toast.success(getLabel(adminDashboardLabels.newsDeletedSuccess));
         fetchDashboardData();
         setShowDeleteNewsModal(false);
         setNewsToDelete(null);
       } else {
         const data = await response.json();
-        toast.error(data.message || 'Failed to delete news article');
+        toast.error(data.message || getLabel(adminDashboardLabels.failedToDeleteNews));
       }
     } catch (error) {
       console.error('Error deleting news:', error);
-      toast.error('An error occurred while deleting news article');
+      toast.error(getLabel(adminDashboardLabels.errorDeletingNews));
     }
   };
 
@@ -1029,16 +1032,16 @@ function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         console.log('Success response:', data);
-        toast.success(`News status updated to ${newStatus} successfully!`);
+        toast.success(`${getLabel(adminDashboardLabels.newsStatusUpdatedTo)} ${newStatus} ${getLabel(adminDashboardLabels.successfully)}`);
         fetchDashboardData();
       } else {
         const data = await response.json();
         console.error('Error response:', data);
-        toast.error(data.message || 'Failed to update news status');
+        toast.error(data.message || getLabel(adminDashboardLabels.failedToUpdateNewsStatus));
       }
     } catch (error) {
       console.error('Error updating news status:', error);
-      toast.error('An error occurred while updating news status');
+      toast.error(getLabel(adminDashboardLabels.errorUpdatingNewsStatus));
     }
   };
 
@@ -1124,8 +1127,8 @@ function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-8 animate-fade-in-down">
             <div>
-              <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight animate-fade-in-down">Admin Dashboard</h1>
-              <p className="mt-2 text-base text-gray-500 animate-fade-in">{`Welcome back, ${user?.name || 'Admin'}`}</p>
+              <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight animate-fade-in-down">{getLabel(adminDashboardLabels.adminDashboard)}</h1>
+              <p className="mt-2 text-base text-gray-500 animate-fade-in">{`${getLabel(adminDashboardLabels.welcomeBack)}, ${user?.name || 'Admin'}`}</p>
             </div>
             <div className="flex items-center space-x-4">
               <button
@@ -1133,7 +1136,7 @@ function AdminDashboard() {
                 className="inline-flex items-center px-5 py-2 border border-gray-200 text-base font-semibold rounded-lg text-nepal-blue bg-white hover:bg-blue-50 shadow transition-all duration-200 animate-fade-in"
               >
                 <FaUsers className="mr-2" />
-                User Dashboard
+                {getLabel(adminDashboardLabels.userDashboard)}
               </button>
             </div>
           </div>
@@ -1148,7 +1151,7 @@ function AdminDashboard() {
               <FaUsers className="h-7 w-7 text-nepal-blue" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-500">Total Users</div>
+              <div className="text-sm font-semibold text-gray-500">{getLabel(adminDashboardLabels.totalUsers)}</div>
               <div className="text-2xl font-bold text-nepal-blue">{stats.totalUsers}</div>
             </div>
           </div>
@@ -1157,7 +1160,7 @@ function AdminDashboard() {
               <FaCheckCircle className="h-7 w-7 text-green-500" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-500">Active Users</div>
+              <div className="text-sm font-semibold text-gray-500">{getLabel(adminDashboardLabels.activeUsers)}</div>
               <div className="text-2xl font-bold text-green-600">{stats.activeUsers}</div>
             </div>
           </div>
@@ -1166,7 +1169,7 @@ function AdminDashboard() {
               <FaCar className="h-7 w-7 text-gray-500" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-500">Total Bluebooks</div>
+              <div className="text-sm font-semibold text-gray-500">{getLabel(adminDashboardLabels.totalBluebooks)}</div>
               <div className="text-2xl font-bold text-gray-700">{stats.totalBluebooks}</div>
             </div>
           </div>
@@ -1175,7 +1178,7 @@ function AdminDashboard() {
               <FaClock className="h-7 w-7 text-yellow-500" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-500">Pending</div>
+              <div className="text-sm font-semibold text-gray-500">{getLabel(adminDashboardLabels.pending)}</div>
               <div className="text-2xl font-bold text-yellow-600">{stats.pendingBluebooks}</div>
             </div>
           </div>
@@ -1184,7 +1187,7 @@ function AdminDashboard() {
               <FaCheckCircle className="h-7 w-7 text-green-600" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-gray-500">Verified</div>
+              <div className="text-sm font-semibold text-gray-500">{getLabel(adminDashboardLabels.verified)}</div>
               <div className="text-2xl font-bold text-green-700">{stats.verifiedBluebooks}</div>
             </div>
           </div>
@@ -1195,15 +1198,15 @@ function AdminDashboard() {
           <div className="border-b border-gray-100">
             <nav className="-mb-px flex flex-wrap space-x-4 px-8 py-2">
               {[
-                { key: 'overview', icon: <FaChartBar className="inline mr-2" />, label: 'Overview' },
-                { key: 'users', icon: <FaUsers className="inline mr-2" />, label: `Users (${users.length})` },
-                { key: 'pending', icon: <FaClock className="inline mr-2" />, label: `Pending Verification (${pendingBluebooks.length})` },
-                { key: 'bluebooks', icon: <FaCar className="inline mr-2" />, label: `All Bluebooks (${bluebooks.length})` },
-                { key: 'payments', icon: <FaMoneyBillWave className="inline mr-2" />, label: `Payments (${payments.length})` },
-                { key: 'reports', icon: <FaFileAlt className="inline mr-2" />, label: 'Reports' },
-                { key: 'news', icon: <FaNewspaper className="inline mr-2" />, label: `News (${news.length})` },
-                { key: 'marquee', icon: <FaNewspaper className="inline mr-2" />, label: 'Marquee' },
-                { key: 'settings', icon: <FaCog className="inline mr-2" />, label: 'Settings' }
+                { key: 'overview', icon: <FaChartBar className="inline mr-2" />, label: getLabel(adminDashboardLabels.overview) },
+                { key: 'users', icon: <FaUsers className="inline mr-2" />, label: `${getLabel(adminDashboardLabels.users)} (${users.length})` },
+                { key: 'pending', icon: <FaClock className="inline mr-2" />, label: `${getLabel(adminDashboardLabels.pendingVerification)} (${pendingBluebooks.length})` },
+                { key: 'bluebooks', icon: <FaCar className="inline mr-2" />, label: `${getLabel(adminDashboardLabels.allBluebooks)} (${bluebooks.length})` },
+                { key: 'payments', icon: <FaMoneyBillWave className="inline mr-2" />, label: `${getLabel(adminDashboardLabels.payments)} (${payments.length})` },
+                { key: 'reports', icon: <FaFileAlt className="inline mr-2" />, label: getLabel(adminDashboardLabels.reports) },
+                { key: 'news', icon: <FaNewspaper className="inline mr-2" />, label: `${getLabel(adminDashboardLabels.news)} (${news.length})` },
+                { key: 'marquee', icon: <FaNewspaper className="inline mr-2" />, label: getLabel(adminDashboardLabels.marquee) },
+                { key: 'settings', icon: <FaCog className="inline mr-2" />, label: getLabel(adminDashboardLabels.settings) }
               ].map(tab => (
                 <button
                   key={tab.key}
@@ -1226,7 +1229,7 @@ function AdminDashboard() {
               <div className="space-y-8 animate-fade-in">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 shadow-lg animate-fade-in-up">
-                    <h3 className="text-xl font-bold text-nepal-blue mb-6">Recent Pending Bluebooks</h3>
+                    <h3 className="text-xl font-bold text-nepal-blue mb-6">{getLabel(adminDashboardLabels.recentPendingBluebooks)}</h3>
                     <div className="space-y-4">
                       {pendingBluebooks.slice(0, 5).map((bluebook, idx) => (
                         <div
@@ -1240,7 +1243,7 @@ function AdminDashboard() {
                               {bluebook.isElectric && (
                                 <span className="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                   <FaBatteryFull className="mr-1" />
-                                  Electric
+                                  {getLabel(adminDashboardLabels.electric)}
                                 </span>
                               )}
                             </p>
@@ -1251,18 +1254,18 @@ function AdminDashboard() {
                             className="inline-flex items-center px-4 py-2 border border-transparent text-base font-semibold rounded-lg text-white bg-nepal-blue hover:bg-blue-700 shadow transition"
                           >
                             <FaCheckCircle className="mr-1" />
-                            Verify
+                            {getLabel(adminDashboardLabels.verify)}
                           </button>
                         </div>
                       ))}
                       {pendingBluebooks.length === 0 && (
-                        <p className="text-gray-400 text-center py-6">No pending bluebooks</p>
+                        <p className="text-gray-400 text-center py-6">{getLabel(adminDashboardLabels.noPendingBluebooks)}</p>
                       )}
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 shadow-lg animate-fade-in-up delay-100">
-                    <h3 className="text-xl font-bold text-green-700 mb-6">Recent Users</h3>
+                    <h3 className="text-xl font-bold text-green-700 mb-6">{getLabel(adminDashboardLabels.recentUsers)}</h3>
                     <div className="space-y-4">
                       {users.slice(0, 5).map((user, idx) => (
                         <div
@@ -1302,7 +1305,7 @@ function AdminDashboard() {
                       <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                       <input
                         type="text"
-                        placeholder="Search users..."
+                        placeholder={getLabel(adminDashboardLabels.searchUsers)}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
@@ -1313,9 +1316,9 @@ function AdminDashboard() {
                       onChange={(e) => setFilterStatus(e.target.value)}
                       className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
                     >
-                      <option value="all">All Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
+                      <option value="all">{getLabel(adminDashboardLabels.allStatus)}</option>
+                      <option value="active">{getLabel(adminDashboardLabels.active)}</option>
+                      <option value="inactive">{getLabel(adminDashboardLabels.inactive)}</option>
                     </select>
                   </div>
                 </div>
@@ -1356,14 +1359,14 @@ function AdminDashboard() {
                                 className="inline-flex items-center px-3 py-1 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-100 shadow"
                               >
                                 <FaEye className="mr-1" />
-                                View
+                                {getLabel(adminDashboardLabels.view)}
                               </button>
                               <button
                                 onClick={() => handleEditUser(user)}
                                 className="inline-flex items-center px-3 py-1 border border-gray-200 text-sm font-medium rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 shadow"
                               >
                                 <FaEdit className="mr-1" />
-                                Edit
+                                {getLabel(adminDashboardLabels.edit)}
                               </button>
                               <button
                                 onClick={() => handleUpdateUserStatus(user._id, user.status === 'active' ? 'inactive' : 'active')}
@@ -1373,7 +1376,7 @@ function AdminDashboard() {
                                   }`}
                               >
                                 {user.status === 'active' ? <FaToggleOff className="mr-1" /> : <FaToggleOn className="mr-1" />}
-                                {user.status === 'active' ? 'Deactivate' : 'Activate'}
+                                {user.status === 'active' ? getLabel(adminDashboardLabels.deactivate) : getLabel(adminDashboardLabels.activate)}
                               </button>
                               {user.role !== 'admin' && (
                                 <button
@@ -1381,7 +1384,7 @@ function AdminDashboard() {
                                   className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 shadow"
                                 >
                                   <FaTrash className="mr-1" />
-                                  Delete
+                                  {getLabel(adminDashboardLabels.delete)}
                                 </button>
                               )}
                             </div>
@@ -1412,7 +1415,7 @@ function AdminDashboard() {
                               <div className="text-base font-semibold text-gray-900">{bluebook.vehicleRegNo}</div>
                               <div className="text-sm text-gray-500">{bluebook.vehicleOwnerName}</div>
                               <div className="text-xs text-gray-400">{bluebook.vehicleType} - {bluebook.vehicleModel}</div>
-                              <div className="text-xs text-gray-400">Created: {formatDate(bluebook.createdAt)}</div>
+                              <div className="text-xs text-gray-400">{getLabel(adminDashboardLabels.created)}: {formatDate(bluebook.createdAt)}</div>
                             </div>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -1423,21 +1426,21 @@ function AdminDashboard() {
                                 className="inline-flex items-center px-3 py-1 border border-gray-200 text-sm font-medium rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 shadow"
                               >
                                 <FaEdit className="mr-1" />
-                                Edit
+                                {getLabel(adminDashboardLabels.edit)}
                               </button>
                               <button
                                 onClick={() => handleVerifyBluebook(bluebook._id, bluebook.isElectric)}
                                 className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-lg text-white bg-nepal-blue hover:bg-blue-700 shadow"
                               >
                                 <FaCheckCircle className="mr-1" />
-                                Verify
+                                {getLabel(adminDashboardLabels.verify)}
                               </button>
                               <button
                                 onClick={() => handleRejectBluebook(bluebook._id, bluebook.isElectric)}
                                 className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 shadow"
                               >
                                 <FaTimesCircle className="mr-1" />
-                                Reject
+                                {getLabel(adminDashboardLabels.reject)}
                               </button>
                             </div>
                           </div>
@@ -1446,7 +1449,7 @@ function AdminDashboard() {
                     ))}
                     {pendingBluebooks.length === 0 && (
                       <li className="px-8 py-12 text-center text-gray-400 animate-fade-in">
-                        No pending bluebooks to verify
+                        {getLabel(adminDashboardLabels.noPendingToVerify)}
                       </li>
                     )}
                   </ul>
@@ -1459,13 +1462,13 @@ function AdminDashboard() {
               <div className="space-y-6 animate-fade-in">
                 {/* Search Bar */}
                                                     <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-nepal-blue">All Bluebooks</h3>
+                  <h3 className="text-xl font-bold text-nepal-blue">{getLabel(adminDashboardLabels.allBluebooks)}</h3>
                   <div className="flex items-center space-x-4">
                       <div className="relative">
                         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
                           type="text"
-                          placeholder="Search by owner name, registration number, or model..."
+                          placeholder={getLabel(adminDashboardLabels.searchBluebooks)}
                           value={bluebookSearchTerm}
                           onChange={(e) => setBluebookSearchTerm(e.target.value)}
                           className="pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow min-w-80"
@@ -1481,7 +1484,7 @@ function AdminDashboard() {
                         )}
                       </div>
                       <div className="text-sm text-gray-600">
-                        Showing {filteredBluebooks.length} of {bluebooks.length} bluebooks
+                        {getLabel(adminDashboardLabels.showing)} {filteredBluebooks.length} {getLabel(adminDashboardLabels.of)} {bluebooks.length} {getLabel(adminDashboardLabels.bluebooks).toLowerCase()}
                       </div>
                     </div>
                 </div>
@@ -1518,11 +1521,11 @@ function AdminDashboard() {
                                 {bluebook.isElectric && (
                                   <span className="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     <FaBatteryFull className="mr-1" />
-                                    Electric
+                                    {getLabel(adminDashboardLabels.electric)}
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-gray-400">Created: {formatDate(bluebook.createdAt)}</div>
+                              <div className="text-xs text-gray-400">{getLabel(adminDashboardLabels.created)}: {formatDate(bluebook.createdAt)}</div>
                             </div>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -1533,7 +1536,7 @@ function AdminDashboard() {
                                 className="inline-flex items-center px-3 py-1 border border-gray-200 text-sm font-medium rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 shadow"
                               >
                                 <FaEdit className="mr-1" />
-                                Edit
+                                {getLabel(adminDashboardLabels.edit)}
                               </button>
                               {bluebook.status === 'pending' && (
                                 <button
@@ -1541,7 +1544,7 @@ function AdminDashboard() {
                                   className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-lg text-white bg-nepal-blue hover:bg-blue-700 shadow"
                                 >
                                   <FaCheckCircle className="mr-1" />
-                                  Verify
+                                  {getLabel(adminDashboardLabels.verify)}
                                 </button>
                               )}
                             </div>
@@ -1551,7 +1554,7 @@ function AdminDashboard() {
                     ))
                     ) : (
                       <li className="px-8 py-12 text-center text-gray-400 animate-fade-in">
-                        {bluebooks.length === 0 ? 'No bluebooks found' : `No bluebooks match "${bluebookSearchTerm}"`}
+                        {bluebooks.length === 0 ? getLabel(adminDashboardLabels.noBluebooksFound) : `${getLabel(adminDashboardLabels.noBluebooksMatch)} "${bluebookSearchTerm}"`}
                       </li>
                     )}
                   </ul>
@@ -1565,21 +1568,21 @@ function AdminDashboard() {
                 {/* Payment Statistics */}
                 
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xl font-bold text-nepal-blue">Payment Transactions</h3>
+                  <h3 className="text-xl font-bold text-nepal-blue">{getLabel(adminDashboardLabels.paymentTransactions)}</h3>
                   <div className="flex items-center space-x-4">
                     <select 
                       value={paymentFilter}
                       onChange={(e) => setPaymentFilter(e.target.value)}
                       className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
                     >
-                      <option value="all">All Payments</option>
-                      <option value="successful">Successful</option>
-                      <option value="pending">Pending</option>
-                      <option value="failed">Failed</option>
+                      <option value="all">{getLabel(adminDashboardLabels.allPayments)}</option>
+                      <option value="successful">{getLabel(adminDashboardLabels.successful)}</option>
+                      <option value="pending">{getLabel(adminDashboardLabels.pending)}</option>
+                      <option value="failed">{getLabel(adminDashboardLabels.failed)}</option>
                       
                     </select>
                     <div className="text-sm text-gray-600">
-                      Showing {filteredPayments.length} of {payments.length} payments
+                      {getLabel(adminDashboardLabels.showing)} {filteredPayments.length} {getLabel(adminDashboardLabels.of)} {payments.length} {getLabel(adminDashboardLabels.payments).toLowerCase()}
                     </div>
                   </div>
                 </div>
@@ -1587,12 +1590,12 @@ function AdminDashboard() {
                 <div className="bg-white/90 shadow-xl overflow-hidden sm:rounded-2xl animate-fade-in-up">
                   <div className="px-8 py-5 bg-gradient-to-r from-blue-50 to-blue-100 border-b border-gray-100 rounded-t-2xl">
                     <div className="grid grid-cols-12 gap-4 text-base font-semibold text-nepal-blue">
-                      <div className="col-span-3">Transaction ID</div>
-                      <div className="col-span-2">User</div>
-                      <div className="col-span-2">Amount</div>
-                      <div className="col-span-2">Status</div>
-                      <div className="col-span-2">Date</div>
-                      <div className="col-span-1">Actions</div>
+                      <div className="col-span-3">{getLabel(adminDashboardLabels.transactionId)}</div>
+                      <div className="col-span-2">{getLabel(adminDashboardLabels.user)}</div>
+                      <div className="col-span-2">{getLabel(adminDashboardLabels.amount)}</div>
+                      <div className="col-span-2">{getLabel(adminDashboardLabels.status)}</div>
+                      <div className="col-span-2">{getLabel(adminDashboardLabels.date)}</div>
+                      <div className="col-span-1">{getLabel(adminDashboardLabels.actions)}</div>
                     </div>
                   </div>
                   <ul className="divide-y divide-gray-100">
@@ -1633,7 +1636,7 @@ function AdminDashboard() {
                       ))
                     ) : (
                       <li className="px-8 py-12 text-center text-gray-400 animate-fade-in">
-                        {payments.length === 0 ? 'No payment transactions found' : `No payments match the "${paymentFilter}" filter`}
+                        {payments.length === 0 ? getLabel(adminDashboardLabels.noPaymentsFound) : `${getLabel(adminDashboardLabels.noPaymentsMatch)} "${paymentFilter}"`}
                       </li>
                     )}
                   </ul>
@@ -1651,8 +1654,8 @@ function AdminDashboard() {
                         <FaUsers className="h-8 w-8 text-nepal-blue" />
                       </div>
                       <div className="ml-5">
-                        <h3 className="text-lg font-bold text-nepal-blue">User Report</h3>
-                        <p className="text-sm text-gray-500">Generate comprehensive user statistics</p>
+                        <h3 className="text-lg font-bold text-nepal-blue">{getLabel(adminDashboardLabels.userReport)}</h3>
+                        <p className="text-sm text-gray-500">{getLabel(adminDashboardLabels.generateUserStats)}</p>
                       </div>
                     </div>
                     <div className="mt-6">
@@ -1660,7 +1663,7 @@ function AdminDashboard() {
                         onClick={() => generateReport('users')}
                         className="w-full bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-nepal-blue shadow transition"
                       >
-                        Generate Report
+                        {getLabel(adminDashboardLabels.generateReport)}
                       </button>
                     </div>
                   </div>
@@ -1671,8 +1674,8 @@ function AdminDashboard() {
                         <FaCar className="h-8 w-8 text-green-500" />
                       </div>
                       <div className="ml-5">
-                        <h3 className="text-lg font-bold text-green-700">Bluebook Report</h3>
-                        <p className="text-sm text-gray-500">Generate bluebook application statistics</p>
+                        <h3 className="text-lg font-bold text-green-700">{getLabel(adminDashboardLabels.bluebookReport)}</h3>
+                        <p className="text-sm text-gray-500">{getLabel(adminDashboardLabels.generateBluebookStats)}</p>
                       </div>
                     </div>
                     <div className="mt-6">
@@ -1680,7 +1683,7 @@ function AdminDashboard() {
                         onClick={() => generateReport('bluebooks')}
                         className="w-full bg-gradient-to-r from-green-500 to-green-700 text-white py-2 px-4 rounded-lg hover:from-green-700 hover:to-green-500 shadow transition"
                       >
-                        Generate Report
+                        {getLabel(adminDashboardLabels.generateReport)}
                       </button>
                     </div>
                   </div>
@@ -1691,8 +1694,8 @@ function AdminDashboard() {
                         <FaMoneyBillWave className="h-8 w-8 text-yellow-500" />
                       </div>
                       <div className="ml-5">
-                        <h3 className="text-lg font-bold text-yellow-700">Payment Report</h3>
-                        <p className="text-sm text-gray-500">Generate payment transaction reports</p>
+                        <h3 className="text-lg font-bold text-yellow-700">{getLabel(adminDashboardLabels.paymentReport)}</h3>
+                        <p className="text-sm text-gray-500">{getLabel(adminDashboardLabels.generatePaymentStats)}</p>
                       </div>
                     </div>
                     <div className="mt-6">
@@ -1700,30 +1703,30 @@ function AdminDashboard() {
                         onClick={() => generateReport('payments')}
                         className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-white py-2 px-4 rounded-lg hover:from-yellow-600 hover:to-yellow-400 shadow transition"
                       >
-                        Generate Report
+                        {getLabel(adminDashboardLabels.generateReport)}
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white/90 p-8 rounded-2xl shadow-xl animate-fade-in-up">
-                  <h3 className="text-xl font-bold text-nepal-blue mb-6">System Analytics</h3>
+                  <h3 className="text-xl font-bold text-nepal-blue mb-6">{getLabel(adminDashboardLabels.systemAnalytics)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="text-center p-6 bg-blue-50 rounded-xl shadow">
                       <div className="text-3xl font-extrabold text-nepal-blue">{stats.totalUsers}</div>
-                      <div className="text-base text-gray-600">Total Users</div>
+                      <div className="text-base text-gray-600">{getLabel(adminDashboardLabels.totalUsers)}</div>
                     </div>
                     <div className="text-center p-6 bg-green-50 rounded-xl shadow">
                       <div className="text-3xl font-extrabold text-green-600">{stats.totalBluebooks}</div>
-                      <div className="text-base text-gray-600">Total Bluebooks</div>
+                      <div className="text-base text-gray-600">{getLabel(adminDashboardLabels.totalBluebooks)}</div>
                     </div>
                     <div className="text-center p-6 bg-yellow-50 rounded-xl shadow">
                       <div className="text-3xl font-extrabold text-yellow-600">{stats.pendingBluebooks}</div>
-                      <div className="text-base text-gray-600">Pending</div>
+                      <div className="text-base text-gray-600">{getLabel(adminDashboardLabels.pending)}</div>
                     </div>
                     <div className="text-center p-6 bg-purple-50 rounded-xl shadow">
                       <div className="text-3xl font-extrabold text-purple-600">{payments.length}</div>
-                      <div className="text-base text-gray-600">Payments</div>
+                      <div className="text-base text-gray-600">{getLabel(adminDashboardLabels.payments)}</div>
                     </div>
                   </div>
                 </div>
@@ -1740,8 +1743,8 @@ function AdminDashboard() {
                       <FaNewspaper className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-800">News Management</h2>
-                      <p className="text-gray-600">Manage news articles and announcements</p>
+                      <h2 className="text-2xl font-bold text-gray-800">{getLabel(adminDashboardLabels.newsManagement)}</h2>
+                      <p className="text-gray-600">{getLabel(adminDashboardLabels.manageNewsArticles)}</p>
                     </div>
                   </div>
                   <button
@@ -1749,14 +1752,14 @@ function AdminDashboard() {
                     className="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                   >
                     <FaPlus className="mr-2" />
-                    Add News
+                    {getLabel(adminDashboardLabels.addNews)}
                   </button>
                 </div>
 
                 {/* News List */}
                 <div className="bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden rounded-3xl border border-gray-100 animate-fade-in-up">
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-4 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-800">News Articles ({news.length})</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">{getLabel(adminDashboardLabels.newsArticles)} ({news.length})</h3>
                   </div>
                   <ul className="divide-y divide-gray-100">
                     {news.map((newsItem, idx) => (
@@ -1789,10 +1792,10 @@ function AdminDashboard() {
                               </div>
                               <div className="flex items-center space-x-4 pt-2">
                                 <div className="flex items-center space-x-2 px-3 py-1 bg-blue-50 rounded-full">
-                                  <span className="text-xs font-medium text-blue-700">Priority: {newsItem.priority}</span>
+                                  <span className="text-xs font-medium text-blue-700">{getLabel(adminDashboardLabels.priority)}: {newsItem.priority}</span>
                                 </div>
                                 <div className="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full">
-                                  <span className="text-xs font-medium text-gray-600">Created: {formatDate(newsItem.createdAt)}</span>
+                                  <span className="text-xs font-medium text-gray-600">{getLabel(adminDashboardLabels.created)}: {formatDate(newsItem.createdAt)}</span>
                                 </div>
                               </div>
                             </div>
@@ -1803,7 +1806,7 @@ function AdminDashboard() {
                               className="inline-flex items-center px-4 py-2 border border-blue-200 text-sm font-medium rounded-xl text-blue-700 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 shadow-sm transition-all duration-200 transform hover:scale-105"
                             >
                               <FaEdit className="mr-2" />
-                              Edit
+                              {getLabel(adminDashboardLabels.edit)}
                             </button>
                             <button
                               onClick={() => handleUpdateNewsStatus(newsItem._id, newsItem.status === 'active' ? 'inactive' : 'active')}
@@ -1813,14 +1816,14 @@ function AdminDashboard() {
                                 }`}
                             >
                               {newsItem.status === 'active' ? <FaToggleOff className="mr-2" /> : <FaToggleOn className="mr-2" />}
-                              {newsItem.status === 'active' ? 'Deactivate' : 'Activate'}
+                              {newsItem.status === 'active' ? getLabel(adminDashboardLabels.deactivate) : getLabel(adminDashboardLabels.activate)}
                             </button>
                             <button
                               onClick={() => handleDeleteNews(newsItem)}
                               className="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-medium rounded-xl text-red-700 bg-red-50 hover:bg-red-100 hover:border-red-300 shadow-sm transition-all duration-200 transform hover:scale-105"
                             >
                               <FaTrash className="mr-2" />
-                              Delete
+                              {getLabel(adminDashboardLabels.delete)}
                             </button>
                           </div>
                         </div>
@@ -1832,14 +1835,14 @@ function AdminDashboard() {
                           <div className="p-4 bg-gray-50 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                             <FaNewspaper className="h-8 w-8 text-gray-400" />
                           </div>
-                          <h3 className="text-lg font-semibold text-gray-600 mb-2">No News Articles</h3>
-                          <p className="text-gray-500 mb-4">Get started by creating your first news article to keep users informed.</p>
+                          <h3 className="text-lg font-semibold text-gray-600 mb-2">{getLabel(adminDashboardLabels.noNewsArticles)}</h3>
+                          <p className="text-gray-500 mb-4">{getLabel(adminDashboardLabels.getStartedNews)}</p>
                           <button
                             onClick={() => setShowNewsModal(true)}
                             className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                           >
                             <FaPlus className="mr-2" />
-                            Create First Article
+                            {getLabel(adminDashboardLabels.createFirstArticle)}
                           </button>
                         </div>
                       </li>
@@ -1859,8 +1862,8 @@ function AdminDashboard() {
                       <FaFileAlt className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-800">Marquee Management</h2>
-                      <p className="text-gray-600">Update the scrolling announcement banner</p>
+                      <h2 className="text-2xl font-bold text-gray-800">{getLabel(adminDashboardLabels.marqueeManagement)}</h2>
+                      <p className="text-gray-600">{getLabel(adminDashboardLabels.marqueeDescription)}</p>
                     </div>
                   </div>
                 </div>
@@ -1868,8 +1871,8 @@ function AdminDashboard() {
                 {/* Marquee Form */}
                 <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl border border-gray-100 animate-fade-in-up overflow-hidden">
                   <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-8 py-6 border-b border-purple-100">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">Announcement Banner</h3>
-                    <p className="text-gray-600">This text will scroll from right to left at the top of the website and pause when users hover over it.</p>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">{getLabel(adminDashboardLabels.announcementBanner)}</h3>
+                    <p className="text-gray-600">{getLabel(adminDashboardLabels.marqueeScrollNote)}.</p>
                   </div>
                   
                   <form
@@ -1880,7 +1883,7 @@ function AdminDashboard() {
                       <label className="block text-lg font-semibold text-gray-700 mb-3">
                         <span className="flex items-center space-x-2">
                           <FaFileAlt className="text-purple-500" />
-                          <span>Marquee Text</span>
+                          <span>{getLabel(adminDashboardLabels.marqueeText)}</span>
                         </span>
                       </label>
                       <textarea
@@ -1893,7 +1896,7 @@ function AdminDashboard() {
                       />
                       <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                        <span>This text will scroll from right to left at the top of the website</span>
+                        <span>{getLabel(adminDashboardLabels.marqueeScrollNote)}</span>
                       </div>
                     </div>
                     
@@ -1906,12 +1909,12 @@ function AdminDashboard() {
                         {marqueeLoading ? (
                           <span className="flex items-center space-x-2">
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            <span>Saving...</span>
+                            <span>{getLabel(adminDashboardLabels.saving)}</span>
                           </span>
                         ) : (
                           <span className="flex items-center space-x-2">
                             <FaFileAlt />
-                            <span>Save Marquee</span>
+                            <span>{getLabel(adminDashboardLabels.saveMarquee)}</span>
                           </span>
                         )}
                       </button>
@@ -1943,54 +1946,54 @@ function AdminDashboard() {
               <div className="space-y-8 animate-fade-in">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl shadow-lg animate-fade-in-up">
-                    <h3 className="text-xl font-bold text-nepal-blue mb-6">System Settings</h3>
+                    <h3 className="text-xl font-bold text-nepal-blue mb-6">{getLabel(adminDashboardLabels.systemSettings)}</h3>
                     <div className="space-y-6">
                       <div>
                         <label className="block text-base font-semibold text-gray-700 mb-2">
-                          Auto-verify Bluebooks
+                          {getLabel(adminDashboardLabels.autoVerifyBluebooks)}
                         </label>
                         <div className="flex items-center">
                           <input
                             type="checkbox"
                             className="h-5 w-5 text-nepal-blue focus:ring-nepal-blue border-gray-300 rounded transition"
                           />
-                          <span className="ml-3 text-base text-gray-600">Enable automatic verification</span>
+                          <span className="ml-3 text-base text-gray-600">{getLabel(adminDashboardLabels.enableAutoVerification)}</span>
                         </div>
                       </div>
                       <div>
                         <label className="block text-base font-semibold text-gray-700 mb-2">
-                          Email Notifications
+                          {getLabel(adminDashboardLabels.emailNotifications)}
                         </label>
                         <div className="flex items-center">
                           <input
                             type="checkbox"
                             className="h-5 w-5 text-nepal-blue focus:ring-nepal-blue border-gray-300 rounded transition"
                           />
-                          <span className="ml-3 text-base text-gray-600">Send email notifications</span>
+                          <span className="ml-3 text-base text-gray-600">{getLabel(adminDashboardLabels.sendEmailNotifications)}</span>
                         </div>
                       </div>
                       <div>
                         <label className="block text-base font-semibold text-gray-700 mb-2">
-                          Maintenance Mode
+                          {getLabel(adminDashboardLabels.maintenanceMode)}
                         </label>
                         <div className="flex items-center">
                           <input
                             type="checkbox"
                             className="h-5 w-5 text-nepal-blue focus:ring-nepal-blue border-gray-300 rounded transition"
                           />
-                          <span className="ml-3 text-base text-gray-600">Enable maintenance mode</span>
+                          <span className="ml-3 text-base text-gray-600">{getLabel(adminDashboardLabels.enableMaintenanceMode)}</span>
                         </div>
                       </div>
                     </div>
                     <div className="mt-8">
                       <button className="bg-gradient-to-r from-nepal-blue to-blue-500 text-white py-2 px-6 rounded-lg hover:from-blue-700 hover:to-nepal-blue shadow transition">
-                        Save Settings
+                        {getLabel(adminDashboardLabels.saveSettings)}
                       </button>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl shadow-lg animate-fade-in-up delay-100">
-                    <h3 className="text-xl font-bold text-green-700 mb-6">Admin Actions</h3>
+                    <h3 className="text-xl font-bold text-green-700 mb-6">{getLabel(adminDashboardLabels.adminActions)}</h3>
                     <div className="space-y-4">
                       <button
                         className="w-full text-left p-4 border border-gray-100 rounded-xl hover:bg-green-50 transition flex items-center gap-4 shadow"
@@ -1998,22 +2001,22 @@ function AdminDashboard() {
                       >
                         <FaUserPlus className="h-6 w-6 text-green-600" />
                         <div>
-                          <div className="font-semibold text-gray-900">Create New Admin</div>
-                          <div className="text-sm text-gray-500">Add a new administrator user</div>
+                          <div className="font-semibold text-gray-900">{getLabel(adminDashboardLabels.createNewAdmin)}</div>
+                          <div className="text-sm text-gray-500">{getLabel(adminDashboardLabels.addAdminDescription)}</div>
                         </div>
                       </button>
                       <button className="w-full text-left p-4 border border-gray-100 rounded-xl hover:bg-yellow-50 transition flex items-center gap-4 shadow">
                         <FaExclamationTriangle className="h-6 w-6 text-yellow-600" />
                         <div>
-                          <div className="font-semibold text-gray-900">System Backup</div>
-                          <div className="text-sm text-gray-500">Create system backup</div>
+                          <div className="font-semibold text-gray-900">{getLabel(adminDashboardLabels.systemBackup)}</div>
+                          <div className="text-sm text-gray-500">{getLabel(adminDashboardLabels.createSystemBackup)}</div>
                         </div>
                       </button>
                       <button className="w-full text-left p-4 border border-gray-100 rounded-xl hover:bg-blue-50 transition flex items-center gap-4 shadow">
                         <FaCog className="h-6 w-6 text-blue-600" />
                         <div>
-                          <div className="font-semibold text-gray-900">Database Maintenance</div>
-                          <div className="text-sm text-gray-500">Optimize database performance</div>
+                          <div className="font-semibold text-gray-900">{getLabel(adminDashboardLabels.databaseMaintenance)}</div>
+                          <div className="text-sm text-gray-500">{getLabel(adminDashboardLabels.optimizeDatabase)}</div>
                         </div>
                       </button>
                     </div>
@@ -2021,22 +2024,22 @@ function AdminDashboard() {
                 </div>
 
                 <div className="bg-white/90 p-8 rounded-2xl shadow-xl animate-fade-in-up">
-                  <h3 className="text-xl font-bold text-nepal-blue mb-6">System Information</h3>
+                  <h3 className="text-xl font-bold text-nepal-blue mb-6">{getLabel(adminDashboardLabels.systemInformation)}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <div className="text-base font-semibold text-gray-500">Server Status</div>
-                      <div className="text-base text-green-600 font-bold">Online</div>
+                      <div className="text-base font-semibold text-gray-500">{getLabel(adminDashboardLabels.serverStatus)}</div>
+                      <div className="text-base text-green-600 font-bold">{getLabel(adminDashboardLabels.online)}</div>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-gray-500">Database Status</div>
-                      <div className="text-base text-green-600 font-bold">Connected</div>
+                      <div className="text-base font-semibold text-gray-500">{getLabel(adminDashboardLabels.databaseStatus)}</div>
+                      <div className="text-base text-green-600 font-bold">{getLabel(adminDashboardLabels.connected)}</div>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-gray-500">Last Backup</div>
+                      <div className="text-base font-semibold text-gray-500">{getLabel(adminDashboardLabels.lastBackup)}</div>
                       <div className="text-base text-gray-900">2 hours ago</div>
                     </div>
                     <div>
-                      <div className="text-base font-semibold text-gray-500">System Version</div>
+                      <div className="text-base font-semibold text-gray-500">{getLabel(adminDashboardLabels.systemVersion)}</div>
                       <div className="text-base text-gray-900">v1.0.0</div>
                     </div>
                   </div>
@@ -2085,11 +2088,11 @@ function AdminDashboard() {
                 </div>
                 <div className="flex items-center text-gray-700">
                   <FaNewspaper className="mr-2 text-nepal-blue" />
-                  <span>Citizenship No: {selectedUser.citizenshipNo || 'N/A'}</span>
+                  <span>{getLabel(adminDashboardLabels.citizenshipNo)}: {selectedUser.citizenshipNo || 'N/A'}</span>
                 </div>
                 <div className="flex items-center text-gray-700">
                   <FaCalendarAlt className="mr-2 text-nepal-blue" />
-                  <span>Joined: {formatDate(selectedUser.createdAt)}</span>
+                  <span>{getLabel(adminDashboardLabels.joined)}: {formatDate(selectedUser.createdAt)}</span>
                 </div>
                 {/* Add more fields as needed */}
               </div>
@@ -2109,7 +2112,7 @@ function AdminDashboard() {
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold text-nepal-blue mb-6">Edit User</h2>
+            <h2 className="text-2xl font-bold text-nepal-blue mb-6">{getLabel(adminDashboardLabels.editUser)}</h2>
             <form
               onSubmit={e => {
                 e.preventDefault();
@@ -2118,7 +2121,7 @@ function AdminDashboard() {
               className="space-y-4"
             >
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">Name</label>
+                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.name)}</label>
                 <input
                   type="text"
                   name="name"
@@ -2129,7 +2132,7 @@ function AdminDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">Email</label>
+                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.email)}</label>
                 <input
                   type="email"
                   name="email"
@@ -2140,7 +2143,7 @@ function AdminDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">Citizenship No</label>
+                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.citizenshipNo)}</label>
                 <input
                   type="text"
                   name="citizenshipNo"
@@ -2150,27 +2153,27 @@ function AdminDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">Role</label>
+                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.role)}</label>
                 <select
                   name="role"
                   value={editFormData.role}
                   onChange={handleEditFormChange}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50"
                 >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  <option value="user">{getLabel(adminDashboardLabels.user)}</option>
+                  <option value="admin">{getLabel(adminDashboardLabels.admin)}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">Status</label>
+                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.status)}</label>
                 <select
                   name="status"
                   value={editFormData.status}
                   onChange={handleEditFormChange}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50"
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="active">{getLabel(adminDashboardLabels.active)}</option>
+                  <option value="inactive">{getLabel(adminDashboardLabels.inactive)}</option>
                 </select>
               </div>
               <div className="flex justify-end space-x-3 pt-4">
@@ -2179,13 +2182,13 @@ function AdminDashboard() {
                   onClick={() => setShowEditModal(false)}
                   className="px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
                 >
-                  Cancel
+                  {getLabel(adminDashboardLabels.cancel)}
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-2 rounded-lg bg-nepal-blue text-white font-semibold hover:bg-blue-700"
                 >
-                  Save Changes
+                  {getLabel(adminDashboardLabels.saveChanges)}
                 </button>
               </div>
             </form>
@@ -2205,9 +2208,9 @@ function AdminDashboard() {
             </button>
             <div className="flex flex-col items-center">
               <FaExclamationTriangle className="text-red-500 text-4xl mb-4" />
-              <h2 className="text-2xl font-bold text-nepal-blue mb-2">Delete User</h2>
+              <h2 className="text-2xl font-bold text-nepal-blue mb-2">{getLabel(adminDashboardLabels.deleteUser)}</h2>
               <p className="text-gray-700 mb-6 text-center">
-                Are you sure you want to delete <span className="font-semibold">{userToDelete.name}</span>? This action cannot be undone.
+                {getLabel(adminDashboardLabels.deleteUserConfirm)} <span className="font-semibold">{userToDelete.name}</span>? {getLabel(adminDashboardLabels.cannotBeUndone)}
               </p>
               <div className="flex justify-end space-x-3 w-full">
                 <button
@@ -2215,14 +2218,14 @@ function AdminDashboard() {
                   onClick={() => setShowDeleteModal(false)}
                   className="px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
                 >
-                  Cancel
+                  {getLabel(adminDashboardLabels.cancel)}
                 </button>
                 <button
                   type="button"
                   onClick={confirmDeleteUser}
                   className="px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700"
                 >
-                  Delete
+                  {getLabel(adminDashboardLabels.delete)}
                 </button>
               </div>
             </div>
@@ -2241,8 +2244,8 @@ function AdminDashboard() {
                     <FaCar className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-nepal-blue">Edit Bluebook</h2>
-                    <p className="text-sm text-gray-600">Update vehicle information</p>
+                    <h2 className="text-2xl font-bold text-nepal-blue">{getLabel(adminDashboardLabels.editBluebook)}</h2>
+                    <p className="text-sm text-gray-600">{getLabel(adminDashboardLabels.updateVehicleInfo)}</p>
                   </div>
                 </div>
                 <button
@@ -2270,11 +2273,11 @@ function AdminDashboard() {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                     <FaCar className="mr-2 text-nepal-blue" />
-                    Vehicle Information
+                    {getLabel(adminDashboardLabels.vehicleInformation)}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Reg. No</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.vehicleRegNo)}</label>
                       <input
                         type="text"
                         name="vehicleRegNo"
@@ -2285,7 +2288,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Owner Name</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.ownerName)}</label>
                       <input
                         type="text"
                         name="vehicleOwnerName"
@@ -2296,7 +2299,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Type</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.vehicleType)}</label>
                       <input
                         type="text"
                         name="vehicleType"
@@ -2306,7 +2309,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Model</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.model)}</label>
                       <input
                         type="text"
                         name="vehicleModel"
@@ -2316,7 +2319,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Manufacture Year</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.manufactureYear)}</label>
                       <input
                         type="text"
                         name="manufactureYear"
@@ -2326,7 +2329,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Chasis Number</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.chassisNo)}</label>
                       <input
                         type="text"
                         name="chasisNumber"
@@ -2336,7 +2339,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Color</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.color)}</label>
                       <input
                         type="text"
                         name="vehicleColor"
@@ -2346,7 +2349,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Engine CC</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.engineCC)}</label>
                       <input
                         type="text"
                         name="vehicleEngineCC"
@@ -2356,7 +2359,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Number</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.vehicleNumber)}</label>
                       <input
                         type="text"
                         name="vehicleNumber"
@@ -2366,20 +2369,20 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.status)}</label>
                       <select
                         name="status"
                         value={editBluebookFormData.status}
                         onChange={handleEditBluebookFormChange}
                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 transition-all duration-200"
                       >
-                        <option value="pending">Pending</option>
-                        <option value="verified">Verified</option>
-                        <option value="rejected">Rejected</option>
+                        <option value="pending">{getLabel(adminDashboardLabels.pending)}</option>
+                        <option value="verified">{getLabel(adminDashboardLabels.verified)}</option>
+                        <option value="rejected">{getLabel(adminDashboardLabels.rejected)}</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Vehicle Registration Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.vehicleRegistrationDate)}</label>
                       <input
                         type="date"
                         name="VehicleRegistrationDate"
@@ -2389,7 +2392,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Tax Pay Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.taxPayDate)}</label>
                       <input
                         type="date"
                         name="taxPayDate"
@@ -2399,7 +2402,7 @@ function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Tax Expire Date</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.taxExpireDate)}</label>
                       <input
                         type="date"
                         name="taxExpireDate"
@@ -2418,13 +2421,13 @@ function AdminDashboard() {
                     onClick={() => setShowEditBluebookModal(false)}
                     className="px-6 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold hover:bg-gray-100 transition-all duration-200 shadow-sm"
                   >
-                    Cancel
+                    {getLabel(adminDashboardLabels.cancel)}
                   </button>
                   <button
                     type="submit"
                     className="px-6 py-3 rounded-xl bg-gradient-to-r from-nepal-blue to-blue-600 text-white font-semibold hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 shadow-lg"
                   >
-                    Save Changes
+                    {getLabel(adminDashboardLabels.saveChanges)}
                   </button>
                 </div>
               </form>
@@ -2456,7 +2459,7 @@ function AdminDashboard() {
           &times;
         </button>
         <h2 className="text-3xl font-extrabold text-nepal-blue text-center tracking-tight animate-fade-in-down">
-          {editingNews ? 'Edit News' : 'Add News'}
+          {editingNews ? getLabel(adminDashboardLabels.editNews) : getLabel(adminDashboardLabels.addNews)}
         </h2>
       </div>
       
@@ -2471,7 +2474,7 @@ function AdminDashboard() {
           className="space-y-6"
         >
         <div className="space-y-2 animate-fade-in-up">
-          <label className="block text-base font-semibold text-gray-700">Title</label>
+          <label className="block text-base font-semibold text-gray-700">{getLabel(adminDashboardLabels.title)}</label>
           <input
             type="text"
             name="title"
@@ -2487,7 +2490,7 @@ function AdminDashboard() {
           </div>
         </div>
         <div className="space-y-2 animate-fade-in-up delay-75">
-          <label className="block text-base font-semibold text-gray-700">Content</label>
+          <label className="block text-base font-semibold text-gray-700">{getLabel(adminDashboardLabels.content)}</label>
           <textarea
             name="content"
             value={newsForm.content}
@@ -2503,7 +2506,7 @@ function AdminDashboard() {
           </div>
         </div>
         <div className="space-y-2 animate-fade-in-up delay-100">
-          <label className="block text-base font-semibold text-gray-700">Image</label>
+          <label className="block text-base font-semibold text-gray-700">{getLabel(adminDashboardLabels.image)}</label>
           <div className="space-y-3">
             <input
               type="file"
@@ -2530,7 +2533,7 @@ function AdminDashboard() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in-up delay-150">
           <div className="space-y-2">
-            <label className="block text-base font-semibold text-gray-700">Status</label>
+            <label className="block text-base font-semibold text-gray-700">{getLabel(adminDashboardLabels.status)}</label>
             <select
               name="status"
               value={newsForm.status}
@@ -2543,7 +2546,7 @@ function AdminDashboard() {
             </select>
           </div>
           <div className="space-y-2">
-            <label className="block text-base font-semibold text-gray-700">Priority</label>
+            <label className="block text-base font-semibold text-gray-700">{getLabel(adminDashboardLabels.priority)}</label>
             <input
               type="number"
               name="priority"
@@ -2568,7 +2571,7 @@ function AdminDashboard() {
             className="px-6 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-semibold hover:bg-gray-100 transition-all shadow-sm hover:shadow-md"
             disabled={newsLoading}
           >
-            Cancel
+            {getLabel(adminDashboardLabels.cancel)}
           </button>
           <button
             type="submit"
@@ -2591,14 +2594,14 @@ function AdminDashboard() {
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Save Changes
+                    {getLabel(adminDashboardLabels.saveChanges)}
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    Add News
+                    {getLabel(adminDashboardLabels.addNews)}
                   </>
                 )}
               </span>
@@ -2630,7 +2633,7 @@ function AdminDashboard() {
         &times;
       </button>
       <h2 className="text-3xl font-extrabold text-nepal-blue mb-8 text-center tracking-tight animate-fade-in-down">
-        Add New Admin
+        {getLabel(adminDashboardLabels.addNewAdmin)}
       </h2>
       <form
         onSubmit={e => {
@@ -2640,7 +2643,7 @@ function AdminDashboard() {
         className="space-y-6"
       >
         <div className="space-y-2 animate-fade-in-up">
-          <label className="block text-base font-semibold text-gray-700 text-left">Name</label>
+          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.name)}</label>
           <input
             type="text"
             name="name"
@@ -2652,7 +2655,7 @@ function AdminDashboard() {
           />
         </div>
         <div className="space-y-2 animate-fade-in-up delay-75">
-          <label className="block text-base font-semibold text-gray-700 text-left">Email</label>
+          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.email)}</label>
           <input
             type="email"
             name="email"
@@ -2664,7 +2667,7 @@ function AdminDashboard() {
           />
         </div>
         <div className="space-y-2 animate-fade-in-up delay-100">
-          <label className="block text-base font-semibold text-gray-700 text-left">Password</label>
+          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.password)}</label>
           <input
             type="password"
             name="password"
@@ -2676,7 +2679,7 @@ function AdminDashboard() {
           />
         </div>
         <div className="space-y-2 animate-fade-in-up delay-50">
-          <label className="block text-base font-semibold text-gray-700 text-left">Citizenship No</label>
+          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.citizenshipNo)}</label>
           <input
             type="text"
             name="citizenshipNo"
@@ -2693,7 +2696,7 @@ function AdminDashboard() {
             onClick={() => setShowCreateAdminModal(false)}
             className="px-6 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold hover:bg-gray-100 transition shadow-sm"
           >
-            Cancel
+            {getLabel(adminDashboardLabels.cancel)}
           </button>
           <button
             type="submit"
@@ -2701,9 +2704,9 @@ function AdminDashboard() {
             disabled={createAdminLoading}
           >
             {createAdminLoading ? (
-              <span className="flex items-center"><svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Saving...</span>
+              <span className="flex items-center"><svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>{getLabel(adminDashboardLabels.saving)}</span>
             ) : (
-              'Add Admin'
+              getLabel(adminDashboardLabels.addAdmin)
             )}
           </button>
         </div>
@@ -2723,7 +2726,7 @@ function AdminDashboard() {
       >
         &times;
       </button>
-      <h2 className="text-2xl font-extrabold text-nepal-blue mb-6 text-center">Verify Admin Email</h2>
+      <h2 className="text-2xl font-extrabold text-nepal-blue mb-6 text-center">{getLabel(adminDashboardLabels.verifyAdminEmail)}</h2>
       <form
         onSubmit={async e => {
           e.preventDefault();
@@ -2745,7 +2748,7 @@ function AdminDashboard() {
                 setOtpError('');
                 setOtpSuccess('');
                 fetchDashboardData();
-                toast.success('Admin registration and verification successful!');
+                toast.success(getLabel(adminDashboardLabels.adminRegistrationSuccess));
               }, 1200);
             } else {
               setOtpError(data.message || 'Invalid OTP or verification failed');
@@ -2759,7 +2762,7 @@ function AdminDashboard() {
         className="space-y-6"
       >
         <div className="space-y-2 animate-fade-in-up">
-          <label className="block text-base font-semibold text-gray-700 text-left">Enter OTP</label>
+          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.enterOtp)}</label>
           <input
             type="text"
             name="otp"
@@ -2777,7 +2780,7 @@ function AdminDashboard() {
             onClick={() => { setShowOtpModal(false); setOtpValue(''); setOtpError(''); setOtpSuccess(''); }}
             className="px-6 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-semibold hover:bg-gray-100 transition shadow-sm"
           >
-            Cancel
+            {getLabel(adminDashboardLabels.cancel)}
           </button>
           <button
             type="submit"
@@ -2785,9 +2788,9 @@ function AdminDashboard() {
             disabled={otpLoading}
           >
             {otpLoading ? (
-              <span className="flex items-center"><svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Verifying...</span>
+              <span className="flex items-center"><svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>{getLabel(adminDashboardLabels.verifying)}</span>
             ) : (
-              'Verify OTP'
+              getLabel(adminDashboardLabels.verifyOtp)
             )}
           </button>
         </div>

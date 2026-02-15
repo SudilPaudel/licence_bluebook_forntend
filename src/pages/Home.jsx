@@ -1,10 +1,15 @@
 import NewsSection from "../components/NewsSection";
 import GuidanceSection from "../components/GuidanceSection.jsx";
+import { useLang } from "../context/LanguageContext";
+import { homeLabels } from "../labels/homeLabels";
 
 /**
  * Home component renders the landing page with hero, news, and guidance sections.
  */
 function Home() {
+  // Get language and getLabel helper from language context
+  const { getLabel } = useLang();
+
   // Renders the main home/landing page layout
   return (
     <div className="px-6 py-12 space-y-16 bg-gradient-to-br from-blue-50 to-white min-h-screen animate-fade-in">
@@ -12,10 +17,10 @@ function Home() {
       <section className="relative text-center bg-white/80 p-12 rounded-3xl shadow-2xl overflow-hidden border border-blue-100 animate-slide-up">
         <div className="absolute inset-0 bg-gradient-to-tr from-nepal-blue/10 to-blue-200/10 pointer-events-none rounded-3xl" />
         <h1 className="relative z-10 text-4xl md:text-5xl font-extrabold text-nepal-blue drop-shadow-lg tracking-tight animate-fade-in-down">
-          Welcome to the Blue Book Renewal System
+          {getLabel(homeLabels.welcome)}
         </h1>
         <p className="relative z-10 mt-5 text-gray-700 text-xl md:text-2xl font-medium animate-fade-in-up">
-          Register and renew your vehicle documents easily and securely.
+          {getLabel(homeLabels.registerAndRenew)}
         </p>
         <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-nepal-blue/10 rounded-full blur-2xl animate-pulse" />
       </section>

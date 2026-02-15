@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaCreditCard, FaShieldAlt, FaCheckCircle, FaClock, FaExclamationTriangle, FaCalculator, FaReceipt } from "react-icons/fa";
 import khaltiLogo from "../assets/khalti.png";
+import { useLang } from "../context/LanguageContext";
+import { paymentLabels } from "../labels/paymentLabels";
 
 // Khalti Logo Component using PNG
 /**
@@ -17,6 +19,7 @@ function Payment() {
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [bluebook, setBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -279,11 +282,11 @@ function Payment() {
    */
   const getDaysLeftStatus = (daysLeft) => {
     if (daysLeft > 30) {
-      return { color: 'text-green-600', icon: <FaCheckCircle />, text: 'Tax is valid' };
+      return { color: 'text-green-600', icon: <FaCheckCircle />, text: getLabel(paymentLabels.taxIsValid) };
     } else if (daysLeft > 0) {
-      return { color: 'text-yellow-600', icon: <FaClock />, text: `${daysLeft} days left` };
+      return { color: 'text-yellow-600', icon: <FaClock />, text: `${daysLeft} ${getLabel(paymentLabels.daysLeft)}` };
     } else {
-      return { color: 'text-red-600', icon: <FaExclamationTriangle />, text: `${Math.abs(daysLeft)} days expired` };
+      return { color: 'text-red-600', icon: <FaExclamationTriangle />, text: `${Math.abs(daysLeft)} ${getLabel(paymentLabels.daysExpired)}` };
     }
   };
 
@@ -309,7 +312,7 @@ function Payment() {
                   <FaArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Error</h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{getLabel(paymentLabels.errorTitle)}</h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">{error}</p>
                 </div>
               </div>
@@ -334,8 +337,8 @@ function Payment() {
                   <FaArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Bluebook Not Found</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">The requested bluebook could not be found.</p>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{getLabel(paymentLabels.bluebookNotFound)}</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">{getLabel(paymentLabels.bluebookNotFoundMessage)}</p>
                 </div>
               </div>
             </div>
@@ -360,10 +363,10 @@ function Payment() {
               </button>
               <div>
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight animate-fade-in">
-                  Vehicle Tax Payment
+                  {getLabel(paymentLabels.vehicleTaxPayment)}
                 </h1>
                 <p className="mt-1 text-base text-gray-500 animate-fade-in-slow">
-                  Pay your vehicle tax online, securely and easily.
+                  {getLabel(paymentLabels.payOnlineSecurely)}
                 </p>
               </div>
             </div>
@@ -389,33 +392,33 @@ function Payment() {
             <div className="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
               <h3 className="text-xl leading-7 font-semibold text-gray-900 flex items-center">
                 <FaCreditCard className="mr-2 text-nepal-blue" />
-                Vehicle Information
+                {getLabel(paymentLabels.vehicleInformation)}
               </h3>
             </div>
             <div className="border-t border-gray-100">
               <dl>
                 <div className="bg-gray-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Registration Number</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.registrationNumber)}</dt>
                   <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2 font-bold tracking-wide">{bluebook.vehicleRegNo}</dd>
                 </div>
                 <div className="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Vehicle Type</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.vehicleType)}</dt>
                   <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{bluebook.vehicleType}</dd>
                 </div>
                 <div className="bg-gray-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Engine CC</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.engineCC)}</dt>
                   <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{bluebook.vehicleEngineCC} cc</dd>
                 </div>
                 <div className="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Owner Name</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.ownerName)}</dt>
                   <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{bluebook.vehicleOwnerName}</dd>
                 </div>
                 <div className="bg-gray-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Tax Expire Date</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.taxExpireDate)}</dt>
                   <dd className="mt-1 text-base text-gray-900 sm:mt-0 sm:col-span-2">{formatDate(bluebook.taxExpireDate)}</dd>
                 </div>
                 <div className="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                  <dt className="text-sm font-semibold text-gray-500">Status</dt>
+                  <dt className="text-sm font-semibold text-gray-500">{getLabel(paymentLabels.status)}</dt>
                   <dd className="mt-1 text-base sm:mt-0 sm:col-span-2">
                     <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-base font-semibold shadow-sm transition-all duration-200 ${getDaysLeftStatus(taxDetails?.daysLeft || 0).color.replace('text-', 'bg-').replace('-600', '-200')} ${getDaysLeftStatus(taxDetails?.daysLeft || 0).color} animate-pulse`}>
                       {getDaysLeftStatus(taxDetails?.daysLeft || 0).icon}
@@ -432,7 +435,7 @@ function Payment() {
             <div className="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-blue-50">
               <h3 className="text-xl leading-7 font-semibold text-gray-900 flex items-center">
                 <FaCalculator className="mr-2 text-purple-500" />
-                Tax Calculation
+                {getLabel(paymentLabels.taxCalculation)}
               </h3>
             </div>
             <div className="border-t border-gray-100">
@@ -440,28 +443,28 @@ function Payment() {
                 <div className="px-6 py-6">
                   <div className="space-y-5">
                     <div className="flex justify-between items-center">
-                      <span className="text-base text-gray-600">Base Tax</span>
+                      <span className="text-base text-gray-600">{getLabel(paymentLabels.baseTax)}</span>
                       <span className="text-base font-semibold">Rs. {taxDetails.baseTax.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-base text-gray-600">Renewal Charge</span>
+                      <span className="text-base text-gray-600">{getLabel(paymentLabels.renewalCharge)}</span>
                       <span className="text-base font-semibold">Rs. {taxDetails.renewalCharge.toLocaleString()}</span>
                     </div>
                     {taxDetails.fineAmount > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-base text-red-600 font-medium">Fine Amount</span>
+                        <span className="text-base text-red-600 font-medium">{getLabel(paymentLabels.fineAmount)}</span>
                         <span className="text-base font-semibold text-red-600">Rs. {taxDetails.fineAmount.toLocaleString()}</span>
                       </div>
                     )}
                     {taxDetails.oldVehicleTax > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-base text-orange-600 font-medium">Old Vehicle Tax (10%)</span>
+                        <span className="text-base text-orange-600 font-medium">{getLabel(paymentLabels.oldVehicleTax)}</span>
                         <span className="text-base font-semibold text-orange-600">Rs. {taxDetails.oldVehicleTax.toLocaleString()}</span>
                       </div>
                     )}
                     <div className="border-t border-dashed border-gray-300 pt-5">
                       <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold text-gray-900">Total Amount</span>
+                        <span className="text-xl font-bold text-gray-900">{getLabel(paymentLabels.totalAmount)}</span>
                         <span className="text-xl font-extrabold text-nepal-blue animate-fade-in">{`Rs. ${taxDetails.totalTaxAmount.toLocaleString()}`}</span>
                       </div>
                     </div>
@@ -469,11 +472,11 @@ function Payment() {
 
                   {/* Payment Method Selection */}
                   <div className="mt-8">
-                    <h4 className="text-base font-semibold text-gray-900 mb-3">Payment Method</h4>
+                    <h4 className="text-base font-semibold text-gray-900 mb-3">{getLabel(paymentLabels.paymentMethod)}</h4>
                     <div className="flex space-x-4">
                       <div className="flex items-center p-4 border-2 border-nepal-blue bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform cursor-pointer">
                         <KhaltiLogo className="h-10 w-10" />
-                        <span className="ml-3 text-lg font-bold text-nepal-blue">Khalti</span>
+                        <span className="ml-3 text-lg font-bold text-nepal-blue">{getLabel(paymentLabels.khalti)}</span>
                       </div>
                     </div>
                   </div>
@@ -490,14 +493,14 @@ function Payment() {
                           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                         ) : (
                           <>
-                            Pay Rs. {taxDetails.totalTaxAmount.toLocaleString()}
+                            {getLabel(paymentLabels.payAmount)} Rs. {taxDetails.totalTaxAmount.toLocaleString()}
                           </>
                         )}
                       </button>
                     ) : (
                       <div className="text-center py-4">
                         <p className="text-base text-gray-500 font-medium animate-fade-in-slow">
-                          Tax payment is not due yet. You can pay when there are less than 30 days remaining.
+                          {getLabel(paymentLabels.taxNotDueMessage)}
                         </p>
                       </div>
                     )}
@@ -524,9 +527,9 @@ function Payment() {
                 <div className="flex justify-center mb-4">
                   <KhaltiLogo className="h-14 w-14 animate-bounce" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Enter OTP</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{getLabel(paymentLabels.enterOtp)}</h3>
                 <p className="text-base text-gray-500 mb-5">
-                  Please check your email for the OTP and enter it below to confirm your payment.
+                  {getLabel(paymentLabels.otpSentToEmail)}
                 </p>
                 
                 {error && (
@@ -540,7 +543,7 @@ function Payment() {
                     type="text"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder="Enter 6-digit OTP"
+                    placeholder={getLabel(paymentLabels.enter6DigitOtp)}
                     className="w-full px-4 py-3 border-2 border-nepal-blue rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent text-center text-xl font-mono tracking-widest transition-all duration-200"
                     maxLength={6}
                   />
@@ -555,7 +558,7 @@ function Payment() {
                     {otpLoading ? (
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     ) : (
-                      'Verify OTP'
+                      getLabel(paymentLabels.verifyOtp)
                     )}
                   </button>
                   <button
@@ -566,11 +569,11 @@ function Payment() {
                     }}
                     className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-xl shadow"
                   >
-                    Cancel
+                    {getLabel(paymentLabels.cancel)}
                   </button>
                 </div>
                 <div className="mt-5 text-xs text-gray-400">
-                  Didn't receive OTP? Check your email or try again.
+                  {getLabel(paymentLabels.didntReceiveOtp)}
                 </div>
               </div>
             </div>
@@ -585,9 +588,9 @@ function Payment() {
                 <div className="flex justify-center mb-4">
                   <KhaltiLogo className="h-14 w-14 animate-bounce" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Complete Payment</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{getLabel(paymentLabels.completePayment)}</h3>
                 <p className="text-base text-gray-500 mb-5">
-                  Your payment has been confirmed. You will be redirected to Khalti to complete your payment securely.
+                  {getLabel(paymentLabels.paymentConfirmed)}
                 </p>
                 <div className="flex space-x-3">
                   <button
@@ -595,17 +598,17 @@ function Payment() {
                     className="flex-1 bg-gradient-to-r from-nepal-blue to-purple-500 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl shadow transition-all duration-200 flex items-center justify-center"
                   >
                     <KhaltiLogo className="h-5 w-5 mr-2" />
-                    Proceed to Payment
+                    {getLabel(paymentLabels.proceedToPayment)}
                   </button>
                   <button
                     onClick={() => setShowPaymentModal(false)}
                     className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-xl shadow"
                   >
-                    Cancel
+                    {getLabel(paymentLabels.cancel)}
                   </button>
                 </div>
                 <div className="mt-5 text-xs text-gray-400">
-                  After payment, you can verify your transaction using the transaction ID.
+                  {getLabel(paymentLabels.afterPaymentVerify)}
                 </div>
               </div>
             </div>

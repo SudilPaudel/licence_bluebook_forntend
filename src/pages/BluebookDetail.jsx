@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaCar, FaArrowLeft, FaDownload, FaCheckCircle, FaClock, FaTimesCircle, FaCreditCard } from "react-icons/fa";
+import { useLang } from "../context/LanguageContext";
+import { bluebookDetailLabels } from "../labels/bluebookDetailLabels";
 
 function BluebookDetail() {
   // Main component for displaying bluebook details page
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getLabel } = useLang();
   const [bluebook, setBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -75,21 +78,21 @@ function BluebookDetail() {
       case 'verified':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
           <FaCheckCircle className="mr-2" />
-          Verified
+          {getLabel(bluebookDetailLabels.verified)}
         </span>;
       case 'pending':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
           <FaClock className="mr-2" />
-          Pending Verification
+          {getLabel(bluebookDetailLabels.pendingVerification)}
         </span>;
       case 'rejected':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
           <FaTimesCircle className="mr-2" />
-          Rejected
+          {getLabel(bluebookDetailLabels.rejected)}
         </span>;
       default:
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-          Unknown
+          {getLabel(bluebookDetailLabels.unknown)}
         </span>;
     }
   };
@@ -176,14 +179,14 @@ const shouldShowPayTax = (expireDate) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">{getLabel(bluebookDetailLabels.error)}</h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
-            Back to Dashboard
+            {getLabel(bluebookDetailLabels.backToDashboard)}
           </button>
         </div>
       </div>
@@ -194,13 +197,13 @@ const shouldShowPayTax = (expireDate) => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-600 mb-4">Bluebook Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-600 mb-4">{getLabel(bluebookDetailLabels.notFound)}</h2>
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
-            Back to Dashboard
+            {getLabel(bluebookDetailLabels.backToDashboard)}
           </button>
         </div>
       </div>
@@ -221,8 +224,8 @@ const shouldShowPayTax = (expireDate) => {
                 <FaArrowLeft className="h-5 w-5 text-nepal-blue" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-nepal-blue">Bluebook Details</h1>
-                <p className="text-gray-600">Vehicle registration information</p>
+                <h1 className="text-3xl font-bold text-nepal-blue">{getLabel(bluebookDetailLabels.bluebookDetails)}</h1>
+                <p className="text-gray-600">{getLabel(bluebookDetailLabels.vehicleRegistrationInfo)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -233,7 +236,7 @@ const shouldShowPayTax = (expireDate) => {
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-nepal-blue hover:bg-blue-700"
                 >
                   <FaDownload className="mr-2" />
-                  Download
+                  {getLabel(bluebookDetailLabels.download)}
                 </button>
               )}
             </div>
@@ -246,52 +249,52 @@ const shouldShowPayTax = (expireDate) => {
           <div className="px-6 py-6 border-b border-gray-200">
             <div className="flex items-center gap-3 mb-4">
               <FaCar className="h-6 w-6 text-blue-500" />
-              <h2 className="text-xl font-semibold text-gray-900">Vehicle Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{getLabel(bluebookDetailLabels.vehicleInformation)}</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Registration Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleRegistrationNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleRegNo}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Type</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleType)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleType}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Owner Name</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleOwnerName)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleOwnerName}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleNumber}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Model</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleModel)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleModel || bluebook.VehicleModel || 'N/A'}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Manufacture Year</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.manufactureYear)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.manufactureYear}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Chassis Number</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.chassisNumber)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.chasisNumber}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Color</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleColor)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleColor}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Engine CC</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.engineCC)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{bluebook.vehicleEngineCC} cc</p>
               </div>
             </div>
@@ -299,28 +302,28 @@ const shouldShowPayTax = (expireDate) => {
 
           {/* Registration and Tax Information */}
           <div className="px-6 py-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Registration & Tax Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{getLabel(bluebookDetailLabels.registrationAndTaxInformation)}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-500">Vehicle Registration Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.vehicleRegistrationDate)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{formatDate(bluebook.VehicleRegistrationDate)}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Tax Pay Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.taxPayDate)}</label>
                 <p className="mt-1 text-lg font-semibold text-gray-900">{formatDate(bluebook.taxPayDate)}</p>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-500">Tax Expire Date</label>
+                <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.taxExpireDate)}</label>
                 <div className="flex items-center gap-2">
                   <p className={`mt-1 text-lg font-semibold ${isExpired(bluebook.taxExpireDate) ? 'text-red-600' : 'text-gray-900'}`}>
                     {formatDate(bluebook.taxExpireDate)}
                   </p>
                   {isExpired(bluebook.taxExpireDate) && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      Expired
+                      {getLabel(bluebookDetailLabels.expired)}
                     </span>
                   )}
                 </div>
@@ -328,8 +331,8 @@ const shouldShowPayTax = (expireDate) => {
               
               {!isExpired(bluebook.taxExpireDate) && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-500">Days Until Expiry</label>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">{getDaysUntilExpiry(bluebook.taxExpireDate)} days</p>
+                  <label className="block text-sm font-medium text-gray-500">{getLabel(bluebookDetailLabels.daysUntilExpiry)}</label>
+                  <p className="mt-1 text-lg font-semibold text-gray-900">{getDaysUntilExpiry(bluebook.taxExpireDate)} {getLabel(bluebookDetailLabels.days)}</p>
                 </div>
               )}
             </div>
@@ -339,11 +342,11 @@ const shouldShowPayTax = (expireDate) => {
           <div className="px-6 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Status Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{getLabel(bluebookDetailLabels.statusInformation)}</h3>
                 <p className="text-sm text-gray-600">
-                  Created on {formatDate(bluebook.createdAt)}
+                  {getLabel(bluebookDetailLabels.createdOn)} {formatDate(bluebook.createdAt)}
                   {bluebook.updatedAt && bluebook.updatedAt !== bluebook.createdAt && (
-                    <span> • Last updated on {formatDate(bluebook.updatedAt)}</span>
+                    <span> • {getLabel(bluebookDetailLabels.lastUpdatedOn)} {formatDate(bluebook.updatedAt)}</span>
                   )}
                 </p>
               </div>
@@ -359,7 +362,7 @@ const shouldShowPayTax = (expireDate) => {
                     }`}
                   >
                     <FaCreditCard className="mr-2" />
-                    {isExpired(bluebook.taxExpireDate) ? 'Pay Tax (Expired)' : 'Pay Tax (Due Soon)'}
+                    {isExpired(bluebook.taxExpireDate) ? getLabel(bluebookDetailLabels.payTaxExpired) : getLabel(bluebookDetailLabels.payTaxDueSoon)}
                   </button>
                 )}
               </div>
