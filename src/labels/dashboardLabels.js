@@ -122,5 +122,21 @@ export const dashboardLabels = {
   viewProfile: {
     en: "View Profile",
     ne: "प्रोफाइल हेर्नुहोस्"
+  },
+  myElectricBluebooks: {
+    en: "My Electric Bluebooks",
+    ne: "मेरो इलेक्ट्रिक ब्लूबुकहरू"
+  },
+  manageElectricBluebooks: {
+    en: "Manage your electric vehicle bluebook registrations",
+    ne: "तपाईंको इलेक्ट्रिक सवारी साधनको ब्लूबुक दर्ता व्यवस्थापन गर्नुहोस्"
+  },
+  noElectricBluebooks: {
+    en: "No electric bluebooks",
+    ne: "कुनै इलेक्ट्रिक ब्लूबुक छैन"
+  },
+  getStartedElectricBluebook: {
+    en: "Get started by creating a new electric bluebook registration.",
+    ne: "नयाँ इलेक्ट्रिक ब्लूबुक दर्ता सिर्जना गरेर सुरु गर्नुहोस्।"
   }
 };

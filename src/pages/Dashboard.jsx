@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaCar, FaFileAlt, FaClock, FaCheckCircle, FaTimesCircle, FaPlus, FaSearch, FaDownload, FaEdit, FaTrash, FaMotorcycle, FaUserCircle, FaBatteryFull } from "react-icons/fa";
 import { useLang } from "../context/LanguageContext";
 import { dashboardLabels } from "../labels/dashboardLabels";
+import MyElectricBluebooks from "../components/MyElectricBluebooks";
+import Pagination from "../components/Pagination";
 
 function Dashboard() {
   // Main dashboard component for displaying user bluebooks and stats
@@ -12,6 +14,8 @@ function Dashboard() {
   const [user, setUser] = useState(null);
   const [bluebooks, setBluebooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -23,7 +27,6 @@ function Dashboard() {
 
   useEffect(() => {
     checkAuth();
-    fetchUserBluebooks();
     
     // Handle payment verification redirect
     const paymentVerification = searchParams.get('payment_verification');
@@ -50,6 +53,10 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    fetchUserBluebooks(currentPage);
+  }, [currentPage]);
+
   /**
    * Checks if the user is authenticated by verifying localStorage.
    * Redirects to login if not authenticated.
@@ -74,12 +81,14 @@ function Dashboard() {
   /**
    * Fetches the user's bluebooks from the API and updates state and stats.
    */
-  const fetchUserBluebooks = async () => {
+  const fetchUserBluebooks = async (page) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
+      const limit = 5;
       // Fetch both bluebook types in parallel
       const [response, electricResponse] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL}/bluebook/my-bluebooks`, {
+        fetch(`${import.meta.env.VITE_API_URL}/bluebook/my-bluebooks?page=${page}&limit=${limit}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -95,10 +104,13 @@ function Dashboard() {
 
       let fuelBluebooks = [];
       let electricBluebooks = [];
+      let meta = {};
 
       if (response.ok) {
         const data = await response.json();
         fuelBluebooks = data.result || [];
+        meta = data.meta;
+        setTotalPages(meta.totalPages || 1);
       }
       if (electricResponse.ok) {
         const electricData = await electricResponse.json();
@@ -108,7 +120,7 @@ function Dashboard() {
       // Combine both bluebook types
       const allBluebooks = [...fuelBluebooks, ...electricBluebooks.map(bb => ({ ...bb, isElectric: true }))];
       console.log('All bluebooks data:', allBluebooks);
-      setBluebooks(allBluebooks);
+      setBluebooks(fuelBluebooks);
 
       // Calculate stats from combined data
       const total = allBluebooks.length;
@@ -140,6 +152,11 @@ function Dashboard() {
     setLoading(false);
   }
 };
+
+const handlePageChange = (page) => {
+    setCurrentPage(page);
+};
+
 
 /**
  * Handles downloading a bluebook PDF by ID.
@@ -481,9 +498,16 @@ return (
             ))}
           </ul>
             )}
+             <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
           </div>
 
           
+
+      <MyElectricBluebooks />
 
       <div className="mt-12 bg-white/90 shadow-xl rounded-2xl overflow-hidden animate-fade-in-up">
         <div className="px-6 py-6 bg-gradient-to-r from-blue-50 to-white border-b border-gray-100">
