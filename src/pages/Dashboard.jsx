@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaCar, FaFileAlt, FaClock, FaCheckCircle, FaTimesCircle, FaPlus, FaSearch, FaDownload, FaEdit, FaTrash, FaMotorcycle, FaUserCircle, FaBatteryFull } from "react-icons/fa";
 import { useLang } from "../context/LanguageContext";
@@ -25,63 +25,7 @@ function Dashboard() {
     dueSoon: 0
   });
 
-  useEffect(() => {
-    checkAuth();
-    
-    // Handle payment verification redirect
-    const paymentVerification = searchParams.get('payment_verification');
-    const electricPaymentVerification = searchParams.get('electric_payment_verification');
-    const id = searchParams.get('id');
-    const pidx = searchParams.get('pidx');
-    
-    if (paymentVerification === 'true' && id) {
-      // Redirect to payment verification page
-      const redirectUrl = pidx 
-        ? `/payment-verification/${id}?pidx=${pidx}`
-        : `/payment-verification/${id}`;
-      navigate(redirectUrl);
-    }
-    
-    if (electricPaymentVerification === 'true' && id) {
-      // Redirect to electric payment verification page
-      const redirectUrl = pidx 
-        ? `/electric-payment-verification/${id}?pidx=${pidx}`
-        : `/electric-payment-verification/${id}`;
-      navigate(redirectUrl);
-    }
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    fetchUserBluebooks(currentPage);
-  }, [currentPage]);
-
-  /**
-   * Checks if the user is authenticated by verifying localStorage.
-   * Redirects to login if not authenticated.
-   */
-  const checkAuth = () => {
-    const userDetail = localStorage.getItem('userDetail');
-    const token = localStorage.getItem('accessToken');
-
-    if (!userDetail || !token) {
-      navigate('/login');
-      return;
-    }
-
-    try {
-      setUser(JSON.parse(userDetail));
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/login');
-    }
-  };
-
-  /**
-   * Fetches the user's bluebooks from the API and updates state and stats.
-   */
-  const fetchUserBluebooks = async (page) => {
+  const fetchUserBluebooks = useCallback(async (page) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
@@ -151,7 +95,65 @@ function Dashboard() {
   } finally {
     setLoading(false);
   }
-};
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+    
+    // Handle payment verification redirect
+    const paymentVerification = searchParams.get('payment_verification');
+    const electricPaymentVerification = searchParams.get('electric_payment_verification');
+    const id = searchParams.get('id');
+    const pidx = searchParams.get('pidx');
+    
+    if (paymentVerification === 'true' && id) {
+      // Redirect to payment verification page
+      const redirectUrl = pidx 
+        ? `/payment-verification/${id}?pidx=${pidx}`
+        : `/payment-verification/${id}`;
+      navigate(redirectUrl);
+    }
+    
+    if (electricPaymentVerification === 'true' && id) {
+      // Redirect to electric payment verification page
+      const redirectUrl = pidx 
+        ? `/electric-payment-verification/${id}?pidx=${pidx}`
+        : `/electric-payment-verification/${id}`;
+      navigate(redirectUrl);
+    }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetchUserBluebooks(currentPage);
+  }, [currentPage, fetchUserBluebooks]);
+
+  /**
+   * Checks if the user is authenticated by verifying localStorage.
+   * Redirects to login if not authenticated.
+   */
+  const checkAuth = () => {
+    const userDetail = localStorage.getItem('userDetail');
+    const token = localStorage.getItem('accessToken');
+
+    if (!userDetail || !token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setUser(JSON.parse(userDetail));
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      navigate('/login');
+    }
+  };
+
+  /**
+   * Fetches the user's bluebooks from the API and updates state and stats.
+   */
+  
 
 const handlePageChange = (page) => {
     setCurrentPage(page);
