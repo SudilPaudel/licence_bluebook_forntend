@@ -1,7 +1,7 @@
+/* Global app container */
 #root {
   max-width: none;
   margin: 0 auto;
-  text-align: center;
 }
 
 .logo {
