@@ -214,9 +214,9 @@ const shouldShowPayTax = (expireDate) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => navigate('/dashboard')}
                 className="p-2 rounded-full bg-white shadow hover:bg-nepal-blue/10 transition-all duration-200"
@@ -224,11 +224,15 @@ const shouldShowPayTax = (expireDate) => {
                 <FaArrowLeft className="h-5 w-5 text-nepal-blue" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-nepal-blue">{getLabel(bluebookDetailLabels.bluebookDetails)}</h1>
-                <p className="text-gray-600">{getLabel(bluebookDetailLabels.vehicleRegistrationInfo)}</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-nepal-blue">
+                  {getLabel(bluebookDetailLabels.bluebookDetails)}
+                </h1>
+                <p className="text-sm sm:text-base text-gray-600">
+                  {getLabel(bluebookDetailLabels.vehicleRegistrationInfo)}
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {getStatusBadge(bluebook.status)}
               {bluebook.status === 'verified' && (
                 <button
