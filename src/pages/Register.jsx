@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { FaEye, FaEyeSlash, FaSpinner, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import API from "../api/api";
 import Notification from "../components/Notification";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
+import { loginLabels } from "../labels/loginLabels";
 
 function Register() {
   // Main component for user registration and email OTP verification
@@ -33,6 +35,64 @@ function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({ type: "", message: "" });
   const [resendTimer, setResendTimer] = useState(0);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const hasGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    if (!credentialResponse?.credential) {
+      showNotification("error", "Google sign-in failed. Please try again.");
+      return;
+    }
+    setGoogleLoading(true);
+    clearNotification();
+    try {
+      const response = await API.post("/auth/google", {
+        idToken: credentialResponse.credential,
+      });
+      const data = response.data;
+
+      if (data.success) {
+        localStorage.setItem("accessToken", data.result.tokens.accessToken);
+        localStorage.setItem("refreshToken", data.result.tokens.refreshToken);
+        localStorage.setItem("userDetail", JSON.stringify(data.result.detail));
+
+        showNotification("success", "Login successful! Redirecting...");
+        window.dispatchEvent(new Event("storage"));
+
+        setTimeout(() => {
+          if (data.result.detail.role === "admin") {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 1500);
+      } else if (data.requireAdditionalInfo) {
+        navigate("/google-complete-profile", {
+          state: {
+            email: data.result?.email,
+            name: data.result?.name,
+            picture: data.result?.picture || null,
+            idToken: credentialResponse.credential,
+          },
+        });
+      } else {
+        showNotification("error", data.message || "Google sign-in failed. Please try again.");
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message?.toString() ||
+        "Google sign-in failed. Please try again.";
+      showNotification("error", message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setGoogleLoading(false);
+    showNotification("error", "Google sign-in failed. Please try again.");
+  };
 
   /**
    * Handles input changes for form fields and image upload.
@@ -114,15 +174,9 @@ function Register() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      showNotification("error", "Passwords do not match!");
+      showNotification("error", getLabel(registerLabels.passwordMismatch));
       return;
     }
-
-    // Temporarily commented out for testing
-    // if (!formData.image) {
-    //   showNotification("error", "Please upload a valid passport-sized image.");
-    //   return;
-    // }
 
     setIsLoading(true);
     clearNotification();
@@ -290,6 +344,10 @@ function Register() {
         {getLabel(registerLabels.userRegistration)}
       </h2>
 
+      <p className="text-sm text-gray-500 mb-6 text-center">
+        {getLabel(registerLabels.requiredNote)}
+      </p>
+
       <Notification
         type={notification.type}
         message={notification.message}
@@ -298,9 +356,10 @@ function Register() {
 
       <form onSubmit={handleSubmit} className="animate-fade-in-slow">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Name */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.name)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.name)} <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               name="name"
@@ -312,9 +371,10 @@ function Register() {
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.email)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.email)} <span className="text-red-500">*</span>
+            </label>
             <input
               type="email"
               name="email"
@@ -326,9 +386,10 @@ function Register() {
             />
           </div>
 
-          {/* Citizenship No */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.citizenshipNo)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.citizenshipNo)} <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               name="citizenshipNo"
@@ -340,9 +401,10 @@ function Register() {
             />
           </div>
 
-          {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.password)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.password)} <span className="text-red-500">*</span>
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -364,9 +426,10 @@ function Register() {
             </div>
           </div>
 
-          {/* Confirm Password */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.confirmPassword)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.confirmPassword)} <span className="text-red-500">*</span>
+            </label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
@@ -388,9 +451,10 @@ function Register() {
             </div>
           </div>
 
-          {/* Image Upload */}
           <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">{getLabel(registerLabels.passportPhoto)}</label>
+            <label className="block font-semibold mb-1 text-left text-gray-700">
+              {getLabel(registerLabels.passportPhoto)}
+            </label>
             <input
               type="file"
               name="image"
@@ -398,6 +462,9 @@ function Register() {
               onChange={handleChange}
               className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-nepal-blue/90 file:text-white hover:file:bg-nepal-blue/100 transition-all duration-200"
             />
+            <p className="text-xs text-gray-600 mt-1">
+              Requirements: JPG/PNG, max 2MB, 3:4 aspect ratio (e.g. 300x400), plain background, clear full face.
+            </p>
             {imageError && (
               <p className="text-red-600 text-sm mt-1 animate-shake">{imageError}</p>
             )}
@@ -413,7 +480,6 @@ function Register() {
             )}
           </div>
 
-          {/* Submit Button */}
           <div className="col-span-1 md:col-span-2 mt-2">
             <button
               type="submit"
@@ -428,6 +494,36 @@ function Register() {
           </div>
         </div>
       </form>
+
+      {hasGoogleClientId && (
+        <div className="mt-8 animate-fade-in-slow">
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-3 bg-white/90 text-gray-500">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                useOneTap={false}
+                theme="filled_blue"
+                size="large"
+                text="continue_with"
+                shape="rectangular"
+                width={320}
+                disabled={isLoading || googleLoading}
+              />
+            </GoogleOAuthProvider>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 text-center animate-fade-in-slow">
         <p className="text-gray-600 text-base">

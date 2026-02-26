@@ -26,6 +26,7 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ElectricNewBluebook from "./pages/ElectricNewBluebook.jsx";
 import ElectricBluebookDetail from "./pages/ElectricBluebookDetail.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import GoogleCompleteProfile from "./pages/GoogleCompleteProfile.jsx";
 
 function App() {
   return (
@@ -51,6 +52,10 @@ function App() {
               <Route
                 path="/otp-verification"
                 element={<OtpAndResetPassword />}
+              />
+              <Route
+                path="/google-complete-profile"
+                element={<GoogleCompleteProfile />}
               />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />

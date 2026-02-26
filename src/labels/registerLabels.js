@@ -27,6 +27,10 @@ export const registerLabels = {
     en: "Passport Size Photo",
     ne: "पासपोर्ट साइज फोटो"
   },
+  requiredNote: {
+    en: "* indicates required fields",
+    ne: "* ले अनिवार्य फिल्डहरू जनाउँछ"
+  },
   uploadPhoto: {
     en: "Upload Photo",
     ne: "फोटो अपलोड गर्नुहोस्"

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import API from "../api/api";
 import Notification from "../components/Notification";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { loginLabels } from "../labels/loginLabels";
 
@@ -26,6 +27,8 @@ function Login() {
   const [notification, setNotification] = useState({ type: "", message: "" });
   // State for loading spinner
   const [loading, setLoading] = useState(false);
+  // State for Google sign-in loading
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   /**
    * Handles input changes for form fields and clears notifications.
@@ -58,6 +61,64 @@ function Login() {
    */
   const clearNotification = () => {
     setNotification({ type: "", message: "" });
+  };
+
+  const hasGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    if (!credentialResponse?.credential) {
+      showNotification("error", getLabel(loginLabels.googleSignInFailed));
+      return;
+    }
+    setGoogleLoading(true);
+    clearNotification();
+    try {
+      const response = await API.post("/auth/google", {
+        idToken: credentialResponse.credential,
+      });
+      const data = response.data;
+
+      if (data.success) {
+        localStorage.setItem("accessToken", data.result.tokens.accessToken);
+        localStorage.setItem("refreshToken", data.result.tokens.refreshToken);
+        localStorage.setItem("userDetail", JSON.stringify(data.result.detail));
+
+        showNotification("success", "Login successful! Redirecting...");
+        window.dispatchEvent(new Event("storage"));
+
+        setTimeout(() => {
+          if (data.result.detail.role === "admin") {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 1500);
+      } else if (data.requireAdditionalInfo) {
+        navigate("/google-complete-profile", {
+          state: {
+            email: data.result?.email,
+            name: data.result?.name,
+            picture: data.result?.picture || null,
+            idToken: credentialResponse.credential,
+          },
+        });
+      } else {
+        showNotification("error", data.message || getLabel(loginLabels.loginFailed));
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      const message =
+        error?.response?.data?.message?.toString() ||
+        getLabel(loginLabels.googleSignInFailed);
+      showNotification("error", message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setGoogleLoading(false);
+    showNotification("error", getLabel(loginLabels.googleSignInFailed));
   };
 
   /**
@@ -195,6 +256,37 @@ function Login() {
                 {getLabel(loginLabels.login)}
               </button>
             </div>
+
+            {/* Divider and Google Sign-In */}
+            {hasGoogleClientId && (
+              <>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-3 bg-white/90 text-gray-500">
+                      {getLabel(loginLabels.orContinueWith)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={handleGoogleError}
+                      useOneTap={false}
+                      theme="filled_blue"
+                      size="large"
+                      text="continue_with"
+                      shape="rectangular"
+                      width={320}
+                      disabled={loading || googleLoading}
+                    />
+                  </GoogleOAuthProvider>
+                </div>
+              </>
+            )}
           </div>
         </form>
 
