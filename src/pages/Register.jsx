@@ -4,6 +4,7 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { FaEye, FaEyeSlash, FaSpinner, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import CitizenshipInput from "../components/CitizenshipInput";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
 import { loginLabels } from "../labels/loginLabels";
@@ -25,6 +26,7 @@ function Register() {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageError, setImageError] = useState("");
+  const [citizenshipNoError, setCitizenshipNoError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   
@@ -129,6 +131,7 @@ function Register() {
         }
       };
     } else {
+      if (name === "citizenshipNo") setCitizenshipNoError("");
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -172,6 +175,13 @@ function Register() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const citizenshipValid = /^\d{11}$/.test(formData.citizenshipNo || "");
+    if (!citizenshipValid) {
+      setCitizenshipNoError(getLabel(registerLabels.citizenshipNoError));
+      return;
+    }
+    setCitizenshipNoError("");
 
     if (formData.password !== formData.confirmPassword) {
       showNotification("error", getLabel(registerLabels.passwordMismatch));
@@ -386,20 +396,15 @@ function Register() {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">
-              {getLabel(registerLabels.citizenshipNo)} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="citizenshipNo"
-              required
-              placeholder={getLabel(registerLabels.enterCitizenshipNo)}
-              value={formData.citizenshipNo}
-              onChange={handleChange}
-              className="w-full border border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 bg-white shadow transition-all duration-200"
-            />
-          </div>
+          <CitizenshipInput
+            label={getLabel(registerLabels.citizenshipNo)}
+            value={formData.citizenshipNo}
+            onChange={handleChange}
+            error={citizenshipNoError}
+            placeholder={getLabel(registerLabels.enterCitizenshipNo)}
+            required
+            inputClassName="px-5 py-3 rounded-xl focus:ring-4 focus:ring-nepal-blue/30 shadow"
+          />
 
           <div className="flex flex-col gap-2">
             <label className="block font-semibold mb-1 text-left text-gray-700">
