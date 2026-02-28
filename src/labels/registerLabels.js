@@ -100,8 +100,12 @@ export const registerLabels = {
     ne: "आफ्नो इमेल प्रविष्ट गर्नुहोस्"
   },
   enterCitizenshipNo: {
-    en: "Enter citizenship number",
-    ne: "नागरिकता नम्बर प्रविष्ट गर्नुहोस्"
+    en: "Enter 11-digit citizenship number",
+    ne: "११ अंकको नागरिकता नम्बर प्रविष्ट गर्नुहोस्"
+  },
+  citizenshipNoError: {
+    en: "Citizenship number must be exactly 11 numeric digits",
+    ne: "नागरिकता नम्बर ठीक ११ अंकको हुनुपर्छ"
   },
   enterPassword: {
     en: "Enter password",

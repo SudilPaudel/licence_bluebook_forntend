@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { FaEye, FaEyeSlash, FaSpinner, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import CitizenshipInput from "../components/CitizenshipInput";
+import PrimaryButton from "../components/PrimaryButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
 import { loginLabels } from "../labels/loginLabels";
@@ -25,6 +27,7 @@ function Register() {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageError, setImageError] = useState("");
+  const [citizenshipNoError, setCitizenshipNoError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   
@@ -129,6 +132,7 @@ function Register() {
         }
       };
     } else {
+      if (name === "citizenshipNo") setCitizenshipNoError("");
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -172,6 +176,13 @@ function Register() {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const citizenshipValid = /^\d{11}$/.test(formData.citizenshipNo || "");
+    if (!citizenshipValid) {
+      setCitizenshipNoError(getLabel(registerLabels.citizenshipNoError));
+      return;
+    }
+    setCitizenshipNoError("");
 
     if (formData.password !== formData.confirmPassword) {
       showNotification("error", getLabel(registerLabels.passwordMismatch));
@@ -386,20 +397,15 @@ function Register() {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">
-              {getLabel(registerLabels.citizenshipNo)} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="citizenshipNo"
-              required
-              placeholder={getLabel(registerLabels.enterCitizenshipNo)}
-              value={formData.citizenshipNo}
-              onChange={handleChange}
-              className="w-full border border-blue-200 px-5 py-3 rounded-xl focus:outline-none focus:ring-4 focus:ring-nepal-blue/30 bg-white shadow transition-all duration-200"
-            />
-          </div>
+          <CitizenshipInput
+            label={getLabel(registerLabels.citizenshipNo)}
+            value={formData.citizenshipNo}
+            onChange={handleChange}
+            error={citizenshipNoError}
+            placeholder={getLabel(registerLabels.enterCitizenshipNo)}
+            required
+            inputClassName="px-5 py-3 rounded-xl focus:ring-4 focus:ring-nepal-blue/30 shadow"
+          />
 
           <div className="flex flex-col gap-2">
             <label className="block font-semibold mb-1 text-left text-gray-700">
@@ -481,16 +487,9 @@ function Register() {
           </div>
 
           <div className="col-span-1 md:col-span-2 mt-2">
-            <button
-              type="submit"
-              className="w-full inline-flex items-center px-8 py-3 border border-blue-500 rounded-full text-base font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed justify-center"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></span>
-              ) : null}
+            <PrimaryButton type="submit" loading={isLoading} className="w-full">
               {isLoading ? getLabel(registerLabels.registering) : getLabel(registerLabels.register)}
-            </button>
+            </PrimaryButton>
           </div>
         </div>
       </form>
@@ -508,19 +507,14 @@ function Register() {
             </div>
           </div>
           <div className="flex justify-center">
-            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                useOneTap={false}
-                theme="filled_blue"
-                size="large"
-                text="continue_with"
-                shape="rectangular"
-                width={320}
-                disabled={isLoading || googleLoading}
-              />
-            </GoogleOAuthProvider>
+            <GoogleAuthButton
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              loading={googleLoading}
+              disabled={isLoading || googleLoading}
+              label={getLabel(loginLabels.continueWithGoogle)}
+              variant="oval"
+            />
           </div>
         </div>
       )}

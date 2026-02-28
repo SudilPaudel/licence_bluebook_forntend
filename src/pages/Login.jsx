@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import PrimaryButton from "../components/PrimaryButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { loginLabels } from "../labels/loginLabels";
@@ -186,11 +187,12 @@ function Login() {
         />
 
         <form onSubmit={handleSubmit} className="animate-fade-in delay-100">
+          <p className="text-sm text-gray-500 mb-2">{getLabel(loginLabels.requiredNote)}</p>
           <div className="space-y-8">
             {/* Email */}
             <div className="relative group">
               <label className="block font-semibold mb-2 text-left text-gray-700 group-hover:text-nepal-blue transition">
-                {getLabel(loginLabels.email)}
+                {getLabel(loginLabels.email)} <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -208,7 +210,7 @@ function Login() {
             {/* Password */}
             <div className="relative group">
               <label className="block font-semibold mb-2 text-left text-gray-700 group-hover:text-nepal-blue transition">
-                {getLabel(loginLabels.password)}
+                {getLabel(loginLabels.password)} <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -245,16 +247,9 @@ function Login() {
 
             {/* Submit Button */}
             <div>
-              <button
-                type="submit"
-                className="w-full inline-flex items-center px-8 py-3 border border-blue-500 rounded-full text-base font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed justify-center"
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></span>
-                ) : null}
+              <PrimaryButton type="submit" loading={loading} className="w-full">
                 {getLabel(loginLabels.login)}
-              </button>
+              </PrimaryButton>
             </div>
 
             {/* Divider and Google Sign-In */}
@@ -271,19 +266,14 @@ function Login() {
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-                    <GoogleLogin
-                      onSuccess={handleGoogleSuccess}
-                      onError={handleGoogleError}
-                      useOneTap={false}
-                      theme="filled_blue"
-                      size="large"
-                      text="continue_with"
-                      shape="rectangular"
-                      width={320}
-                      disabled={loading || googleLoading}
-                    />
-                  </GoogleOAuthProvider>
+                  <GoogleAuthButton
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    loading={googleLoading}
+                    disabled={loading || googleLoading}
+                    label={getLabel(loginLabels.continueWithGoogle)}
+                    variant="oval"
+                  />
                 </div>
               </>
             )}

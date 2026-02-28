@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import CitizenshipInput from "../components/CitizenshipInput";
+import PrimaryButton from "../components/PrimaryButton";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
 
@@ -17,6 +19,7 @@ function GoogleCompleteProfile() {
   const idToken = state.idToken || "";
 
   const [citizenshipNo, setCitizenshipNo] = useState("");
+  const [citizenshipNoError, setCitizenshipNoError] = useState("");
   const [notification, setNotification] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -74,6 +77,12 @@ function GoogleCompleteProfile() {
       showNotification("error", getLabel(registerLabels.enterCitizenshipNo));
       return;
     }
+    const citizenshipValid = /^\d{11}$/.test(citizenshipNo);
+    if (!citizenshipValid) {
+      setCitizenshipNoError(getLabel(registerLabels.citizenshipNoError));
+      return;
+    }
+    setCitizenshipNoError("");
 
     setIsLoading(true);
     clearNotification();
@@ -160,20 +169,17 @@ function GoogleCompleteProfile() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">
-              {getLabel(registerLabels.citizenshipNo)} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="citizenshipNo"
-              required
-              placeholder={getLabel(registerLabels.enterCitizenshipNo)}
-              value={citizenshipNo}
-              onChange={(e) => setCitizenshipNo(e.target.value)}
-              className="w-full border border-blue-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue/60 bg-white"
-            />
-          </div>
+          <CitizenshipInput
+            label={getLabel(registerLabels.citizenshipNo)}
+            value={citizenshipNo}
+            onChange={(e) => {
+              setCitizenshipNo(e.target.value);
+              setCitizenshipNoError("");
+            }}
+            error={citizenshipNoError}
+            placeholder={getLabel(registerLabels.enterCitizenshipNo)}
+            required
+          />
 
           <div className="flex flex-col gap-2">
             <label className="block font-semibold mb-1 text-left text-gray-700">
@@ -204,16 +210,9 @@ function GoogleCompleteProfile() {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full inline-flex items-center justify-center px-6 py-3 border border-blue-500 rounded-full text-base font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
-            ) : null}
+          <PrimaryButton type="submit" loading={isLoading} className="w-full">
             Complete Registration
-          </button>
+          </PrimaryButton>
         </form>
       </div>
     </div>
