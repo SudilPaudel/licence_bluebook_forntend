@@ -291,6 +291,14 @@ export const adminDashboardLabels = {
     en: "Citizenship No",
     ne: "नागरिकता नं"
   },
+  citizenshipNoError: {
+    en: "Citizenship number must be exactly 11 numeric digits",
+    ne: "नागरिकता नम्बर ठीक ११ अंकको हुनुपर्छ"
+  },
+  enterCitizenshipNo: {
+    en: "Enter 11-digit citizenship number",
+    ne: "११ अंकको नागरिकता नम्बर प्रविष्ट गर्नुहोस्"
+  },
   registrationNo: {
     en: "Registration No",
     ne: "दर्ता नं"
