@@ -43,6 +43,14 @@ export const loginLabels = {
     en: "Login Failed. Please try again with other credentials",
     ne: "लग - इन असफल। कृपया अन्य प्रमाणहरू प्रयोग गरी पुन: प्रयास गर्नुहोस्"
   },
+  googleSignInFailed: {
+    en: "Google sign-in failed. Please try again.",
+    ne: "गुगल साइन-इन असफल भयो। कृपया पुनः प्रयास गर्नुहोस्।"
+  },
+  continueWithGoogle: {
+    en: "Sign in with Google",
+    ne: "Google बाट साइन इन" // translate rest, keep brand as English
+  },
   alreadyLoggedIn: {
     en: "You are already logged in",
     ne: "तपाईं पहिले नै लग इन हुनुभएको छ"

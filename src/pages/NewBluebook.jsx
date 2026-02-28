@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCar, FaSave, FaArrowLeft, FaUpload } from "react-icons/fa";
+import PrimaryButton from "../components/PrimaryButton";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { newBluebookLabels } from "../labels/newBluebookLabels";
@@ -445,14 +446,10 @@ function NewBluebook() {
               >
                 {getLabel(newBluebookLabels.back)}
               </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex items-center px-8 py-3 border border-blue-500 rounded-full text-base font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
-              >
+              <PrimaryButton type="submit" loading={loading} className="flex items-center">
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                    <FaSave className="mr-3 text-lg" />
                     {getLabel(newBluebookLabels.registering)}
                   </>
                 ) : (
@@ -461,7 +458,7 @@ function NewBluebook() {
                     {getLabel(newBluebookLabels.register)}
                   </>
                 )}
-              </button>
+              </PrimaryButton>
             </div>
           </form>
         </div>

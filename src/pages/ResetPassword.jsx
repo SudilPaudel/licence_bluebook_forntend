@@ -36,7 +36,8 @@ function ResetPassword() {
     setLoading(true);
     try {
       const response = await API.post("/auth/reset-password", { token, newPassword });
-      setMessage(response.data.message || getLabel(otpResetLabels.passwordResetSuccessLogin));
+      const msg = response.data.message || getLabel(otpResetLabels.passwordResetSuccessLogin);
+      setMessage(msg);
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setError(
