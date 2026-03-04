@@ -16,12 +16,12 @@ export const forgotPasswordLabels = {
     ne: "आफ्नो इमेल प्रविष्ट गर्नुहोस्"
   },
   sendResetLink: {
-    en: "Send Reset Link",
-    ne: "रिसेट लिङ्क पठाउनुहोस्"
+    en: "Send Reset Code",
+    ne: "रिसेट कोड पठाउनुहोस्"
   },
   resetLinkSent: {
-    en: "If an account with this email exists, a reset link has been sent.",
-    ne: "यदि यस इमेलमा खाता छ भने, रिसेट लिङ्क पठाइएको छ।"
+    en: "If an account with this email exists, a reset code has been sent.",
+    ne: "यदि यस इमेलमा खाता छ भने, रिसेट कोड पठाइएको छ।"
   },
   backToLogin: {
     en: "Back to Login",

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/api";
 import Notification from "../components/Notification";
 import CitizenshipInput from "../components/CitizenshipInput";
+import PrimaryButton from "../components/PrimaryButton";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
 
@@ -209,16 +210,9 @@ function GoogleCompleteProfile() {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full inline-flex items-center justify-center px-6 py-3 border border-blue-500 rounded-full text-base font-bold text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
-            ) : null}
+          <PrimaryButton type="submit" loading={isLoading} className="w-full">
             Complete Registration
-          </button>
+          </PrimaryButton>
         </form>
       </div>
     </div>

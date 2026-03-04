@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { otpResetLabels } from "../labels/otpResetLabels";
+import API from "../api/api";
 
 function OtpAndResetPassword() {
   // Main component for OTP verification and password reset
@@ -14,9 +15,20 @@ function OtpAndResetPassword() {
   const [resendTimer, setResendTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
 
-  const [passwordError, setPasswordError] = useState("");  // <-- new error state
+  const [passwordError, setPasswordError] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || "";
+
+  // if someone navigates here manually without providing email, send them back
+  useEffect(() => {
+    if (!email) {
+      navigate("/forgot-password");
+    }
+  }, [email, navigate]);
 
   /**
    * Handles the resend timer countdown for OTP.
@@ -46,26 +58,38 @@ function OtpAndResetPassword() {
    * Verifies OTP length and sets OTP as verified if valid.
    * @param {React.FormEvent} e
    */
-  const handleOtpSubmit = (e) => {
+  const handleOtpSubmit = async (e) => {
     e.preventDefault();
 
     if (otp.length !== 6) {
+      setOtpError(getLabel(otpResetLabels.invalidOtp));
       return;
     }
 
-    // Assume verification success
-    setOtpVerified(true);
+    try {
+      await API.post("/auth/verify-reset-otp", { email, otp });
+      setOtpVerified(true);
+      setOtpError("");
+    } catch (err) {
+      setOtpError(err.response?.data?.message || getLabel(otpResetLabels.invalidOtp));
+    }
   };
 
   /**
    * Handles resending the OTP.
    * Resets the resend timer and disables the resend button.
    */
-  const handleResend = () => {
+  const handleResend = async () => {
     if (!canResend) return;
     setResendTimer(30);
     setCanResend(false);
-    // TODO: Resend OTP backend call
+    if (email) {
+      try {
+        await API.post("/auth/forgot-password", { email });
+      } catch (err) {
+        // ignore errors, user already informed they got code
+      }
+    }
   };
 
   /**
@@ -73,7 +97,7 @@ function OtpAndResetPassword() {
    * Validates password length and match, then resets password.
    * @param {React.FormEvent} e
    */
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setPasswordError(""); // reset error
 
@@ -86,10 +110,20 @@ function OtpAndResetPassword() {
       return;
     }
 
-    // TODO: Reset password backend call
-
-    // On success redirect:
-    navigate("/login");
+    try {
+      const res = await API.post("/auth/reset-password", { email, otp, newPassword });
+      // show success message before leaving
+      const msg = res.data.message || getLabel(otpResetLabels.passwordResetSuccessLogin);
+      setSuccessMessage(msg);
+      setPasswordError("");
+      // delay navigation so user notices the inline message
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (err) {
+      setPasswordError(
+        err.response?.data?.message ||
+        getLabel(otpResetLabels.passwordResetTryAgain)
+      );
+    }
   };
 
   return (
@@ -99,6 +133,13 @@ function OtpAndResetPassword() {
           <h2 className="text-4xl font-extrabold text-nepal-blue mb-10 text-center tracking-tight animate-slide-down">
             {getLabel(otpResetLabels.otpVerificationTitle)}
           </h2>
+          {email && (
+            <p className="text-center text-gray-600 mb-6 animate-fade-in">
+              {getLabel(otpResetLabels.otpSentTo)}
+              {": "}
+              <span className="font-semibold">{email}</span>
+            </p>
+          )}
           <form onSubmit={handleOtpSubmit} className="space-y-8">
             <div className="relative">
               <label className="block font-semibold mb-2 text-left text-gray-700 tracking-wide">
@@ -115,6 +156,9 @@ function OtpAndResetPassword() {
                 inputMode="numeric"
                 pattern="\d{6}"
               />
+              {otpError && (
+                <p className="text-red-600 text-sm mt-1 animate-shake">{otpError}</p>
+              )}
             </div>
 
             <button
@@ -178,6 +222,9 @@ function OtpAndResetPassword() {
 
             {passwordError && (
               <p className="text-red-600 text-base mb-2 animate-shake">{passwordError}</p>
+            )}
+            {successMessage && (
+              <p className="text-green-600 text-base mb-2 animate-fade-in-up">{successMessage}</p>
             )}
 
             <button

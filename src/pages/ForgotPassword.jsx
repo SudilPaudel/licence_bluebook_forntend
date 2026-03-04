@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api/api";
 import { useLang } from "../context/LanguageContext";
 import { forgotPasswordLabels } from "../labels/forgotPasswordLabels";
@@ -8,10 +9,12 @@ import { forgotPasswordLabels } from "../labels/forgotPasswordLabels";
  */
 function ForgotPassword() {
   const { getLabel } = useLang();
+  const navigate = useNavigate();
   // State for storing the user's email input
   const [email, setEmail] = useState("");
   // State for displaying a message after form submission
   const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
 
   /**
    * Handles the form submission for requesting a password reset.
@@ -23,13 +26,15 @@ function ForgotPassword() {
     setMessage(null);
 
     try {
-      const response = await API.post("/auth/forgot-password", { email });
-      setMessage(response.data.message || "If an account with this email exists, a reset link has been sent.");
+      await API.post("/auth/forgot-password", { email });
+      // move to OTP screen regardless of backend response (always succeed)
+      navigate("/otp-verification", { state: { email } });
     } catch (error) {
-      setMessage(
+      const errorMsg =
         error.response?.data?.message ||
-        "Failed to send reset link. Please try again."
-      );
+        "Failed to send reset code. Please try again.";
+      setMessage(errorMsg);
+      setMessageType("error");
     }
   };
 
@@ -67,7 +72,11 @@ function ForgotPassword() {
       </form>
 
       {message && (
-        <p className="mt-8 text-center text-green-600 font-semibold animate-fade-in-up">
+        <p
+          className={`mt-8 text-center font-semibold animate-fade-in-up ${
+            messageType === "error" ? "text-red-600" : "text-nepal-blue"
+          }`}
+        >
           {message}
         </p>
       )}

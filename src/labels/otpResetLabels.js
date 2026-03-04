@@ -79,7 +79,7 @@ export const otpResetLabels = {
     ne: "नयाँ पासवर्ड पुष्टि गर्नुहोस्"
   },
   passwordMismatch: {
-    en: "Passwords do not match",
+    en: "Credentials do not match",
     ne: "पासवर्डहरू मेल खाँदैनन्"
   },
   passwordResetSuccess: {
