@@ -67,16 +67,24 @@ function Login() {
   const hasGoogleClientId = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
   const handleGoogleSuccess = async (credentialResponse) => {
-    if (!credentialResponse?.credential) {
+    console.log('Google Success Response:', credentialResponse);
+    
+    // Use access_token if available, otherwise fall back to credential (idToken)
+    const token = credentialResponse?.access_token || credentialResponse?.credential;
+    if (!token) {
+      console.error('No token in response:', credentialResponse);
       showNotification("error", getLabel(loginLabels.googleSignInFailed));
       return;
     }
     setGoogleLoading(true);
     clearNotification();
     try {
-      const response = await API.post("/auth/google", {
-        idToken: credentialResponse.credential,
-      });
+      // Send access_token if available, otherwise send idToken
+      const requestBody = credentialResponse?.access_token 
+        ? { accessToken: credentialResponse.access_token }
+        : { idToken: credentialResponse.credential };
+      
+      const response = await API.post("/auth/google", requestBody);
       const data = response.data;
 
       if (data.success) {
@@ -100,7 +108,8 @@ function Login() {
             email: data.result?.email,
             name: data.result?.name,
             picture: data.result?.picture || null,
-            idToken: credentialResponse.credential,
+            idToken: credentialResponse?.credential || null,
+            accessToken: credentialResponse?.access_token || null,
           },
         });
       } else {
@@ -117,7 +126,8 @@ function Login() {
     }
   };
 
-  const handleGoogleError = () => {
+  const handleGoogleError = (error) => {
+    console.error("Google login error:", error);
     setGoogleLoading(false);
     showNotification("error", getLabel(loginLabels.googleSignInFailed));
   };

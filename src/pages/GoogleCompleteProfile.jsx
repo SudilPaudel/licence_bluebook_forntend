@@ -17,6 +17,7 @@ function GoogleCompleteProfile() {
   const initialName = state.name || "";
   const picture = state.picture || null;
   const idToken = state.idToken || "";
+  const accessToken = state.accessToken || "";
 
   const [citizenshipNo, setCitizenshipNo] = useState("");
   const [citizenshipNoError, setCitizenshipNoError] = useState("");
@@ -68,7 +69,8 @@ function GoogleCompleteProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!idToken) {
+    const token = idToken || accessToken;
+    if (!token) {
       showNotification("error", "Google session expired. Please sign in with Google again.");
       return;
     }
@@ -89,7 +91,12 @@ function GoogleCompleteProfile() {
 
     try {
       const formData = new FormData();
-      formData.append("idToken", idToken);
+      // Send accessToken if available, otherwise send idToken
+      if (accessToken) {
+        formData.append("accessToken", accessToken);
+      } else {
+        formData.append("idToken", idToken);
+      }
       formData.append("citizenshipNo", citizenshipNo);
       if (imageFile) {
         formData.append("image", imageFile);
@@ -132,7 +139,8 @@ function GoogleCompleteProfile() {
   };
 
   // If user lands here without proper state (e.g. direct URL), redirect them to login.
-  if (!idToken || !initialEmail) {
+  const token = idToken || accessToken;
+  if (!token || !initialEmail) {
     navigate("/login");
     return null;
   }

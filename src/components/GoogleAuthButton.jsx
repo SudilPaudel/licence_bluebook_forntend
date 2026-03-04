@@ -22,6 +22,7 @@ function GoogleAuthButton({ onSuccess, onError, loading, disabled, label, varian
   const login = useGoogleLogin({
     onSuccess,
     onError,
+    flow: 'implicit',
   });
 
   const isCircle = variant === 'circle';
