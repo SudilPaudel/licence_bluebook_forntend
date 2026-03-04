@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import API from "../api/api";
 import Notification from "../components/Notification";
+import CitizenshipInput from "../components/CitizenshipInput";
 import { useLang } from "../context/LanguageContext";
 import { registerLabels } from "../labels/registerLabels";
 
@@ -17,6 +18,7 @@ function GoogleCompleteProfile() {
   const idToken = state.idToken || "";
 
   const [citizenshipNo, setCitizenshipNo] = useState("");
+  const [citizenshipNoError, setCitizenshipNoError] = useState("");
   const [notification, setNotification] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -74,6 +76,12 @@ function GoogleCompleteProfile() {
       showNotification("error", getLabel(registerLabels.enterCitizenshipNo));
       return;
     }
+    const citizenshipValid = /^\d{11}$/.test(citizenshipNo);
+    if (!citizenshipValid) {
+      setCitizenshipNoError(getLabel(registerLabels.citizenshipNoError));
+      return;
+    }
+    setCitizenshipNoError("");
 
     setIsLoading(true);
     clearNotification();
@@ -160,20 +168,17 @@ function GoogleCompleteProfile() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1 text-left text-gray-700">
-              {getLabel(registerLabels.citizenshipNo)} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="citizenshipNo"
-              required
-              placeholder={getLabel(registerLabels.enterCitizenshipNo)}
-              value={citizenshipNo}
-              onChange={(e) => setCitizenshipNo(e.target.value)}
-              className="w-full border border-blue-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue/60 bg-white"
-            />
-          </div>
+          <CitizenshipInput
+            label={getLabel(registerLabels.citizenshipNo)}
+            value={citizenshipNo}
+            onChange={(e) => {
+              setCitizenshipNo(e.target.value);
+              setCitizenshipNoError("");
+            }}
+            error={citizenshipNoError}
+            placeholder={getLabel(registerLabels.enterCitizenshipNo)}
+            required
+          />
 
           <div className="flex flex-col gap-2">
             <label className="block font-semibold mb-1 text-left text-gray-700">

@@ -36,6 +36,7 @@ import {
 } from "react-icons/fa";
 import fallbackNews from "../assets/news1.jpeg";
 import { toast } from "react-toastify";
+import CitizenshipInput from "../components/CitizenshipInput";
 
 // Helper function to get API URL
 const getApiUrl = (endpoint) => {
@@ -125,6 +126,9 @@ function AdminDashboard() {
   const [editingNews, setEditingNews] = useState(null);
   const [showDeleteNewsModal, setShowDeleteNewsModal] = useState(false);
   const [newsToDelete, setNewsToDelete] = useState(null);
+
+  const [editCitizenshipNoError, setEditCitizenshipNoError] = useState("");
+  const [createAdminCitizenshipNoError, setCreateAdminCitizenshipNoError] = useState("");
 
   // OTP modal state
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -494,7 +498,6 @@ function AdminDashboard() {
 
   // Opens the edit modal and sets the selected user's data for editing.
   const handleEditUser = (user) => {
-    // Sets editing user and populates edit form data, then shows edit modal.
     setEditingUser(user);
     setEditFormData({
       name: user.name,
@@ -503,13 +506,14 @@ function AdminDashboard() {
       role: user.role,
       status: user.status
     });
+    setEditCitizenshipNoError("");
     setShowEditModal(true);
   };
 
   // Handles changes in the edit user form fields.
   const handleEditFormChange = (e) => {
-    // Updates edit form data state as user types in the edit modal.
     const { name, value } = e.target;
+    if (name === "citizenshipNo") setEditCitizenshipNoError("");
     setEditFormData(prev => ({
       ...prev,
       [name]: value
@@ -518,6 +522,12 @@ function AdminDashboard() {
 
   // Sends updated user data to the backend and refreshes dashboard data.
   const handleUpdateUser = async () => {
+    const citizenshipValid = /^\d{11}$/.test(editFormData.citizenshipNo || "");
+    if (!citizenshipValid) {
+      setEditCitizenshipNoError(getLabel(adminDashboardLabels.citizenshipNoError));
+      return;
+    }
+    setEditCitizenshipNoError("");
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/admin/users/${editingUser._id}`, {
@@ -721,13 +731,19 @@ function AdminDashboard() {
 
   // Handles changes in the create admin form fields.
   const handleCreateAdminFormChange = (e) => {
-    // Updates create admin form state as user types.
     const { name, value } = e.target;
+    if (name === "citizenshipNo") setCreateAdminCitizenshipNoError("");
     setCreateAdminForm(prev => ({ ...prev, [name]: value }));
   };
 
   // Sends a request to create a new admin and refreshes dashboard data.
   const handleCreateAdmin = async () => {
+    const citizenshipValid = /^\d{11}$/.test(createAdminForm.citizenshipNo || "");
+    if (!citizenshipValid) {
+      setCreateAdminCitizenshipNoError(getLabel(adminDashboardLabels.citizenshipNoError));
+      return;
+    }
+    setCreateAdminCitizenshipNoError("");
     setCreateAdminLoading(true);
     setCreateAdminError('');
     setCreateAdminSuccess('');
@@ -2142,16 +2158,14 @@ function AdminDashboard() {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.citizenshipNo)}</label>
-                <input
-                  type="text"
-                  name="citizenshipNo"
-                  value={editFormData.citizenshipNo}
-                  onChange={handleEditFormChange}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50"
-                />
-              </div>
+              <CitizenshipInput
+                label={getLabel(adminDashboardLabels.citizenshipNo)}
+                value={editFormData.citizenshipNo}
+                onChange={handleEditFormChange}
+                error={editCitizenshipNoError}
+                placeholder={getLabel(adminDashboardLabels.enterCitizenshipNo) || "Enter 11-digit citizenship number"}
+                inputClassName="px-4 py-2 bg-gray-50"
+              />
               <div>
                 <label className="block text-base font-semibold text-gray-700 mb-1">{getLabel(adminDashboardLabels.role)}</label>
                 <select
@@ -2679,15 +2693,14 @@ function AdminDashboard() {
           />
         </div>
         <div className="space-y-2 animate-fade-in-up delay-50">
-          <label className="block text-base font-semibold text-gray-700 text-left">{getLabel(adminDashboardLabels.citizenshipNo)}</label>
-          <input
-            type="text"
-            name="citizenshipNo"
+          <CitizenshipInput
+            label={getLabel(adminDashboardLabels.citizenshipNo)}
             value={createAdminForm.citizenshipNo}
             onChange={handleCreateAdminFormChange}
-            className="w-full px-5 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 text-lg shadow-sm transition"
+            error={createAdminCitizenshipNoError}
+            placeholder={getLabel(adminDashboardLabels.enterCitizenshipNo)}
             required
-            placeholder="Enter citizenship number..."
+            inputClassName="px-5 py-3 rounded-xl bg-gray-50 text-lg shadow-sm"
           />
         </div>
         <div className="flex justify-end space-x-3 pt-6 animate-fade-in-up delay-200">

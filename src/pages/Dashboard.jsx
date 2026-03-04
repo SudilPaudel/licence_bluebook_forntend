@@ -99,29 +99,21 @@ function Dashboard() {
 
   useEffect(() => {
     checkAuth();
-    
+
     // Handle payment verification redirect
     const paymentVerification = searchParams.get('payment_verification');
     const electricPaymentVerification = searchParams.get('electric_payment_verification');
     const id = searchParams.get('id');
     const pidx = searchParams.get('pidx');
-    
+
     if (paymentVerification === 'true' && id) {
-      // Redirect to payment verification page
-      const redirectUrl = pidx 
-        ? `/payment-verification/${id}?pidx=${pidx}`
-        : `/payment-verification/${id}`;
+      const redirectUrl = pidx ? `/payment-verification/${id}?pidx=${pidx}` : `/payment-verification/${id}`;
       navigate(redirectUrl);
     }
-    
     if (electricPaymentVerification === 'true' && id) {
-      // Redirect to electric payment verification page
-      const redirectUrl = pidx 
-        ? `/electric-payment-verification/${id}?pidx=${pidx}`
-        : `/electric-payment-verification/${id}`;
+      const redirectUrl = pidx ? `/electric-payment-verification/${id}?pidx=${pidx}` : `/electric-payment-verification/${id}`;
       navigate(redirectUrl);
     }
-    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

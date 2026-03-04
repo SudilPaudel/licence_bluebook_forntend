@@ -20,13 +20,13 @@ export default defineConfig({
       ]
     },
     proxy: {
-      '/auth': 'http://backend:9005',
-      '/bluebook': 'http://backend:9005',
-      '/electric-bluebook': 'http://backend:9005',
-      '/news': 'http://backend:9005',
-      '/marquee': 'http://backend:9005',
-      '/admin': 'http://backend:9005',
-      '/payment': 'http://backend:9005',
+      '/auth': 'http://localhost:9005',
+      '/bluebook': 'http://localhost:9005',
+      '/electric-bluebook': 'http://localhost:9005',
+      '/news': 'http://localhost:9005',
+      '/marquee': 'http://localhost:9005',
+      // Removed '/admin' proxy so /admin-dashboard is handled by React Router
+      '/payment': 'http://localhost:9005',
     },
   },
 })

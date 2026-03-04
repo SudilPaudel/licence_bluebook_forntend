@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaIdCard, FaEdit, FaSave, FaTimes, FaCamera, FaArrowLeft, FaShieldAlt, FaUserTag } from "react-icons/fa";
+import CitizenshipInput from "../components/CitizenshipInput";
 import { useLang } from "../context/LanguageContext";
 import { profileLabels } from "../labels/profileLabels";
 
@@ -14,6 +15,7 @@ function Profile() {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [citizenshipNoError, setCitizenshipNoError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -70,6 +72,7 @@ function Profile() {
    */
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "citizenshipNo") setCitizenshipNoError("");
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -99,6 +102,7 @@ function Profile() {
     });
     setError("");
     setSuccess("");
+    setCitizenshipNoError("");
   };
 
   /**
@@ -106,6 +110,12 @@ function Profile() {
    * Sends update request to API and updates user state.
    */
   const handleSave = async () => {
+    const citizenshipValid = /^\d{11}$/.test(formData.citizenshipNo || "");
+    if (!citizenshipValid) {
+      setCitizenshipNoError(getLabel(profileLabels.citizenshipNoError));
+      return;
+    }
+    setCitizenshipNoError("");
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/profile`, {
@@ -343,13 +353,12 @@ function Profile() {
                   </label>
                 </div>
                 {editing ? (
-                  <input
-                    type="text"
-                    name="citizenshipNo"
+                  <CitizenshipInput
                     value={formData.citizenshipNo}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-900 bg-white/90 font-semibold transition-all duration-200"
+                    error={citizenshipNoError}
                     placeholder={getLabel(profileLabels.enterCitizenshipNo)}
+                    inputClassName="px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-400 text-gray-900 bg-white/90 font-semibold"
                   />
                 ) : (
                   <p className="text-lg text-gray-900 font-semibold">{user?.citizenshipNo || 'N/A'}</p>
