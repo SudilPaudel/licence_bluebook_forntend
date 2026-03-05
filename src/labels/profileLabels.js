@@ -15,6 +15,10 @@ export const profileLabels = {
     en: "Personal Information",
     ne: "व्यक्तिगत जानकारी"
   },
+  kycStatus: {
+    en: "KYC Status",
+    ne: "KYC स्थिति"
+  },
   fullName: {
     en: "Full Name",
     ne: "पूरा नाम"
@@ -206,5 +210,281 @@ export const profileLabels = {
   imageFailed: {
     en: "Image Failed to Load",
     ne: "छवि लोड गर्न असफल"
+  },
+  // KYC Labels
+  kycDetails: {
+    en: "KYC Information",
+    ne: "KYC जानकारी"
+  },
+  identityVerification: {
+    en: "Identity Verification",
+    ne: "पहिचान प्रमाणीकरण"
+  },
+  kycDocumentation: {
+    en: "KYC Documentation",
+    ne: "KYC कागजात"
+  },
+  kycPending: {
+    en: "Your identity documents are under review.",
+    ne: "तपाईंको पहिचान कागजात समीक्षा अन्तर्गत छ।"
+  },
+  kycRejected: {
+    en: "Verification Rejected",
+    ne: "प्रमाणीकरण अस्वीकृत"
+  },
+  resubmitDocuments: {
+    en: "Resubmit Documents",
+    ne: "कागजात पुनः पेश गर्नुहोस्"
+  },
+  personalInformation: {
+    en: "Personal Information",
+    ne: "व्यक्तिगत जानकारी"
+  },
+  fullNameNepali: {
+    en: "Full Name (Nepali)",
+    ne: "पूरा नाम"
+  },
+  dateOfBirth: {
+    en: "Date of Birth",
+    ne: "जन्म मिति"
+  },
+  gender: {
+    en: "Gender",
+    ne: "लिंग"
+  },
+  nationality: {
+    en: "Nationality",
+    ne: "राष्ट्रियता"
+  },
+  addressInformation: {
+    en: "Address Information",
+    ne: "ठेगाना जानकारी"
+  },
+  province: {
+    en: "Province",
+    ne: "प्रदेश"
+  },
+  district: {
+    en: "District",
+    ne: "जिल्ला"
+  },
+  municipality: {
+    en: "Municipality",
+    ne: "नगरपालिका"
+  },
+  wardNo: {
+    en: "Ward No.",
+    ne: "वडा नं."
+  },
+  tole: {
+    en: "Tole",
+    ne: "टोल"
+  },
+  citizenshipDetails: {
+    en: "Citizenship Details",
+    ne: "नागरिकता विवरण"
+  },
+  citizenshipNumber: {
+    en: "Citizenship Number",
+    ne: "नागरिकता नम्बर"
+  },
+  issueDate: {
+    en: "Issue Date",
+    ne: "जारी मिति"
+  },
+  issueDistrict: {
+    en: "Issue District",
+    ne: "जारी जिल्ला"
+  },
+  familyInformation: {
+    en: "Family Information",
+    ne: "परिवार जानकारी"
+  },
+  fatherName: {
+    en: "Father's Name",
+    ne: "बुवाको नाम"
+  },
+  motherName: {
+    en: "Mother's Name",
+    ne: "आमाको नाम"
+  },
+  grandfatherName: {
+    en: "Grandfather's Name",
+    ne: "हजुरबुवाको नाम"
+  },
+  citizenshipDocuments: {
+    en: "Citizenship Documents",
+    ne: "नागरिकता कागजात"
+  },
+  frontSide: {
+    en: "FRONT SIDE",
+    ne: "अगाडिको पक्ष"
+  },
+  backSide: {
+    en: "BACK SIDE",
+    ne: "पछाडिको पक्ष"
+  },
+  imageNotAvailable: {
+    en: "Image not available",
+    ne: "छवि उपलब्ध छैन"
+  },
+  submittedOn: {
+    en: "Submitted on",
+    ne: "पेश गरिएको मिति"
+  },
+  kycNotSubmitted: {
+    en: "KYC verification not submitted",
+    ne: "KYC प्रमाणीकरण पेश गरिएको छैन"
+  },
+  completeKyc: {
+    en: "Complete your identity verification",
+    ne: "तपाईंको पहिचान प्रमाणीकरण पूरा गर्नुहोस्"
+  },
+  submitKyc: {
+    en: "Submit KYC",
+    ne: "KYC पेश गर्नुहोस्"
+  },
+  // KYC Status Labels
+  verified: {
+    en: "KYC Verified",
+    ne: "KYC प्रमाणित"
+  },
+  pendingReview: {
+    en: "KYC Under Review",
+    ne: "KYC समीक्षा अन्तर्गत"
+  },
+  rejected: {
+    en: "KYC Rejected",
+    ne: "KYC अस्वीकृत"
+  },
+  notSubmitted: {
+    en: "KYC Not Submitted",
+    ne: "KYC पेश गरिएको छैन"
+  },
+  // KYC Update Labels
+  updateKycInfo: {
+    en: "Update KYC Information",
+    ne: "KYC जानकारी अपडेट गर्नुहोस्"
+  },
+  kycWillBeReset: {
+    en: "Your KYC will be reset to pending for re-verification after update",
+    ne: "अपडेट पछि तपाईंको KYC पुनः प्रमाणीकरणको लागि पेंडिङ हुनेछ"
+  },
+  profileAndKycUpdated: {
+    en: "Profile and KYC updated successfully! Please wait for admin verification.",
+    ne: "प्रोफाइल र KYC सफलतापूर्वक अपडेट भयो! कृपया एडमिन प्रमाणीकरणको लागि पर्खनुहोस्।"
+  },
+  profileUpdatedKycReset: {
+    en: "Profile updated. KYC reset to pending for re-verification.",
+    ne: "प्रोफाइल अपडेट भयो। KYC पुनः प्रमाणीकरणको लागि पेंडिङ रिसेट भयो।"
+  },
+  // Edit mode labels
+  editing: {
+    en: "Editing",
+    ne: "सम्पादन"
+  },
+  kycEditingWarning: {
+    en: "You are editing KYC details. Your KYC status will reset to pending after saving.",
+    ne: "तपाईं KYC विवरण सम्पादन गर्दै हुनुहुन्छ। बचत पछि तपाईंको KYC स्थिति पेंडिङ हुनेछ।"
+  },
+  enterFullNameNepali: {
+    en: "Enter your full name in Nepali",
+    ne: "तपाईंको नेपालीमा पूरा नाम प्रविष्ट गर्नुहोस्"
+  },
+  selectGender: {
+    en: "Select gender",
+    ne: "लिङ्ग चयन गर्नुहोस्"
+  },
+  male: {
+    en: "Male",
+    ne: "पुरुष"
+  },
+  female: {
+    en: "Female",
+    ne: "महिला"
+  },
+  other: {
+    en: "Other",
+    ne: "अन्य"
+  },
+  enterNationality: {
+    en: "Enter nationality",
+    ne: "राष्ट्रियता प्रविष्ट गर्नुहोस्"
+  },
+  enterProvince: {
+    en: "Enter province",
+    ne: "प्रदेश प्रविष्ट गर्नुहोस्"
+  },
+  enterDistrict: {
+    en: "Enter district",
+    ne: "जिल्ला प्रविष्ट गर्नुहोस्"
+  },
+  enterMunicipality: {
+    en: "Enter municipality",
+    ne: "नगरपालिका प्रविष्ट गर्नुहोस्"
+  },
+  enterWardNo: {
+    en: "Enter ward number",
+    ne: "वडा नम्बर प्रविष्ट गर्नुहोस्"
+  },
+  enterTole: {
+    en: "Enter tole/street",
+    ne: "टोल/बाटो प्रविष्ट गर्नुहोस्"
+  },
+  enterCitizenshipNumber: {
+    en: "Enter citizenship number",
+    ne: "नागरिकता नम्बर प्रविष्ट गर्नुहोस्"
+  },
+  enterIssueDistrict: {
+    en: "Enter issue district",
+    ne: "जारी जिल्ला प्रविष्ट गर्नुहोस्"
+  },
+  enterFatherName: {
+    en: "Enter father's name",
+    ne: "बुवाको नाम प्रविष्ट गर्नुहोस्"
+  },
+  enterMotherName: {
+    en: "Enter mother's name",
+    ne: "आमाको नाम प्रविष्ट गर्नुहोस्"
+  },
+  enterGrandfatherName: {
+    en: "Enter grandfather's name",
+    ne: "हजुरबुवाको नाम प्रविष्ट गर्नुहोस्"
+  },
+  currentFile: {
+    en: "Current file",
+    ne: "हालको फाइल"
+  },
+  selectProvince: {
+    en: "Select Province",
+    ne: "प्रदेश चयन गर्नुहोस्"
+  },
+  province1: {
+    en: "Province 1",
+    ne: "प्रदेश १"
+  },
+  province2: {
+    en: "Province 2",
+    ne: "प्रदेश २"
+  },
+  province3: {
+    en: "Province 3 (Bagmati)",
+    ne: "प्रदेश ३ (बागमती)"
+  },
+  province4: {
+    en: "Province 4 (Gandaki)",
+    ne: "प्रदेश ४ (गण्डकी)"
+  },
+  province5: {
+    en: "Province 5 (Lumbini)",
+    ne: "प्रदेश ५ (लुम्बिनी)"
+  },
+  province6: {
+    en: "Province 6 (Karnali)",
+    ne: "प्रदेश ६ (कर्णाली)"
+  },
+  province7: {
+    en: "Province 7 (Sudurpashchim)",
+    ne: "प्रदेश ७ (सुदूरपश्चिम)"
   }
 };
