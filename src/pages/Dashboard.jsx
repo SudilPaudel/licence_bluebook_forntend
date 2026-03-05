@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 import UserProfile from "../components/UserProfile";
 function Dashboard() {
   // Main dashboard component for displaying user bluebooks and stats
-  const { getLabel } = useLang();
+  const { language,getLabel } = useLang();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
@@ -16,6 +16,57 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showKycModal, setShowKycModal] = useState(false);
+
+  // Check if user can register bluebook (must have verified KYC)
+  const handleRegisterBluebook = async (type) => {
+    const token = localStorage.getItem('accessToken');
+    
+    // Fetch fresh user profile to get current KYC status
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const currentUser = data.result;
+        
+        // Update local state and localStorage with fresh data
+        setUser(currentUser);
+        localStorage.setItem('userDetail', JSON.stringify(currentUser));
+        
+        // Check if user has verified KYC
+        if (currentUser?.kycStatus !== 'verified') {
+          setShowKycModal(true);
+          return;
+        }
+      } else {
+        // Fall back to state user
+        if (user?.kycStatus !== 'verified') {
+          setShowKycModal(true);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      // Fall back to state user
+      if (user?.kycStatus !== 'verified') {
+        setShowKycModal(true);
+        return;
+      }
+    }
+    
+    // If KYC is verified, navigate to the appropriate form
+    if (type === 'electric') {
+      navigate('/electric-bluebook/new');
+    } else {
+      navigate('/bluebook/new');
+    }
+  };
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -124,9 +175,9 @@ function Dashboard() {
 
   /**
    * Checks if the user is authenticated by verifying localStorage.
-   * Redirects to login if not authenticated.
+   * Then fetches fresh user profile from server to get current KYC status.
    */
-  const checkAuth = () => {
+  const checkAuth = async () => {
     const userDetail = localStorage.getItem('userDetail');
     const token = localStorage.getItem('accessToken');
 
@@ -136,10 +187,28 @@ function Dashboard() {
     }
 
     try {
+      // First set user from localStorage for initial render
       setUser(JSON.parse(userDetail));
+      
+      // Then fetch fresh profile from server to get current KYC status
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.result) {
+          setUser(data.result);
+          // Also update localStorage with fresh data
+          localStorage.setItem('userDetail', JSON.stringify(data.result));
+        }
+      }
     } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/login');
+      console.error('Error fetching user profile:', error);
+      // Still allow access with cached data
     }
   };
 
@@ -259,7 +328,9 @@ function Dashboard() {
       </div>
     );
   }
-
+  //Fetch nepali full name if the page is nepali and english full name if the page is english language
+  
+ const displayName = language === 'ne' && user.kycDetails?.fullNameNepali ? user.kycDetails.fullNameNepali : user.name;
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       {/* Header */}
@@ -269,20 +340,20 @@ function Dashboard() {
             <div>
               <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight drop-shadow-sm">{getLabel(dashboardLabels.dashboard)}</h1>
               <p className="mt-2 text-base text-gray-500 font-medium">
-                {getLabel(dashboardLabels.welcomeBack)}, <span className="text-nepal-blue font-semibold">{user?.name || 'User'}</span>
+                {getLabel(dashboardLabels.welcomeBack)}, <span className="text-nepal-blue font-semibold">{displayName}</span>
               </p>
 
             </div>
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate('/bluebook/new')}
+                onClick={() => handleRegisterBluebook('regular')}
                 className="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
               >
                 <FaPlus className="mr-2 animate-bounce" />
                 {getLabel(dashboardLabels.newBluebook)}
               </button>
               <button
-                onClick={() => navigate('/electric-bluebook/new')}
+                onClick={() => handleRegisterBluebook('electric')}
                 className="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-semibold rounded-lg shadow-lg text-white bg-gradient-to-r from-nepal-blue to-blue-500 hover:scale-105 hover:from-blue-700 hover:to-nepal-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
               >
                 <FaPlus className="mr-2 animate-bounce" />
@@ -551,6 +622,47 @@ function Dashboard() {
           }
         `}
       </style>
+
+      {/* KYC Verification Required Modal */}
+      {showKycModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-4">
+              <h3 className="text-xl font-bold text-white flex items-center">
+                <FaUserCircle className="mr-2" />
+                {getLabel(dashboardLabels.kycRequired)}
+              </h3>
+            </div>
+            <div className="p-6">
+              <div className="flex items-center justify-center mb-4">
+                <div className="bg-yellow-100 rounded-full p-4">
+                  <FaUserCircle className="h-8 w-8 text-yellow-600" />
+                </div>
+              </div>
+              <p className="text-gray-600 text-center mb-6">
+                {getLabel(dashboardLabels.kycRequiredMessage)}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowKycModal(false)}
+                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                >
+                  {getLabel(dashboardLabels.commonTasks)}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowKycModal(false);
+                    navigate('/kyc-form');
+                  }}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  {getLabel(dashboardLabels.completeKyc)}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

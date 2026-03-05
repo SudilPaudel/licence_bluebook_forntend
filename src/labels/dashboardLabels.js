@@ -138,5 +138,18 @@ export const dashboardLabels = {
   getStartedElectricBluebook: {
     en: "Get started by creating a new electric bluebook registration.",
     ne: "नयाँ इलेक्ट्रिक ब्लूबुक दर्ता सिर्जना गरेर सुरु गर्नुहोस्।"
+  },
+  // KYC Verification Required Labels
+  kycRequired: {
+    en: "KYC Verification Required",
+    ne: "केवाइसी प्रमाणीकरण आवश्यक"
+  },
+  kycRequiredMessage: {
+    en: "You must complete KYC verification before registering a bluebook. Please complete your KYC first.",
+    ne: "ब्लूबुक दर्ता गर्नु अघि तपाईं केवाइसी प्रमाणीकरण पूरा गर्नुपर्छ। कृपया पहिले आफ्नो केवाइसी पूरा गर्नुहोस्।"
+  },
+  completeKyc: {
+    en: "Complete KYC",
+    ne: "केवाइसी पूरा गर्नुहोस्"
   }
 };

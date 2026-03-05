@@ -875,5 +875,158 @@ export const adminDashboardLabels = {
   adminRegistrationSuccess: {
     en: "Admin registration and verification successful!",
     ne: "एडमिन दर्ता र प्रमाणीकरण सफल!"
+  },
+  // KYC Review Labels
+  kycVerification: {
+    en: "KYC Verification",
+    ne: "केवाइसी प्रमाणीकरण"
+  },
+  personalInformation: {
+    en: "Personal Information",
+    ne: "व्यक्तिगत जानकारी"
+  },
+  fullName: {
+    en: "Full Name",
+    ne: "पूरा नाम"
+  },
+  nepaliName: {
+    en: "Nepali Name",
+    ne: "नेपाली नाम"
+  },
+  dateOfBirth: {
+    en: "Date of Birth",
+    ne: "जन्म मिति"
+  },
+  gender: {
+    en: "Gender",
+    ne: "लिंग"
+  },
+  nationality: {
+    en: "Nationality",
+    ne: "राष्ट्रियता"
+  },
+  addressInformation: {
+    en: "Address Information",
+    ne: "ठेगाना जानकारी"
+  },
+  province: {
+    en: "Province",
+    ne: "प्रदेश"
+  },
+  district: {
+    en: "District",
+    ne: "जिल्ला"
+  },
+  municipality: {
+    en: "Municipality",
+    ne: "नगरपालिका"
+  },
+  wardNo: {
+    en: "Ward No",
+    ne: "वडा नं."
+  },
+  tole: {
+    en: "Tole",
+    ne: "टोल"
+  },
+  citizenshipInformation: {
+    en: "Citizenship Information",
+    ne: "नागरिकता जानकारी"
+  },
+  citizenshipNo: {
+    en: "Citizenship No",
+    ne: "नागरिकता नं."
+  },
+  issueDate: {
+    en: "Issue Date",
+    ne: "जारी मिति"
+  },
+  issueDistrict: {
+    en: "Issue District",
+    ne: "जारी जिल्ला"
+  },
+  familyInformation: {
+    en: "Family Information",
+    ne: "परिवार जानकारी"
+  },
+  fatherName: {
+    en: "Father's Name",
+    ne: "बुवाको नाम"
+  },
+  motherName: {
+    en: "Mother's Name",
+    ne: "आमाको नाम"
+  },
+  grandfatherName: {
+    en: "Grandfather's Name",
+    ne: "हजुरबुवाको नाम"
+  },
+  documentImages: {
+    en: "Document Images",
+    ne: "कागजात चित्रहरू"
+  },
+  frontImage: {
+    en: "Front Image",
+    ne: "अगाडिको चित्र"
+  },
+  backImage: {
+    en: "Back Image",
+    ne: "पछाडिको चित्र"
+  },
+  rejectionReason: {
+    en: "Rejection Reason",
+    ne: "अस्वीकृति कारण"
+  },
+  rejectionReasonLabel: {
+    en: "Rejection Reason (if rejecting)",
+    ne: "अस्वीकृति कारण (अस्वीकार गर्दा)"
+  },
+  enterRejectionReason: {
+    en: "Enter reason for rejection...",
+    ne: "अस्वीकृति कारण लेख्नुहोस्..."
+  },
+  cancel: {
+    en: "Cancel",
+    ne: "रद्द गर्नुहोस्"
+  },
+  reject: {
+    en: "Reject",
+    ne: "अस्वीकार गर्नुहोस्"
+  },
+  approve: {
+    en: "Approve",
+    ne: "स्वीकृत गर्नुहोस्"
+  },
+  kycAlreadyVerified: {
+    en: "KYC Already Verified",
+    ne: "केवाइसी पहिले नै प्रमाणित"
+  },
+  kycRejected: {
+    en: "KYC Rejected",
+    ne: "केवाइसी अस्वीकृत"
+  },
+  kycApproved: {
+    en: "KYC Approved Successfully",
+    ne: "केवाइसी सफलतापूर्वक स्वीकृत"
+  },
+  kycRejectedSuccess: {
+    en: "KYC Rejected Successfully",
+    ne: "केवाइसी सफलतापूर्वक अस्वीकृत"
+  },
+  viewKyc: {
+    en: "View KYC",
+    ne: "केवाइसी हेर्नुहोस्"
+  },
+  male: {
+    en: "Male",
+    ne: "पुरुष"
+  },
+  female: {
+    en: "Female",
+    ne: "महिला"
+  },
+  other: {
+    en: "Other",
+    ne: "अन्य"
   }
 };

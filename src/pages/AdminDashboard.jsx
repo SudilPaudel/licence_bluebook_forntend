@@ -98,6 +98,11 @@ function AdminDashboard() {
   const [showCreateAdminModal, setShowCreateAdminModal] = useState(false);
   const [createAdminForm, setCreateAdminForm] = useState({ name: '', email: '', citizenshipNo: '', password: '' });
   const [createAdminLoading, setCreateAdminLoading] = useState(false);
+  const [showKycModal, setShowKycModal] = useState(false);
+  const [selectedKycUser, setSelectedKycUser] = useState(null);
+  const [kycDetails, setKycDetails] = useState(null);
+  const [loadingKyc, setLoadingKyc] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
   const [createAdminError, setCreateAdminError] = useState('');
   const [createAdminSuccess, setCreateAdminSuccess] = useState('');
   
@@ -482,6 +487,40 @@ function AdminDashboard() {
     );
   };
 
+  // Returns a badge component for KYC status.
+  const getKycStatusBadge = (status) => {
+    switch (status) {
+      case 'verified':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <FaCheckCircle className="mr-1" />
+            Verified
+          </span>
+        );
+      case 'pending':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+            <FaClock className="mr-1" />
+            Pending
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+            <FaTimesCircle className="mr-1" />
+            Rejected
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            <FaShieldAlt className="mr-1" />
+            Not Submitted
+          </span>
+        );
+    }
+  };
+
   // Opens the user details modal for the selected user.
   const handleViewUserDetails = (user) => {
     // Sets selected user and shows the user modal.
@@ -508,6 +547,97 @@ function AdminDashboard() {
     });
     setEditCitizenshipNoError("");
     setShowEditModal(true);
+  };
+
+  // Opens the KYC review modal for the selected user.
+  const handleViewKyc = async (user) => {
+    setSelectedKycUser(user);
+    setLoadingKyc(true);
+    setShowKycModal(true);
+    setRejectReason('');
+    
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`/kyc/admin/users/${user._id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.kycDetails) {
+        setKycDetails(data.kycDetails);
+      } else {
+        setKycDetails(null);
+      }
+    } catch (error) {
+      console.error('Error fetching KYC details:', error);
+      toast.error('Failed to load KYC details');
+    } finally {
+      setLoadingKyc(false);
+    }
+  };
+
+  // Approves the KYC for the selected user.
+  const handleApproveKyc = async () => {
+    if (!selectedKycUser) return;
+    
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`/kyc/admin/users/${selectedKycUser._id}/approve`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        toast.success('KYC approved successfully');
+        setShowKycModal(false);
+        // Update the user in the users list
+        setUsers(users.map(u => 
+          u._id === selectedKycUser._id ? { ...u, kycStatus: 'verified' } : u
+        ));
+      } else {
+        throw new Error('Failed to approve KYC');
+      }
+    } catch (error) {
+      console.error('Error approving KYC:', error);
+      toast.error('Failed to approve KYC');
+    }
+  };
+
+  // Rejects the KYC for the selected user.
+  const handleRejectKyc = async () => {
+    if (!selectedKycUser || !rejectReason.trim()) {
+      toast.error('Please provide a reason for rejection');
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`/kyc/admin/users/${selectedKycUser._id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reason: rejectReason })
+      });
+      
+      if (response.ok) {
+        toast.success('KYC rejected');
+        setShowKycModal(false);
+        // Update the user in the users list
+        setUsers(users.map(u => 
+          u._id === selectedKycUser._id ? { ...u, kycStatus: 'rejected' } : u
+        ));
+      } else {
+        throw new Error('Failed to reject KYC');
+      }
+    } catch (error) {
+      console.error('Error rejecting KYC:', error);
+      toast.error('Failed to reject KYC');
+    }
   };
 
   // Handles changes in the edit user form fields.
@@ -1296,6 +1426,7 @@ function AdminDashboard() {
                           <div className="flex items-center space-x-2">
                             {getUserStatusBadge(user.status)}
                             {getUserRoleBadge(user.role)}
+                            {getKycStatusBadge(user.kycStatus || 'none')}
                           </div>
                         </div>
                       ))}
@@ -1370,6 +1501,7 @@ function AdminDashboard() {
                               {getUserRoleBadge(user.role)}
                             </div>
                             <div className="flex items-center space-x-2">
+                              <span className="text-xs text-gray-500">{getKycStatusBadge(user.kycStatus || 'none')}</span>
                               <button
                                 onClick={() => handleViewUserDetails(user)}
                                 className="inline-flex items-center px-3 py-1 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-100 shadow"
@@ -1401,6 +1533,15 @@ function AdminDashboard() {
                                 >
                                   <FaTrash className="mr-1" />
                                   {getLabel(adminDashboardLabels.delete)}
+                                </button>
+                              )}
+                              {(user.kycStatus === 'pending' || user.kycStatus === 'verified' || user.kycStatus === 'rejected') && (
+                                <button
+                                  onClick={() => handleViewKyc(user)}
+                                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-lg text-yellow-700 bg-yellow-100 hover:bg-yellow-200 shadow"
+                                >
+                                  <FaShieldAlt className="mr-1" />
+                                  {getLabel(adminDashboardLabels.viewKyc)}
                                 </button>
                               )}
                             </div>
@@ -2113,6 +2254,176 @@ function AdminDashboard() {
                 {/* Add more fields as needed */}
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* KYC Review Modal */}
+      {showKycModal && selectedKycUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative animate-fade-in-up">
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl"
+              onClick={() => setShowKycModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-nepal-blue">{getLabel(adminDashboardLabels.kycVerification)} - {selectedKycUser.name}</h2>
+              {getKycStatusBadge(selectedKycUser.kycStatus)}
+            </div>
+            
+            {loadingKyc ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-nepal-blue"></div>
+              </div>
+            ) : kycDetails ? (
+              <div className="space-y-6">
+                {/* Personal Information */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.personalInformation)}</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.fullName)}:</span> {kycDetails.fullName}</div>
+                    {kycDetails.fullNameNepali && <div><span className="font-medium">{getLabel(adminDashboardLabels.nepaliName)}:</span> {kycDetails.fullNameNepali}</div>}
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.dateOfBirth)}:</span> {kycDetails.dateOfBirth}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.gender)}:</span> {kycDetails.gender === 'Male' ? getLabel(adminDashboardLabels.male) : kycDetails.gender === 'Female' ? getLabel(adminDashboardLabels.female) : getLabel(adminDashboardLabels.other)}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.nationality)}:</span> {kycDetails.nationality}</div>
+                  </div>
+                </div>
+
+                {/* Address Information */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.addressInformation)}</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.province)}:</span> {kycDetails.province}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.district)}:</span> {kycDetails.district}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.municipality)}:</span> {kycDetails.municipality}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.wardNo)}:</span> {kycDetails.wardNo}</div>
+                    {kycDetails.tole && <div><span className="font-medium">{getLabel(adminDashboardLabels.tole)}:</span> {kycDetails.tole}</div>}
+                  </div>
+                </div>
+
+                {/* Citizenship Information */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.citizenshipInformation)}</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.citizenshipNo)}:</span> {kycDetails.citizenshipNo}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.issueDate)}:</span> {kycDetails.citizenshipIssueDate}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.issueDistrict)}:</span> {kycDetails.citizenshipIssueDistrict}</div>
+                  </div>
+                </div>
+
+                {/* Family Information */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.familyInformation)}</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.fatherName)}:</span> {kycDetails.fatherName}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.motherName)}:</span> {kycDetails.motherName}</div>
+                    {kycDetails.grandfatherName && <div><span className="font-medium">{getLabel(adminDashboardLabels.grandfatherName)}:</span> {kycDetails.grandfatherName}</div>}
+                  </div>
+                </div>
+
+                {/* Document Images */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.documentImages)}</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {kycDetails.frontImage && (
+                      <div>
+                        <p className="font-medium mb-2">{getLabel(adminDashboardLabels.frontImage)}</p>
+                        <img 
+                          src={`${import.meta.env.VITE_API_URL}/public${kycDetails.frontImage}`} 
+                          alt="Citizenship Front" 
+                          className="w-full h-48 object-cover rounded-lg border"
+                        />
+                      </div>
+                    )}
+                    {kycDetails.backImage && (
+                      <div>
+                        <p className="font-medium mb-2">{getLabel(adminDashboardLabels.backImage)}</p>
+                        <img 
+                          src={`${import.meta.env.VITE_API_URL}/public${kycDetails.backImage}`} 
+                          alt="Citizenship Back" 
+                          className="w-full h-48 object-cover rounded-lg border"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Rejection Reason (if rejected) */}
+                {selectedKycUser.kycStatus === 'rejected' && kycDetails.rejectionReason && (
+                  <div className="bg-red-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-red-800 mb-2">{getLabel(adminDashboardLabels.rejectionReason)}</h3>
+                    <p className="text-red-700">{kycDetails.rejectionReason}</p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                {selectedKycUser.kycStatus === 'pending' && (
+                  <div className="flex flex-col gap-4 pt-4 border-t">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {getLabel(adminDashboardLabels.rejectionReasonLabel)}
+                      </label>
+                      <textarea
+                        value={rejectReason}
+                        onChange={(e) => setRejectReason(e.target.value)}
+                        placeholder={getLabel(adminDashboardLabels.enterRejectionReason)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nepal-blue"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex justify-end gap-3">
+                      <button
+                        onClick={() => setShowKycModal(false)}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                      >
+                        {getLabel(adminDashboardLabels.cancel)}
+                      </button>
+                      <button
+                        onClick={handleRejectKyc}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                      >
+                        {getLabel(adminDashboardLabels.reject)}
+                      </button>
+                      <button
+                        onClick={handleApproveKyc}
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                      >
+                        {getLabel(adminDashboardLabels.approve)}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedKycUser.kycStatus === 'verified' && (
+                  <div className="flex justify-end pt-4 border-t">
+                    <button
+                      onClick={() => setShowKycModal(false)}
+                      className="px-4 py-2 bg-nepal-blue text-white rounded-lg hover:bg-blue-700"
+                    >
+                      {getLabel(adminDashboardLabels.cancel)}
+                    </button>
+                  </div>
+                )}
+
+                {selectedKycUser.kycStatus === 'rejected' && (
+                  <div className="flex justify-end pt-4 border-t">
+                    <button
+                      onClick={() => setShowKycModal(false)}
+                      className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No KYC details found
+              </div>
+            )}
           </div>
         </div>
       )}

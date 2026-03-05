@@ -27,6 +27,7 @@ export default defineConfig({
       '/marquee': 'http://localhost:9005',
       // Removed '/admin' proxy so /admin-dashboard is handled by React Router
       '/payment': 'http://localhost:9005',
+      '/kyc': 'http://localhost:9005',
     },
   },
 })
