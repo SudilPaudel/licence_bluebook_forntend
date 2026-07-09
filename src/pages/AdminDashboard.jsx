@@ -39,12 +39,7 @@ import {
 import fallbackNews from "../assets/news1.jpeg";
 import { toast } from "react-toastify";
 import CitizenshipInput from "../components/CitizenshipInput";
-
-// Helper function to get API URL
-const getApiUrl = (endpoint) => {
-  // Use relative URL for proxy, fallback to full URL if needed
-  return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-};
+import { getApiUrl } from "../utils/api";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -349,7 +344,7 @@ function AdminDashboard() {
       }
 
       // Fetch news
-      const newsResponse = await fetch(`/news`, {
+      const newsResponse = await fetch(getApiUrl('/news'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -555,11 +550,16 @@ function AdminDashboard() {
     
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/kyc/admin/users/${user._id}`, {
+      const response = await fetch(getApiUrl(`/kyc/admin/users/${user._id}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to load KYC details');
+      }
+
       const data = await response.json();
       if (data.kycDetails) {
         setKycDetails(data.kycDetails);
@@ -580,7 +580,7 @@ function AdminDashboard() {
     
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/kyc/admin/users/${selectedKycUser._id}/approve`, {
+      const response = await fetch(getApiUrl(`/kyc/admin/users/${selectedKycUser._id}/approve`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -612,7 +612,7 @@ function AdminDashboard() {
     
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/kyc/admin/users/${selectedKycUser._id}/reject`, {
+      const response = await fetch(getApiUrl(`/kyc/admin/users/${selectedKycUser._id}/reject`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -981,7 +981,7 @@ function AdminDashboard() {
         formData.append('image', newsImage);
       }
 
-      const response = await fetch(`/news`, {
+      const response = await fetch(getApiUrl('/news'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -1054,7 +1054,7 @@ function AdminDashboard() {
         formData.append('image', newsImage);
       }
 
-      const response = await fetch(`/news/${editingNews._id}`, {
+      const response = await fetch(getApiUrl(`/news/${editingNews._id}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -1103,25 +1103,13 @@ function AdminDashboard() {
       const token = localStorage.getItem('accessToken');
       
       // Try relative URL first (for proxy)
-      let response = await fetch(`/news/${newsToDelete._id}`, {
+      const response = await fetch(getApiUrl(`/news/${newsToDelete._id}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-
-      // If relative URL fails, try full URL
-      if (!response.ok && response.status !== 404) {
-        console.log('Relative URL failed, trying full URL...');
-        response = await fetch(`${import.meta.env.VITE_API_URL}/news/${newsToDelete._id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-      }
 
       if (response.ok) {
         toast.success(getLabel(adminDashboardLabels.newsDeletedSuccess));
@@ -1144,8 +1132,8 @@ function AdminDashboard() {
       const token = localStorage.getItem('accessToken');
       
       // Try relative URL first (for proxy)
-      let apiUrl = getApiUrl(`/news/${newsId}/status`);
-      let response = await fetch(apiUrl, {
+      const apiUrl = getApiUrl(`/news/${newsId}/status`);
+      const response = await fetch(apiUrl, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -1154,21 +1142,6 @@ function AdminDashboard() {
         },
         body: JSON.stringify({ status: newStatus })
       });
-      
-      // If relative URL fails, try full URL
-      if (!response.ok && response.status !== 404) {
-        console.log('Relative URL failed, trying full URL...');
-        apiUrl = `${import.meta.env.VITE_API_URL}/news/${newsId}/status`;
-        response = await fetch(apiUrl, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({ status: newStatus })
-        });
-      }
       
       console.log('Response status:', response.status);
       
@@ -1209,7 +1182,7 @@ function AdminDashboard() {
   // Marquee management functions
   const fetchMarqueeText = async () => {
     try {
-      const response = await fetch(`/marquee`);
+      const response = await fetch(getApiUrl('/marquee'));
       const data = await response.json();
       setMarqueeText(data.result || '');
     } catch (error) {
@@ -1225,7 +1198,7 @@ function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`/marquee`, {
+      const response = await fetch(getApiUrl('/marquee'), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
