@@ -6,6 +6,7 @@ import NepaliDateInput from "../components/NepaliDateInput";
 import { useLang } from "../context/LanguageContext";
 import { profileLabels } from "../labels/profileLabels";
 import { formatAdDateForDisplay, formatAdDateTimeForDisplay } from "../utils/dateUtils";
+import { compressImageForUpload } from "../utils/imageUtils";
 
 function Profile() {
   // Main component for displaying and editing user profile
@@ -47,6 +48,7 @@ function Profile() {
   });
   const [frontImage, setFrontImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
+  const [compressingImage, setCompressingImage] = useState(null);
 
   // Helper function for KYC status badge
   const getKycStatusBadge = (status) => {
@@ -170,14 +172,25 @@ function Profile() {
   };
 
   // Handle file input changes
-  const handleFileChange = (e, field) => {
+  const handleFileChange = async (e, field) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      setCompressingImage(field);
+      const compressed = await compressImageForUpload(file);
+
       if (field === 'frontImage') {
-        setFrontImage(file);
+        setFrontImage(compressed);
       } else if (field === 'backImage') {
-        setBackImage(file);
+        setBackImage(compressed);
       }
+    } catch (error) {
+      console.error('Image compression error:', error);
+      setError('Could not process image. Please upload a JPG or PNG file.');
+    } finally {
+      setCompressingImage(null);
+      e.target.value = '';
     }
   };
 
@@ -389,6 +402,13 @@ function Profile() {
         console.log('KYC update response status:', kycResponse.status);
         const kycData = await kycResponse.json();
         console.log('KYC update response data:', kycData);
+
+        if (!kycResponse.ok) {
+          if (kycResponse.status === 413) {
+            throw new Error('Upload too large. Please use smaller images and try again.');
+          }
+          throw new Error(kycData.message || 'Failed to update KYC');
+        }
         
         setSuccess(getLabel(profileLabels.profileAndKycUpdated));
       } else {

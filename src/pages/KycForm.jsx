@@ -5,6 +5,7 @@ import { FaUpload, FaUser, FaCalendar, FaMapMarkerAlt, FaIdCard, FaChild, FaChec
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NepaliDateInput from '../components/NepaliDateInput';
+import { compressImageForUpload } from '../utils/imageUtils';
 
 const KycForm = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const KycForm = () => {
   const [backImage, setBackImage] = useState(null);
   const [frontImagePreview, setFrontImagePreview] = useState(null);
   const [backImagePreview, setBackImagePreview] = useState(null);
+  const [compressingImage, setCompressingImage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,16 +127,27 @@ const KycForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e, field) => {
+  const handleFileChange = async (e, field) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      setCompressingImage(field);
+      const compressed = await compressImageForUpload(file);
+
       if (field === 'frontImage') {
-        setFrontImage(file);
-        setFrontImagePreview(URL.createObjectURL(file));
+        setFrontImage(compressed);
+        setFrontImagePreview(URL.createObjectURL(compressed));
       } else {
-        setBackImage(file);
-        setBackImagePreview(URL.createObjectURL(file));
+        setBackImage(compressed);
+        setBackImagePreview(URL.createObjectURL(compressed));
       }
+    } catch (error) {
+      console.error('Image compression error:', error);
+      toast.error('Could not process image. Please upload a JPG or PNG file.');
+    } finally {
+      setCompressingImage(null);
+      e.target.value = '';
     }
   };
 
@@ -183,7 +196,6 @@ const KycForm = () => {
         baseURL: import.meta.env.VITE_API_URL || 'http://localhost:9005',
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
         }
       });
 
@@ -195,7 +207,11 @@ const KycForm = () => {
       }
     } catch (error) {
       console.error('KYC submission error:', error);
-      toast.error(error.response?.data?.message || 'Failed to submit KYC');
+      if (error.response?.status === 413) {
+        toast.error('Upload too large. Please use smaller images and try again.');
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to submit KYC');
+      }
     } finally {
       setSubmitting(false);
     }
