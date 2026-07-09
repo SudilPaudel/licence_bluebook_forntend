@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaCar, FaFileAlt, FaClock, FaCheckCircle, FaTimesCircle, FaPlus, FaSearch, FaDownload, FaEdit, FaTrash, FaMotorcycle, FaUserCircle, FaBatteryFull } from "react-icons/fa";
 import { useLang } from "../context/LanguageContext";
 import { dashboardLabels } from "../labels/dashboardLabels";
+import { formatAdDateForDisplay } from "../utils/dateUtils";
 import MyElectricBluebooks from "../components/MyElectricBluebooks";
 import Pagination from "../components/Pagination";
 import UserProfile from "../components/UserProfile";
@@ -187,8 +188,14 @@ function Dashboard() {
     }
 
     try {
+      const parsedUser = JSON.parse(userDetail);
+      if (parsedUser.role === 'admin') {
+        navigate('/admin-dashboard', { replace: true });
+        return;
+      }
+
       // First set user from localStorage for initial render
-      setUser(JSON.parse(userDetail));
+      setUser(parsedUser);
       
       // Then fetch fresh profile from server to get current KYC status
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/profile`, {
@@ -264,14 +271,7 @@ function Dashboard() {
    * @param {string} dateString
    * @returns {string}
    */
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const formatDate = (dateString) => formatAdDateForDisplay(dateString, language, 'MMM D, YYYY');
 
   /**
    * Returns a status badge JSX element based on the bluebook status.

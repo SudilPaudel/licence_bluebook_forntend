@@ -4,6 +4,7 @@ import { FaArrowLeft, FaCreditCard, FaShieldAlt, FaCheckCircle, FaClock, FaExcla
 import khaltiLogo from "../assets/khalti.png";
 import { useLang } from "../context/LanguageContext";
 import { paymentLabels } from "../labels/paymentLabels";
+import { formatAdDateForDisplay } from "../utils/dateUtils";
 
 // Khalti Logo Component using PNG
 /**
@@ -19,7 +20,7 @@ function Payment() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getLabel } = useLang();
+  const { language, getLabel } = useLang();
   const [bluebook, setBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -268,11 +269,7 @@ function Payment() {
    */
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    return formatAdDateForDisplay(dateString, language, 'MMMM D, YYYY') || 'N/A';
   };
 
   /**

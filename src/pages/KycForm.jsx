@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaUpload, FaUser, FaCalendar, FaMapMarkerAlt, FaIdCard, FaChild, FaCheckCircle, FaClock, FaTimesCircle } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NepaliDateInput from '../components/NepaliDateInput';
 
 const KycForm = () => {
   const navigate = useNavigate();
@@ -335,12 +336,10 @@ const KycForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth *</label>
-                  <input
-                    type="date"
+                  <NepaliDateInput
                     name="dateOfBirth"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nepal-blue"
                   />
                 </div>
@@ -463,12 +462,10 @@ const KycForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Issue Date *</label>
-                  <input
-                    type="date"
+                  <NepaliDateInput
                     name="citizenshipIssueDate"
                     value={formData.citizenshipIssueDate}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-nepal-blue"
                   />
                 </div>

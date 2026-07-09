@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaIdCard, FaEdit, FaSave, FaTimes, FaCamera, FaArrowLeft, FaShieldAlt, FaUserTag, FaCheckCircle, FaClock, FaTimesCircle, FaIdCardAlt } from "react-icons/fa";
 import CitizenshipInput from "../components/CitizenshipInput";
+import NepaliDateInput from "../components/NepaliDateInput";
 import { useLang } from "../context/LanguageContext";
 import { profileLabels } from "../labels/profileLabels";
+import { formatAdDateForDisplay, formatAdDateTimeForDisplay } from "../utils/dateUtils";
 
 function Profile() {
   // Main component for displaying and editing user profile
 
   const navigate = useNavigate();
-  const { getLabel } = useLang();
+  const { language, getLabel } = useLang();
   const [user, setUser] = useState(null);
   const [kycDetails, setKycDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -756,15 +758,14 @@ function Profile() {
                               <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
                                 <p className="text-xs font-semibold text-slate-400 uppercase">{getLabel(profileLabels.dateOfBirth)}</p>
                                 {editing ? (
-                                  <input
-                                    type="date"
+                                  <NepaliDateInput
                                     name="dateOfBirth"
                                     value={kycFormData.dateOfBirth || ''}
                                     onChange={handleKycChange}
                                     className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                   />
                                 ) : (
-                                  <p className="text-sm font-bold text-slate-800 mt-1">{user.kycDetails.dateOfBirth}</p>
+                                  <p className="text-sm font-bold text-slate-800 mt-1">{formatAdDateForDisplay(user.kycDetails.dateOfBirth, language)}</p>
                                 )}
                               </div>
                             )}
@@ -964,8 +965,7 @@ function Profile() {
                                   </div>
                                   <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
                                     <p className="text-xs font-semibold text-slate-400 uppercase">{getLabel(profileLabels.issueDate)}</p>
-                                    <input
-                                      type="date"
+                                    <NepaliDateInput
                                       name="citizenshipIssueDate"
                                       value={kycFormData.citizenshipIssueDate || ''}
                                       onChange={handleKycChange}
@@ -995,7 +995,7 @@ function Profile() {
                                   {user.kycDetails.citizenshipIssueDate && (
                                     <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
                                       <p className="text-xs font-semibold text-slate-400 uppercase">{getLabel(profileLabels.issueDate)}</p>
-                                      <p className="text-sm font-bold text-slate-800 mt-1">{user.kycDetails.citizenshipIssueDate}</p>
+                                      <p className="text-sm font-bold text-slate-800 mt-1">{formatAdDateForDisplay(user.kycDetails.citizenshipIssueDate, language)}</p>
                                     </div>
                                   )}
                                   {user.kycDetails.citizenshipIssueDistrict && (
@@ -1230,13 +1230,7 @@ function Profile() {
                         {user.kycDetails.submittedAt && (
                           <div className="pt-4 border-t border-slate-200">
                             <p className="text-xs text-slate-500">
-                              {getLabel(profileLabels.submittedOn)}: {new Date(user.kycDetails.submittedAt).toLocaleDateString('en-US', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                              {getLabel(profileLabels.submittedOn)}: {formatAdDateTimeForDisplay(user.kycDetails.submittedAt, language)}
                             </p>
                           </div>
                         )}

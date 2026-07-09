@@ -4,6 +4,7 @@ import { FaArrowLeft, FaCreditCard, FaShieldAlt, FaCheckCircle, FaClock, FaExcla
 import khaltiLogo from "../assets/khalti.png";
 import { useLang } from "../context/LanguageContext";
 import { electricLabels } from "../labels/electricLabels";
+import { formatAdDateForDisplay } from "../utils/dateUtils";
 
 // Khalti Logo Component using PNG
 /**
@@ -19,7 +20,7 @@ function ElectricPayment() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getLabel } = useLang();
+  const { language, getLabel } = useLang();
   const [electricBluebook, setElectricBluebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -394,7 +395,7 @@ function ElectricPayment() {
                     <span className="text-sm font-semibold text-emerald-700 uppercase tracking-wide">{getLabel(electricLabels.taxExpiryDate)}</span>
                   </div>
                   <p className="text-xl font-bold text-gray-900">
-                    {new Date(electricBluebook.taxExpireDate).toLocaleDateString()}
+                    {formatAdDateForDisplay(electricBluebook.taxExpireDate, language, 'MMMM D, YYYY')}
                   </p>
                 </div>
               </div>

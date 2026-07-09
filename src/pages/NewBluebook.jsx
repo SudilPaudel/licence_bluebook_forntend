@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCar, FaSave, FaArrowLeft, FaUpload } from "react-icons/fa";
 import PrimaryButton from "../components/PrimaryButton";
+import NepaliDateInput from "../components/NepaliDateInput";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { newBluebookLabels } from "../labels/newBluebookLabels";
+import { addYearsToAdDate, formatAdDateForDisplay } from "../utils/dateUtils";
 
 function NewBluebook() {
   // Main component for registering a new bluebook
 
   const navigate = useNavigate();
-  const { getLabel } = useLang();
+  const { language, getLabel } = useLang();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vehicleRegNo: "",
@@ -69,15 +71,7 @@ function NewBluebook() {
    * @param {string} taxPayDate - The tax pay date in YYYY-MM-DD format
    * @returns {string} The calculated tax expire date in YYYY-MM-DD format
    */
-  const calculateTaxExpireDate = (taxPayDate) => {
-    if (!taxPayDate) return "";
-    
-    const payDate = new Date(taxPayDate);
-    const expireDate = new Date(payDate);
-    expireDate.setFullYear(payDate.getFullYear() + 1);
-    
-    return expireDate.toISOString().split('T')[0];
-  };
+  const calculateTaxExpireDate = (taxPayDate) => addYearsToAdDate(taxPayDate, 1);
 
   /**
    * Validates the form fields and sets error messages if validation fails.
@@ -248,12 +242,11 @@ function NewBluebook() {
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
                     {getLabel(newBluebookLabels.registrationDate)} <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="date"
+                  <NepaliDateInput
                     name="VehicleRegistrationDate"
                     value={formData.VehicleRegistrationDate}
                     onChange={handleChange}
-                    className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
+                    className={`mt-1 block border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.VehicleRegistrationDate ? 'border-red-400' : 'border-gray-200'
                     }`}
                   />
@@ -411,12 +404,11 @@ function NewBluebook() {
                   <label className="block text-sm font-semibold text-gray-700 text-left mb-1">
                     {getLabel(newBluebookLabels.taxPayDate)} <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="date"
+                  <NepaliDateInput
                     name="taxPayDate"
                     value={formData.taxPayDate}
                     onChange={handleChange}
-                    className={`mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
+                    className={`mt-1 block border rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-nepal-blue transition-all duration-200 ${
                       errors.taxPayDate ? 'border-red-400' : 'border-gray-200'
                     }`}
                   />
@@ -430,7 +422,9 @@ function NewBluebook() {
                     {getLabel(newBluebookLabels.taxExpireDateLabel)}
                   </label>
                   <div className="mt-1 block w-full border rounded-lg px-4 py-2 bg-gray-100 text-gray-600 border-gray-200">
-                    {formData.taxPayDate ? calculateTaxExpireDate(formData.taxPayDate) : getLabel(newBluebookLabels.willBeCalculatedAutomatically)}
+                    {formData.taxPayDate
+                      ? formatAdDateForDisplay(calculateTaxExpireDate(formData.taxPayDate), language)
+                      : getLabel(newBluebookLabels.willBeCalculatedAutomatically)}
                   </div>
                   <p className="mt-1 text-xs text-gray-500">{getLabel(newBluebookLabels.taxExpireDateHelperText)}</p>
                 </div>

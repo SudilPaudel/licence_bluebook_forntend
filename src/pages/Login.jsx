@@ -8,6 +8,7 @@ import GoogleAuthButton from "../components/GoogleAuthButton";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { loginLabels } from "../labels/loginLabels";
+import { getDashboardPathForRole, getDefaultDashboardPath } from "../utils/auth";
 
 /**
  * Login component handles user authentication and login form.
@@ -36,12 +37,12 @@ function Login() {
    * @param {React.ChangeEvent<HTMLInputElement>} e
    */
   const isLoggedIn = localStorage.getItem('accessToken');
-  useEffect(()=>{
-    if(isLoggedIn){
+  useEffect(() => {
+    if (isLoggedIn) {
       toast.info(getLabel(loginLabels.alreadyLoggedIn));
-      navigate('/dashboard');
+      navigate(getDefaultDashboardPath(), { replace: true });
     }
-  }, [isLoggedIn, navigate])
+  }, [isLoggedIn, navigate, getLabel]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -95,13 +96,7 @@ function Login() {
         showNotification("success", "Login successful! Redirecting...");
         window.dispatchEvent(new Event("storage"));
 
-        setTimeout(() => {
-          if (data.result.detail.role === "admin") {
-            navigate("/admin-dashboard");
-          } else {
-            navigate("/dashboard");
-          }
-        }, 1500);
+        navigate(getDashboardPathForRole(data.result.detail.role), { replace: true });
       } else if (data.requireAdditionalInfo) {
         navigate("/google-complete-profile", {
           state: {
@@ -156,14 +151,7 @@ function Login() {
         // Trigger storage event to update Navbar
         window.dispatchEvent(new Event('storage'));
 
-        // Redirect based on user role
-        setTimeout(() => {
-          if (data.result.detail.role === 'admin') {
-            navigate("/admin-dashboard");
-          } else {
-            navigate("/dashboard");
-          }
-        }, 1500);
+        navigate(getDashboardPathForRole(data.result.detail.role), { replace: true });
       } else {
         showNotification("error", "Login Failed. Please try again with other credentials");
         return;

@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { FaBatteryFull, FaFileAlt, FaClock, FaCheckCircle, FaDownload, FaEdit } from "react-icons/fa";
 import { useLang } from "../context/LanguageContext";
 import { dashboardLabels } from "../labels/dashboardLabels";
+import { formatAdDateForDisplay } from "../utils/dateUtils";
 import Pagination from "./Pagination";
 
 const MyElectricBluebooks = () => {
-    const { getLabel } = useLang();
+    const { language, getLabel } = useLang();
     const navigate = useNavigate();
     const [electricBluebooks, setElectricBluebooks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,14 +49,7 @@ const MyElectricBluebooks = () => {
         setCurrentPage(page);
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
-    };
+    const formatDate = (dateString) => formatAdDateForDisplay(dateString, language, 'MMM D, YYYY') || 'N/A';
 
     const getStatusBadge = (status) => {
         switch (status) {

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { adminDashboardLabels } from "../labels/adminDashboardLabels";
+import NepaliDateInput from "../components/NepaliDateInput";
+import { formatAdDateForDisplay, normalizeAdDateString } from "../utils/dateUtils";
 import {
   FaUsers,
   FaCar,
@@ -46,7 +48,7 @@ const getApiUrl = (endpoint) => {
 
 function AdminDashboard() {
   const navigate = useNavigate();
-  const { getLabel } = useLang();
+  const { language, getLabel } = useLang();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -420,13 +422,8 @@ function AdminDashboard() {
 
   // Formats a date string into a readable format.
   const formatDate = (dateString) => {
-    // Converts a date string to a human-readable format or returns 'N/A' if not present.
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return formatAdDateForDisplay(dateString, language, 'MMM D, YYYY') || 'N/A';
   };
 
   // Returns a badge component for bluebook status.
@@ -699,9 +696,9 @@ function AdminDashboard() {
       vehicleEngineCC: bluebook.vehicleEngineCC || '',
       vehicleNumber: bluebook.vehicleNumber || '',
       status: bluebook.status || 'pending',
-      VehicleRegistrationDate: bluebook.VehicleRegistrationDate ? bluebook.VehicleRegistrationDate.slice(0, 10) : '',
-      taxPayDate: bluebook.taxPayDate ? bluebook.taxPayDate.slice(0, 10) : '',
-      taxExpireDate: bluebook.taxExpireDate ? bluebook.taxExpireDate.slice(0, 10) : ''
+      VehicleRegistrationDate: normalizeAdDateString(bluebook.VehicleRegistrationDate),
+      taxPayDate: normalizeAdDateString(bluebook.taxPayDate),
+      taxExpireDate: normalizeAdDateString(bluebook.taxExpireDate)
     });
     setShowEditBluebookModal(true);
   };
@@ -2286,7 +2283,7 @@ function AdminDashboard() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div><span className="font-medium">{getLabel(adminDashboardLabels.fullName)}:</span> {kycDetails.fullName}</div>
                     {kycDetails.fullNameNepali && <div><span className="font-medium">{getLabel(adminDashboardLabels.nepaliName)}:</span> {kycDetails.fullNameNepali}</div>}
-                    <div><span className="font-medium">{getLabel(adminDashboardLabels.dateOfBirth)}:</span> {kycDetails.dateOfBirth}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.dateOfBirth)}:</span> {formatAdDateForDisplay(kycDetails.dateOfBirth, language)}</div>
                     <div><span className="font-medium">{getLabel(adminDashboardLabels.gender)}:</span> {kycDetails.gender === 'Male' ? getLabel(adminDashboardLabels.male) : kycDetails.gender === 'Female' ? getLabel(adminDashboardLabels.female) : getLabel(adminDashboardLabels.other)}</div>
                     <div><span className="font-medium">{getLabel(adminDashboardLabels.nationality)}:</span> {kycDetails.nationality}</div>
                   </div>
@@ -2309,7 +2306,7 @@ function AdminDashboard() {
                   <h3 className="font-semibold text-gray-800 mb-3">{getLabel(adminDashboardLabels.citizenshipInformation)}</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div><span className="font-medium">{getLabel(adminDashboardLabels.citizenshipNo)}:</span> {kycDetails.citizenshipNo}</div>
-                    <div><span className="font-medium">{getLabel(adminDashboardLabels.issueDate)}:</span> {kycDetails.citizenshipIssueDate}</div>
+                    <div><span className="font-medium">{getLabel(adminDashboardLabels.issueDate)}:</span> {formatAdDateForDisplay(kycDetails.citizenshipIssueDate, language)}</div>
                     <div><span className="font-medium">{getLabel(adminDashboardLabels.issueDistrict)}:</span> {kycDetails.citizenshipIssueDistrict}</div>
                   </div>
                 </div>
@@ -2708,8 +2705,7 @@ function AdminDashboard() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.vehicleRegistrationDate)}</label>
-                      <input
-                        type="date"
+                      <NepaliDateInput
                         name="VehicleRegistrationDate"
                         value={editBluebookFormData.VehicleRegistrationDate}
                         onChange={handleEditBluebookFormChange}
@@ -2718,8 +2714,7 @@ function AdminDashboard() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.taxPayDate)}</label>
-                      <input
-                        type="date"
+                      <NepaliDateInput
                         name="taxPayDate"
                         value={editBluebookFormData.taxPayDate}
                         onChange={handleEditBluebookFormChange}
@@ -2728,8 +2723,7 @@ function AdminDashboard() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">{getLabel(adminDashboardLabels.taxExpireDate)}</label>
-                      <input
-                        type="date"
+                      <NepaliDateInput
                         name="taxExpireDate"
                         value={editBluebookFormData.taxExpireDate}
                         onChange={handleEditBluebookFormChange}
