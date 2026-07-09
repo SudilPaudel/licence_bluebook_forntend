@@ -5,6 +5,7 @@ import "./App.css";
 import { LanguageProvider } from "./context/LanguageContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register.jsx";
@@ -25,6 +26,7 @@ import "react-toastify/ReactToastify.css";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ElectricNewBluebook from "./pages/ElectricNewBluebook.jsx";
 import ElectricBluebookDetail from "./pages/ElectricBluebookDetail.jsx";
+import NewsDetail from "./pages/NewsDetail.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import GoogleCompleteProfile from "./pages/GoogleCompleteProfile.jsx";
 import KycForm from "./pages/KycForm.jsx";
@@ -41,12 +43,14 @@ function App() {
         closeOnClick={true}
       />
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Navbar />
 
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/signup" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />

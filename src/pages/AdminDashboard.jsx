@@ -1273,15 +1273,6 @@ function AdminDashboard() {
               <h1 className="text-4xl font-extrabold text-nepal-blue tracking-tight animate-fade-in-down">{getLabel(adminDashboardLabels.adminDashboard)}</h1>
               <p className="mt-2 text-base text-gray-500 animate-fade-in">{`${getLabel(adminDashboardLabels.welcomeBack)}, ${user?.name || 'Admin'}`}</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="inline-flex items-center px-5 py-2 border border-gray-200 text-base font-semibold rounded-lg text-nepal-blue bg-white hover:bg-blue-50 shadow transition-all duration-200 animate-fade-in"
-              >
-                <FaUsers className="mr-2" />
-                {getLabel(adminDashboardLabels.userDashboard)}
-              </button>
-            </div>
           </div>
         </div>
       </div>

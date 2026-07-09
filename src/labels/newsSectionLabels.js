@@ -19,6 +19,14 @@ export const newsSectionLabels = {
     en: "Go to news",
     ne: "समाचारमा जानुहोस्"
   },
+  readMore: {
+    en: "Read full article",
+    ne: "पूरा समाचार पढ्नुहोस्",
+  },
+  viewDetails: {
+    en: "View news details",
+    ne: "समाचार विवरण हेर्नुहोस्",
+  },
   imageNotAvailable: {
     en: "Image not available",
     ne: "तस्वीर उपलब्ध छैन"

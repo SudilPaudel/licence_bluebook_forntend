@@ -4,6 +4,7 @@ import { FaCar, FaArrowLeft, FaDownload, FaCheckCircle, FaClock, FaTimesCircle, 
 import { useLang } from "../context/LanguageContext";
 import { bluebookDetailLabels } from "../labels/bluebookDetailLabels";
 import { formatAdDateForDisplay } from "../utils/dateUtils";
+import ExpiryReminderCard from "../components/ExpiryReminderCard";
 
 function BluebookDetail() {
   // Main component for displaying bluebook details page
@@ -274,6 +275,15 @@ const shouldShowPayTax = (expireDate) => {
           </div>
         </div>
 
+        <ExpiryReminderCard
+          enabled={Boolean(bluebook.sendExpiryReminder)}
+          onToggle={handleReminderToggle}
+          updating={updatingReminder}
+          getLabel={getLabel}
+          labels={bluebookDetailLabels}
+          variant="petrol"
+        />
+
         {/* Main Content */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Vehicle Information */}
@@ -366,40 +376,6 @@ const shouldShowPayTax = (expireDate) => {
                   <p className="mt-1 text-lg font-semibold text-gray-900">{getDaysUntilExpiry(bluebook.taxExpireDate)} {getLabel(bluebookDetailLabels.days)}</p>
                 </div>
               )}
-
-              <div className="md:col-span-2">
-                <div className="flex items-start justify-between gap-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      {getLabel(bluebookDetailLabels.expiryReminderToggle)}
-                    </label>
-                    <p className="mt-1 text-sm text-gray-600">
-                      {bluebook.sendExpiryReminder
-                        ? getLabel(bluebookDetailLabels.expiryReminderEnabled)
-                        : getLabel(bluebookDetailLabels.expiryReminderDisabled)}
-                    </p>
-                    {updatingReminder && (
-                      <p className="mt-1 text-xs text-blue-700">{getLabel(bluebookDetailLabels.updatingReminderPreference)}</p>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={Boolean(bluebook.sendExpiryReminder)}
-                    disabled={updatingReminder}
-                    onClick={() => handleReminderToggle(!bluebook.sendExpiryReminder)}
-                    className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${
-                      bluebook.sendExpiryReminder ? 'bg-blue-700' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                        bluebook.sendExpiryReminder ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
 

@@ -123,7 +123,7 @@ function Navbar() {
       {/* Top Marquee Heading */}
       <div className="overflow-hidden bg-gradient-to-r from-nepal-blue via-blue-700 to-nepal-blue shadow-md">
         <div
-          className="inline-block animate-marquee py-2 px-4 text-white font-bold text-lg tracking-wide"
+          className="inline-block animate-marquee py-1.5 px-4 text-white font-semibold text-sm sm:text-base tracking-wide"
           style={{ whiteSpace: 'nowrap' }}
           onMouseEnter={e => e.currentTarget.style.animationPlayState = 'paused'}
           onMouseLeave={e => e.currentTarget.style.animationPlayState = 'running'}
@@ -133,60 +133,61 @@ function Navbar() {
       </div>
 
       {/* Main Heading */}
-      <div className="main-heading grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4 sm:p-6 bg-white rounded-xl shadow-lg mt-3 sm:mt-4 mx-2 sm:mx-4">
+      <div className="main-heading grid grid-cols-1 md:grid-cols-3 items-center gap-3 p-3 sm:p-4 bg-white rounded-xl shadow-md mt-2 sm:mt-3 mx-2 sm:mx-4">
         <div className="img-container justify-self-center md:justify-self-start flex items-center justify-center md:justify-start">
-          <img
-            src={logo}
-            alt="logo"
-            className="w-[90px] h-[80px] rounded-lg shadow-lg border-2 border-nepal-blue transition-transform duration-300 hover:scale-105"
-          />
+          <Link to="/" aria-label="Go to home" className="inline-block rounded-lg transition-transform duration-200 hover:scale-105">
+            <img
+              src={logo}
+              alt="Nepal coat of arms"
+              className="w-[68px] h-[60px] sm:w-[76px] sm:h-[68px] rounded-lg shadow border-2 border-nepal-blue"
+            />
+          </Link>
         </div>
 
-        <div className="middle-heading text-nepal-red space-y-1 text-center justify-self-center animate-fade-in">
-          <h6 className="text-sm sm:text-base font-semibold tracking-wide">
+        <div className="middle-heading text-nepal-red space-y-0.5 text-center justify-self-center">
+          <h6 className="text-xs sm:text-sm font-semibold leading-snug">
             {getLabel(navbarLabels.governmentOfNepal)}
           </h6>
-          <h6 className="text-sm sm:text-base font-medium">
+          <h6 className="text-xs sm:text-sm font-medium leading-snug">
             {getLabel(navbarLabels.ministryOfPhysicalInfrastructure)}
           </h6>
-          <h3 className="text-xl sm:text-2xl font-extrabold text-nepal-blue drop-shadow-lg">
+          <h3 className="text-base sm:text-lg font-extrabold text-nepal-blue leading-snug">
             {getLabel(navbarLabels.departmentOfTransportManagement)}
           </h3>
-          <h6 className="text-sm sm:text-base font-medium">
+          <h6 className="text-xs sm:text-sm font-medium leading-snug">
             {getLabel(navbarLabels.nepal)}
           </h6>
         </div>
 
-        <div className="right-heading flex flex-col items-center md:items-end gap-2">
+        <div className="right-heading flex flex-col items-center md:items-end gap-1.5">
           <div className="flag-container justify-self-end">
             <img
               src={flag}
               alt="flag"
-              className="w-[66px] h-[80px] rounded-lg shadow-lg border-2 border-red-400 animate-bounce-slow"
+              className="w-[52px] h-[60px] sm:w-[58px] sm:h-[68px] rounded-lg shadow border-2 border-red-400"
             />
           </div>
-          <div className="date text-xs sm:text-sm mt-2 text-gray-700 text-center font-mono bg-gray-100 px-3 py-1 rounded-lg shadow-inner animate-fade-in w-full md:w-auto">
+          <div className="date text-xs sm:text-sm text-gray-700 text-center font-mono bg-gray-100 px-2.5 py-1 rounded-md shadow-inner w-full md:w-auto">
             {dateTimeStr}
           </div>
-          {/* Language Toggle */}
           <button
             onClick={toggleLanguage}
-            className="mt-2 flex items-center gap-2 bg-nepal-blue text-white px-3 py-1.5 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 text-sm font-medium"
+            className="flex items-center gap-2 bg-nepal-blue text-white px-3 py-1.5 rounded-lg shadow hover:bg-blue-700 transition-all duration-200 text-sm font-medium"
             aria-label="Toggle language"
           >
-            <FaGlobe className="text-base" />
+            <FaGlobe className="text-sm" />
             <span>{language === 'en' ? 'नेपाली' : 'English'}</span>
           </button>
         </div>
       </div>
 
       {/* Menu */}
-      <nav className="menu bg-gradient-to-r from-nepal-blue via-blue-700 to-nepal-blue p-3 sm:p-4 rounded-b-xl shadow-lg mx-2 sm:mx-4 mb-4 mt-2">
+      <nav className="menu bg-gradient-to-r from-nepal-blue via-blue-700 to-nepal-blue p-2.5 sm:p-3 rounded-b-xl shadow-md mx-2 sm:mx-4 mb-3 mt-1.5">
         {/* Mobile header with Home + hamburger */}
         <div className="flex items-center justify-between md:hidden">
             <Link
               to="/"
-            className="text-white text-3xl hover:text-red-400 drop-shadow-lg"
+            className="text-white text-2xl sm:text-3xl hover:text-red-400 drop-shadow-lg"
               aria-label="Home"
             >
               <FaHome />
@@ -202,7 +203,7 @@ function Navbar() {
         </div>
 
         <ul
-          className={`mt-3 md:mt-0 flex flex-col md:flex-row items-center w-full md:space-x-8 ${
+          className={`mt-2 md:mt-0 flex flex-col md:flex-row items-center w-full md:space-x-6 ${
             isMenuOpen ? "flex" : "hidden"
           } md:flex`}
         >
@@ -210,7 +211,7 @@ function Navbar() {
           <li className="nav-item transition-transform duration-200 hover:scale-110 hidden md:block">
             <Link
               to="/"
-              className="text-white text-3xl hover:text-red-400 drop-shadow-lg"
+              className="text-white text-2xl sm:text-3xl hover:text-red-400 drop-shadow-lg"
               aria-label="Home"
             >
               <FaHome />
@@ -220,7 +221,7 @@ function Navbar() {
           <li className="nav-item relative group transition-all duration-200">
             <Link
               to="#"
-              className="text-white text-lg font-semibold hover:text-red-400 flex items-center gap-1 transition-colors duration-200"
+              className="text-white text-base sm:text-lg font-semibold hover:text-red-400 flex items-center gap-1 transition-colors duration-200"
               aria-haspopup="true"
               aria-expanded="false"
             >
@@ -259,7 +260,7 @@ function Navbar() {
               <li className="w-full md:w-auto mt-2 md:mt-0">
                 <Link
                   to="/login"
-                  className="bg-white text-nepal-blue font-bold px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-200 border border-nepal-blue block text-center w-full md:w-auto"
+                  className="bg-white text-nepal-blue font-bold px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition-all duration-200 border border-nepal-blue block text-center w-full md:w-auto text-sm"
                 >
                   {getLabel(navbarLabels.login)}
                 </Link>
@@ -267,7 +268,7 @@ function Navbar() {
               <li className="w-full md:w-auto mt-2 md:mt-0 md:ml-2">
                 <Link
                   to="/signup"
-                  className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold px-6 py-2 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 hover:scale-105 transition-all duration-200 block text-center w-full md:w-auto"
+                  className="bg-gradient-to-r from-red-500 to-red-600 text-white font-bold px-5 py-2 rounded-lg shadow hover:from-red-600 hover:to-red-700 transition-all duration-200 block text-center w-full md:w-auto text-sm"
                 >
                   {getLabel(navbarLabels.register)}
                 </Link>
@@ -297,7 +298,7 @@ function Navbar() {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-white text-nepal-blue font-bold px-6 py-2 rounded-lg shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-200 border border-nepal-blue"
+                  className="bg-white text-nepal-blue font-bold px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition-all duration-200 border border-nepal-blue text-sm"
                 >
                   {getLabel(navbarLabels.logout)}
                 </button>

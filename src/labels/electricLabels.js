@@ -319,20 +319,28 @@ export const electricLabels = {
     ne: "कर तिर्नुहोस् (म्याद नजिक)"
   },
   expiryReminderToggle: {
-    en: "Send reminder before 15 days of expiry of the bluebook",
-    ne: "ब्लुबुक म्याद सकिनुभन्दा १५ दिन अघि सम्झना पठाउनुहोस्"
+    en: "Email reminder 15 days before expiry",
+    ne: "म्याद सकिनुभन्दा १५ दिन अघि इमेल सम्झना",
   },
   expiryReminderEnabled: {
-    en: "Expiry reminder is enabled for this bluebook",
-    ne: "यो ब्लुबुकको लागि म्याद सम्झना सक्रिय छ"
+    en: "Reminder is on for this bluebook",
+    ne: "यो ब्लुबुकको लागि सम्झना सक्रिय छ",
   },
   expiryReminderDisabled: {
-    en: "Expiry reminder is disabled for this bluebook",
-    ne: "यो ब्लुबुकको लागि म्याद सम्झना निष्क्रिय छ"
+    en: "Reminder is off for this bluebook",
+    ne: "यो ब्लुबुकको लागि सम्झना निष्क्रिय छ",
   },
   updatingReminderPreference: {
-    en: "Updating reminder preference...",
-    ne: "सम्झना सेटिङ अद्यावधिक हुँदैछ..."
+    en: "Saving...",
+    ne: "सेभ हुँदैछ...",
+  },
+  reminderOn: {
+    en: "On",
+    ne: "सक्रिय",
+  },
+  reminderOff: {
+    en: "Off",
+    ne: "निष्क्रिय",
   },
   enterVehicleDetails: {
     en: "Enter vehicle details for bluebook registration",

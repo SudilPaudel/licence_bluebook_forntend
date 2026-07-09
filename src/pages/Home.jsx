@@ -7,31 +7,27 @@ import { homeLabels } from "../labels/homeLabels";
  * Home component renders the landing page with hero, news, and guidance sections.
  */
 function Home() {
-  // Get language and getLabel helper from language context
   const { getLabel } = useLang();
 
-  // Renders the main home/landing page layout
   return (
-    <div className="px-6 py-12 space-y-16 bg-gradient-to-br from-blue-50 to-white min-h-screen animate-fade-in">
+    <div className="px-6 py-12 space-y-16 bg-slate-50 min-h-screen">
       {/* Hero */}
-      <section className="relative text-center bg-white/80 p-12 rounded-3xl shadow-2xl overflow-hidden border border-blue-100 animate-slide-up">
-        <div className="absolute inset-0 bg-gradient-to-tr from-nepal-blue/10 to-blue-200/10 pointer-events-none rounded-3xl" />
-        <h1 className="relative z-10 text-4xl md:text-5xl font-extrabold text-nepal-blue drop-shadow-lg tracking-tight animate-fade-in-down">
+      <section className="text-center bg-white p-10 md:p-12 rounded-lg border border-slate-200 border-t-4 border-t-nepal-blue shadow-sm">
+        <h1 className="text-3xl md:text-4xl font-bold text-nepal-blue tracking-tight">
           {getLabel(homeLabels.welcome)}
         </h1>
-        <p className="relative z-10 mt-5 text-gray-700 text-xl md:text-2xl font-medium animate-fade-in-up">
+        <p className="mt-4 text-slate-600 text-lg md:text-xl font-normal max-w-3xl mx-auto leading-relaxed">
           {getLabel(homeLabels.registerAndRenew)}
         </p>
-        <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-nepal-blue/10 rounded-full blur-2xl animate-pulse" />
       </section>
 
       {/* News */}
-      <div className="animate-fade-in-up">
+      <div>
         <NewsSection />
       </div>
 
       {/* Guidance */}
-      <div className="animate-fade-in-up delay-200">
+      <div>
         <GuidanceSection />
       </div>
     </div>

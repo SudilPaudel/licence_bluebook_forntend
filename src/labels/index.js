@@ -17,4 +17,5 @@ export { otpResetLabels } from './otpResetLabels';
 export { paymentVerificationLabels } from './paymentVerificationLabels';
 export { footerLabels } from './footerLabels';
 export { newsSectionLabels } from './newsSectionLabels';
+export { newsDetailLabels } from './newsDetailLabels';
 export { guidanceSectionLabels } from './guidanceSectionLabels';
