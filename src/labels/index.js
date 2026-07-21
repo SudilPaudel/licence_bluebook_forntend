@@ -19,3 +19,4 @@ export { footerLabels } from './footerLabels';
 export { newsSectionLabels } from './newsSectionLabels';
 export { newsDetailLabels } from './newsDetailLabels';
 export { guidanceSectionLabels } from './guidanceSectionLabels';
+export { disclaimerLabels } from './disclaimerLabels';

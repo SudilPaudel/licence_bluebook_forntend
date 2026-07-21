@@ -529,13 +529,15 @@ function Dashboard() {
                         <FaEdit className="mr-1" />
                         {getLabel(dashboardLabels.view)}
                       </button>
-                      <button
-                        onClick={() => handleDownload(bluebook._id, bluebook.isElectric)}
-                        className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-nepal-blue bg-white hover:bg-nepal-blue hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
-                      >
-                        <FaDownload className="mr-1" />
-                        {getLabel(dashboardLabels.download)}
-                      </button>
+                      {bluebook.status === 'verified' && (
+                        <button
+                          onClick={() => handleDownload(bluebook._id, bluebook.isElectric)}
+                          className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-nepal-blue bg-white hover:bg-nepal-blue hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nepal-blue"
+                        >
+                          <FaDownload className="mr-1" />
+                          {getLabel(dashboardLabels.download)}
+                        </button>
+                      )}
                       {shouldShowPayTax(bluebook.taxExpireDate) && (
                         <button
                           onClick={() => {

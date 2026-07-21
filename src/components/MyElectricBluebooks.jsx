@@ -199,13 +199,15 @@ const MyElectricBluebooks = () => {
                                         <FaEdit className="mr-1" />
                                         {getLabel(dashboardLabels.view)}
                                     </button>
-                                    <button
-                                        onClick={() => handleDownload(bluebook._id)}
-                                        className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-green-600 bg-white hover:bg-green-600 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600"
-                                    >
-                                        <FaDownload className="mr-1" />
-                                        {getLabel(dashboardLabels.download)}
-                                    </button>
+                                    {bluebook.status === 'verified' && (
+                                        <button
+                                            onClick={() => handleDownload(bluebook._id)}
+                                            className="inline-flex items-center px-4 py-2 border border-gray-200 shadow-sm text-sm font-semibold rounded-lg text-green-600 bg-white hover:bg-green-600 hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600"
+                                        >
+                                            <FaDownload className="mr-1" />
+                                            {getLabel(dashboardLabels.download)}
+                                        </button>
+                                    )}
                                     {shouldShowPayTax(bluebook.taxExpireDate) && (
                                         <button
                                             onClick={() => navigate(`/electric-payment/${bluebook._id}`)}
