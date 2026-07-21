@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NepaliDateInput from '../components/NepaliDateInput';
 import { compressImageForUpload } from '../utils/imageUtils';
+import { ensureAdDateString } from '../utils/dateUtils';
 
 const KycForm = () => {
   const navigate = useNavigate();
@@ -170,9 +171,11 @@ const KycForm = () => {
     try {
       const token = localStorage.getItem('accessToken');
       const data = new FormData();
-      
-      Object.keys(formData).forEach(key => {
-        data.append(key, formData[key]);
+      const dateFields = new Set(['dateOfBirth', 'citizenshipIssueDate']);
+
+      Object.keys(formData).forEach((key) => {
+        const value = dateFields.has(key) ? ensureAdDateString(formData[key]) : formData[key];
+        data.append(key, value);
       });
       
       // Only append new images if they were selected

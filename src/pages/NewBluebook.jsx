@@ -6,7 +6,7 @@ import NepaliDateInput from "../components/NepaliDateInput";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { newBluebookLabels } from "../labels/newBluebookLabels";
-import { addYearsToAdDate, formatAdDateForDisplay } from "../utils/dateUtils";
+import { addYearsToAdDate, ensureAdDateString, formatAdDateForDisplay } from "../utils/dateUtils";
 
 function NewBluebook() {
   // Main component for registering a new bluebook
@@ -122,10 +122,15 @@ function NewBluebook() {
     try {
       const token = localStorage.getItem('accessToken');
       
-      // Calculate tax expire date before sending to server
+      // Dates from NepaliDateInput are already AD; ensureAdDateString keeps DB storage English.
+      const registrationDateAd = ensureAdDateString(formData.VehicleRegistrationDate);
+      const taxPayDateAd = ensureAdDateString(formData.taxPayDate);
+
       const submissionData = {
         ...formData,
-        taxExpireDate: calculateTaxExpireDate(formData.taxPayDate)
+        VehicleRegistrationDate: registrationDateAd,
+        taxPayDate: taxPayDateAd,
+        taxExpireDate: calculateTaxExpireDate(taxPayDateAd),
       };
       
       const response = await fetch(`${import.meta.env.VITE_API_URL}/bluebook`, {

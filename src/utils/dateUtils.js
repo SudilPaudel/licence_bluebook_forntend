@@ -1,4 +1,6 @@
-import NepaliDate from 'nepali-date-converter';
+import NepaliDateModule from 'nepali-date-converter';
+
+const NepaliDate = NepaliDateModule.default || NepaliDateModule;
 
 /**
  * Normalizes any AD date value from API/DB to YYYY-MM-DD.
@@ -30,7 +32,7 @@ export function parseAdDateString(adDateString) {
 }
 
 /**
- * Converts an AD date string to a BS picker value object.
+ * Converts an AD date string (from DB) to a BS picker value object (for UI only).
  */
 export function adStringToBsDate(adDateString) {
   const parts = parseAdDateString(adDateString);
@@ -50,14 +52,16 @@ export function adStringToBsDate(adDateString) {
 }
 
 /**
- * Converts a BS picker value to an AD string (YYYY-MM-DD) for API/DB storage.
+ * Converts a BS picker value to an English/AD string (YYYY-MM-DD) for API/DB storage.
+ * UI shows Nepali (BS); database always stores English (AD).
  */
 export function bsDateToAdString(bsDate) {
   if (!bsDate?.year && bsDate?.year !== 0) return '';
-  if (bsDate.month === undefined || !bsDate.day) return '';
+  if (bsDate.month === undefined || bsDate.month === null || !bsDate.day) return '';
 
   try {
     const jsDate = new NepaliDate(bsDate.year, bsDate.month, bsDate.day).toJsDate();
+    // Use local getters so Nepal timezone does not shift the calendar day.
     const year = jsDate.getFullYear();
     const month = String(jsDate.getMonth() + 1).padStart(2, '0');
     const day = String(jsDate.getDate()).padStart(2, '0');
@@ -65,6 +69,21 @@ export function bsDateToAdString(bsDate) {
   } catch {
     return '';
   }
+}
+
+/**
+ * Ensures a date value is stored as English/AD YYYY-MM-DD.
+ * Accepts an AD string or a BS picker object and always returns AD for the DB.
+ */
+export function ensureAdDateString(value) {
+  if (!value) return '';
+
+  if (typeof value === 'object' && value.year !== undefined && value.month !== undefined && value.day) {
+    // Looks like a BS picker object — convert to AD before storage.
+    return bsDateToAdString(value);
+  }
+
+  return normalizeAdDateString(value);
 }
 
 /**
@@ -110,7 +129,7 @@ export function formatAdDateTimeForDisplay(isoString, language = 'ne') {
 }
 
 /**
- * Adds years to an AD date string and returns YYYY-MM-DD.
+ * Adds years to an AD date string and returns YYYY-MM-DD (still AD).
  */
 export function addYearsToAdDate(adDateString, years) {
   const parts = parseAdDateString(adDateString);

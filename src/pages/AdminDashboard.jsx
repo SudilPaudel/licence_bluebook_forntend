@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { adminDashboardLabels } from "../labels/adminDashboardLabels";
 import NepaliDateInput from "../components/NepaliDateInput";
-import { formatAdDateForDisplay, normalizeAdDateString } from "../utils/dateUtils";
+import { formatAdDateForDisplay, normalizeAdDateString, ensureAdDateString } from "../utils/dateUtils";
 import {
   FaUsers,
   FaCar,
@@ -717,13 +717,19 @@ function AdminDashboard() {
   const handleUpdateBluebook = async () => {
     try {
       const token = localStorage.getItem('accessToken');
+      const payload = {
+        ...editBluebookFormData,
+        VehicleRegistrationDate: ensureAdDateString(editBluebookFormData.VehicleRegistrationDate),
+        taxPayDate: ensureAdDateString(editBluebookFormData.taxPayDate),
+        taxExpireDate: ensureAdDateString(editBluebookFormData.taxExpireDate),
+      };
       const response = await fetch(`${import.meta.env.VITE_API_URL}/bluebook/admin/${editingBluebook._id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(editBluebookFormData)
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {

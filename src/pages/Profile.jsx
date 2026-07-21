@@ -5,7 +5,7 @@ import CitizenshipInput from "../components/CitizenshipInput";
 import NepaliDateInput from "../components/NepaliDateInput";
 import { useLang } from "../context/LanguageContext";
 import { profileLabels } from "../labels/profileLabels";
-import { formatAdDateForDisplay, formatAdDateTimeForDisplay } from "../utils/dateUtils";
+import { formatAdDateForDisplay, formatAdDateTimeForDisplay, ensureAdDateString } from "../utils/dateUtils";
 import { compressImageForUpload } from "../utils/imageUtils";
 
 function Profile() {
@@ -368,7 +368,7 @@ function Profile() {
         const kycUpdateFormData = new FormData();
         kycUpdateFormData.append('fullName', kycFormData.fullName || formData.name || '');
         kycUpdateFormData.append('fullNameNepali', kycFormData.fullNameNepali || '');
-        kycUpdateFormData.append('dateOfBirth', kycFormData.dateOfBirth || '');
+        kycUpdateFormData.append('dateOfBirth', ensureAdDateString(kycFormData.dateOfBirth || ''));
         kycUpdateFormData.append('gender', kycFormData.gender || '');
         kycUpdateFormData.append('nationality', kycFormData.nationality || '');
         kycUpdateFormData.append('province', kycFormData.province || '');
@@ -377,7 +377,7 @@ function Profile() {
         kycUpdateFormData.append('wardNo', kycFormData.wardNo || '');
         kycUpdateFormData.append('tole', kycFormData.tole || '');
         kycUpdateFormData.append('citizenshipNo', formData.citizenshipNo || kycFormData.citizenshipNo || '');
-        kycUpdateFormData.append('citizenshipIssueDate', kycFormData.citizenshipIssueDate || '');
+        kycUpdateFormData.append('citizenshipIssueDate', ensureAdDateString(kycFormData.citizenshipIssueDate || ''));
         kycUpdateFormData.append('citizenshipIssueDistrict', kycFormData.citizenshipIssueDistrict || '');
         kycUpdateFormData.append('fatherName', kycFormData.fatherName || '');
         kycUpdateFormData.append('motherName', kycFormData.motherName || '');

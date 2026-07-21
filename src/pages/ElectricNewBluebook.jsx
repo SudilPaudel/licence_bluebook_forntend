@@ -6,7 +6,7 @@ import NepaliDateInput from "../components/NepaliDateInput";
 import { toast } from "react-toastify";
 import { useLang } from "../context/LanguageContext";
 import { electricLabels } from "../labels/electricLabels";
-import { addYearsToAdDate, formatAdDateForDisplay } from "../utils/dateUtils";
+import { addYearsToAdDate, ensureAdDateString, formatAdDateForDisplay } from "../utils/dateUtils";
 
 const ElectricNewBluebook = () => {
   
@@ -123,13 +123,16 @@ const ElectricNewBluebook = () => {
     try {
       const token = localStorage.getItem('accessToken');
       
-      // Calculate tax expire date and convert data types
+      // Dates from NepaliDateInput are already AD; ensureAdDateString keeps DB storage English.
+      const registrationDateAd = ensureAdDateString(formData.vehicleRegistrationDate);
+      const taxPayDateAd = ensureAdDateString(formData.taxPayDate);
+
       const submitData = {
         ...formData,
         vehicleBatteryCapacity: parseFloat(formData.vehicleBatteryCapacity),
-        vehicleRegistrationDate: formData.vehicleRegistrationDate,
-        taxPayDate: formData.taxPayDate,
-        taxExpireDate: calculateTaxExpireDate(formData.taxPayDate)
+        vehicleRegistrationDate: registrationDateAd,
+        taxPayDate: taxPayDateAd,
+        taxExpireDate: calculateTaxExpireDate(taxPayDateAd),
       };
       
       console.log('Submitting electric bluebook data:', submitData);
