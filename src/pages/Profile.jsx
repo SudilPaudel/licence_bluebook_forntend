@@ -582,7 +582,7 @@ function Profile() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-blue-100 animate-fade-in-slow">
           {/* Profile Header with Picture */}
           <div className="bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-700 px-10 py-10 relative">
-            <div className="flex items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-6 min-w-0">
               <div className="flex-shrink-0 relative group">
                 {user?.image ? (
                   <img 
@@ -599,12 +599,12 @@ function Profile() {
                   {user?.role?.toUpperCase() || 'USER'}
                 </span>
               </div>
-              <div className="ml-8">
-                <h2 className="text-3xl font-extrabold text-white mb-1 tracking-wide animate-slide-in-right">
+              <div className="flex-1 min-w-0 max-w-full">
+                <h2 className="text-3xl font-extrabold text-white mb-1 tracking-wide animate-slide-in-right break-words [overflow-wrap:anywhere]">
                   {kycDetails?.fullName || 'User Name'}
                 </h2>
-                <p className="text-blue-100 text-lg font-medium">{user?.email}</p>
-                <div className="flex items-center mt-4 space-x-4">
+                <p className="text-blue-100 text-lg font-medium break-words [overflow-wrap:anywhere]">{user?.email}</p>
+                <div className="flex flex-wrap items-center mt-4 gap-2">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold shadow-md transition-all duration-200 ${
                     user?.status === 'active' 
                       ? 'bg-green-100 text-green-800 animate-pulse' 
@@ -671,7 +671,7 @@ function Profile() {
 
                 {/* KYC Details Section - Complete Display with Localization */}
                 {(user?.kycStatus || user?.kycDetails) && (
-                  <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-6 shadow-lg border border-slate-200">
+                  <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-6 shadow-lg border border-slate-200 min-w-0 max-w-full overflow-hidden [&_*]:min-w-0 [&_p]:break-words [&_p]:[overflow-wrap:anywhere] [&_h3]:break-words [&_h4]:break-words [&_input]:max-w-full [&_select]:max-w-full">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center">

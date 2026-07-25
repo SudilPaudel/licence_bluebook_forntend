@@ -39,7 +39,14 @@ import {
 import fallbackNews from "../assets/news1.jpeg";
 import { toast } from "react-toastify";
 import CitizenshipInput from "../components/CitizenshipInput";
+import Pagination from "../components/Pagination";
 import { getApiUrl } from "../utils/api";
+
+const ADMIN_LIST_PAGE_SIZE = 10;
+
+const sortNewestFirst = (items) => (
+  [...items].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+);
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -108,8 +115,12 @@ function AdminDashboard() {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [filteredPayments, setFilteredPayments] = useState([]);
+  const [paymentPage, setPaymentPage] = useState(1);
   const [bluebookSearchTerm, setBluebookSearchTerm] = useState('');
   const [filteredBluebooks, setFilteredBluebooks] = useState([]);
+  const [bluebookPage, setBluebookPage] = useState(1);
+  const [pendingBluebookPage, setPendingBluebookPage] = useState(1);
+  const [userPage, setUserPage] = useState(1);
 
   // News management state
   const [news, setNews] = useState([]);
@@ -183,6 +194,11 @@ function AdminDashboard() {
     }
   }, [payments, paymentFilter]);
 
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(filteredPayments.length / ADMIN_LIST_PAGE_SIZE));
+    setPaymentPage(currentPage => Math.min(currentPage, totalPages));
+  }, [filteredPayments.length]);
+
   // Filter bluebooks based on search term
   useEffect(() => {
     if (bluebooks.length > 0) {
@@ -205,6 +221,16 @@ function AdminDashboard() {
       setFilteredBluebooks([]);
     }
   }, [bluebooks, bluebookSearchTerm]);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(filteredBluebooks.length / ADMIN_LIST_PAGE_SIZE));
+    setBluebookPage(currentPage => Math.min(currentPage, totalPages));
+  }, [filteredBluebooks.length]);
+
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(pendingBluebooks.length / ADMIN_LIST_PAGE_SIZE));
+    setPendingBluebookPage(currentPage => Math.min(currentPage, totalPages));
+  }, [pendingBluebooks.length]);
 
   // Checks authentication and redirects user if not admin or not logged in.
   const checkAuth = () => {
@@ -292,7 +318,7 @@ function AdminDashboard() {
         verifiedBluebooks += electricBluebooksData.meta?.verified || 0;
       }
 
-      setBluebooks(allBluebooks);
+      setBluebooks(sortNewestFirst(allBluebooks));
       setStats(prev => ({
         ...prev,
         totalBluebooks,
@@ -328,7 +354,7 @@ function AdminDashboard() {
         allPendingBluebooks = [...allPendingBluebooks, ...(electricPendingData.result || [])];
       }
 
-      setPendingBluebooks(allPendingBluebooks);
+      setPendingBluebooks(sortNewestFirst(allPendingBluebooks));
 
       // Fetch payments
       const paymentsResponse = await fetch(`${import.meta.env.VITE_API_URL}/admin/payments`, {
@@ -340,7 +366,7 @@ function AdminDashboard() {
 
       if (paymentsResponse.ok) {
         const paymentsData = await paymentsResponse.json();
-        setPayments(paymentsData.result || []);
+        setPayments(sortNewestFirst(paymentsData.result || []));
       }
 
       // Fetch news
@@ -1234,6 +1260,31 @@ function AdminDashboard() {
     return matchesSearch && matchesFilter;
   });
 
+  const userTotalPages = Math.max(1, Math.ceil(filteredUsers.length / ADMIN_LIST_PAGE_SIZE));
+  const paginatedUsers = filteredUsers.slice(
+    (userPage - 1) * ADMIN_LIST_PAGE_SIZE,
+    userPage * ADMIN_LIST_PAGE_SIZE
+  );
+  const bluebookTotalPages = Math.max(1, Math.ceil(filteredBluebooks.length / ADMIN_LIST_PAGE_SIZE));
+  const paginatedBluebooks = filteredBluebooks.slice(
+    (bluebookPage - 1) * ADMIN_LIST_PAGE_SIZE,
+    bluebookPage * ADMIN_LIST_PAGE_SIZE
+  );
+  const pendingBluebookTotalPages = Math.max(1, Math.ceil(pendingBluebooks.length / ADMIN_LIST_PAGE_SIZE));
+  const paginatedPendingBluebooks = pendingBluebooks.slice(
+    (pendingBluebookPage - 1) * ADMIN_LIST_PAGE_SIZE,
+    pendingBluebookPage * ADMIN_LIST_PAGE_SIZE
+  );
+  const paymentTotalPages = Math.max(1, Math.ceil(filteredPayments.length / ADMIN_LIST_PAGE_SIZE));
+  const paginatedPayments = filteredPayments.slice(
+    (paymentPage - 1) * ADMIN_LIST_PAGE_SIZE,
+    paymentPage * ADMIN_LIST_PAGE_SIZE
+  );
+
+  useEffect(() => {
+    setUserPage(currentPage => Math.min(currentPage, userTotalPages));
+  }, [userTotalPages]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -1421,13 +1472,19 @@ function AdminDashboard() {
                         type="text"
                         placeholder={getLabel(adminDashboardLabels.searchUsers)}
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setUserPage(1);
+                        }}
                         className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
                       />
                     </div>
                     <select
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
+                      onChange={(e) => {
+                        setFilterStatus(e.target.value);
+                        setUserPage(1);
+                      }}
                       className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
                     >
                       <option value="all">{getLabel(adminDashboardLabels.allStatus)}</option>
@@ -1439,7 +1496,7 @@ function AdminDashboard() {
 
                 <div className="bg-white/90 shadow-xl overflow-hidden sm:rounded-2xl animate-fade-in-up">
                   <ul className="divide-y divide-gray-100">
-                    {filteredUsers.map((user, idx) => (
+                    {paginatedUsers.map((user, idx) => (
                       <li key={user._id} className="px-8 py-5 hover:bg-blue-50 transition animate-fade-in-up" style={{ animationDelay: `${idx * 30}ms` }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
@@ -1518,6 +1575,13 @@ function AdminDashboard() {
                     ))}
                   </ul>
                 </div>
+                {userTotalPages > 1 && (
+                  <Pagination
+                    currentPage={userPage}
+                    totalPages={userTotalPages}
+                    onPageChange={setUserPage}
+                  />
+                )}
               </div>
             )}
 
@@ -1526,7 +1590,7 @@ function AdminDashboard() {
               <div className="space-y-6 animate-fade-in">
                 <div className="bg-white/90 shadow-xl overflow-hidden sm:rounded-2xl animate-fade-in-up">
                   <ul className="divide-y divide-gray-100">
-                    {pendingBluebooks.map((bluebook, idx) => (
+                    {paginatedPendingBluebooks.map((bluebook, idx) => (
                       <li key={bluebook._id} className="px-8 py-5 hover:bg-yellow-50 transition animate-fade-in-up" style={{ animationDelay: `${idx * 30}ms` }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
@@ -1578,6 +1642,13 @@ function AdminDashboard() {
                     )}
                   </ul>
                 </div>
+                {pendingBluebookTotalPages > 1 && (
+                  <Pagination
+                    currentPage={pendingBluebookPage}
+                    totalPages={pendingBluebookTotalPages}
+                    onPageChange={setPendingBluebookPage}
+                  />
+                )}
               </div>
             )}
 
@@ -1594,7 +1665,10 @@ function AdminDashboard() {
                           type="text"
                           placeholder={getLabel(adminDashboardLabels.searchBluebooks)}
                           value={bluebookSearchTerm}
-                          onChange={(e) => setBluebookSearchTerm(e.target.value)}
+                          onChange={(e) => {
+                            setBluebookSearchTerm(e.target.value);
+                            setBluebookPage(1);
+                          }}
                           className="pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow min-w-80"
                         />
                         {bluebookSearchTerm && (
@@ -1616,7 +1690,7 @@ function AdminDashboard() {
                 <div className="bg-white/90 shadow-xl overflow-hidden sm:rounded-2xl animate-fade-in-up">
                   <ul className="divide-y divide-gray-100">
                     {filteredBluebooks.length > 0 ? (
-                      filteredBluebooks.map((bluebook, idx) => (
+                      paginatedBluebooks.map((bluebook, idx) => (
                       <li key={bluebook._id} className="px-8 py-5 hover:bg-green-50 transition animate-fade-in-up" style={{ animationDelay: `${idx * 30}ms` }}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
@@ -1683,6 +1757,13 @@ function AdminDashboard() {
                     )}
                   </ul>
                 </div>
+                {bluebookTotalPages > 1 && (
+                  <Pagination
+                    currentPage={bluebookPage}
+                    totalPages={bluebookTotalPages}
+                    onPageChange={setBluebookPage}
+                  />
+                )}
               </div>
             )}
 
@@ -1696,7 +1777,10 @@ function AdminDashboard() {
                   <div className="flex items-center space-x-4">
                     <select 
                       value={paymentFilter}
-                      onChange={(e) => setPaymentFilter(e.target.value)}
+                      onChange={(e) => {
+                        setPaymentFilter(e.target.value);
+                        setPaymentPage(1);
+                      }}
                       className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-nepal-blue bg-gray-50 shadow"
                     >
                       <option value="all">{getLabel(adminDashboardLabels.allPayments)}</option>
@@ -1724,7 +1808,7 @@ function AdminDashboard() {
                   </div>
                   <ul className="divide-y divide-gray-100">
                     {filteredPayments.length > 0 ? (
-                      filteredPayments.map((payment, idx) => (
+                      paginatedPayments.map((payment, idx) => (
                         <li key={payment._id} className="px-8 py-5 animate-fade-in-up" style={{ animationDelay: `${idx * 30}ms` }}>
                           <div className="grid grid-cols-12 gap-4 items-center">
                             <div className="col-span-3 text-base font-semibold text-gray-900 break-all">{payment.transactionId}</div>
@@ -1765,6 +1849,13 @@ function AdminDashboard() {
                     )}
                   </ul>
                 </div>
+                {paymentTotalPages > 1 && (
+                  <Pagination
+                    currentPage={paymentPage}
+                    totalPages={paymentTotalPages}
+                    onPageChange={setPaymentPage}
+                  />
+                )}
               </div>
             )}
 
